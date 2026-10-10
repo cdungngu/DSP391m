@@ -1,0 +1,506 @@
+{
+  "snapshot": "decagon_v1",
+  "created_at": "2026-10-10T09:46:00+00:00",
+  "source": "PubChem PUG REST",
+  "smiles_field_priority": [
+    "SMILES",
+    "IsomericSMILES",
+    "ConnectivitySMILES",
+    "CanonicalSMILES"
+  ],
+  "fingerprint": "Morgan radius 2, 2048 bits (RDKit)",
+  "combo_drugs": {
+    "drugs": 645,
+    "fingerprint_ok": 645,
+    "fingerprint_ok_rate": 1.0,
+    "status_counts": {
+      "ok": 645
+    },
+    "flagged_among_ok": 58
+  },
+  "combo_drugs_with_targets": {
+    "drugs": 284,
+    "fingerprint_ok": 284,
+    "fingerprint_ok_rate": 1.0,
+    "status_counts": {
+      "ok": 284
+    },
+    "flagged_among_ok": 13
+  },
+  "combo_drugs_without_targets": {
+    "drugs": 361,
+    "fingerprint_ok": 361,
+    "fingerprint_ok_rate": 1.0,
+    "status_counts": {
+      "ok": 361
+    },
+    "flagged_among_ok": 45
+  },
+  "duplicate_inchikey_groups": 0,
+  "needs_review": [
+    {
+      "stitch_id": "CID000000085",
+      "pubchem_cid": 85,
+      "status": "ok",
+      "flags": "charged",
+      "title": "1-propanaminium, 3-carboxy-2-hydroxy-n,n,n-trimethyl-, inner salt",
+      "formula": "C7H16NO3+"
+    },
+    {
+      "stitch_id": "CID000000271",
+      "pubchem_cid": 271,
+      "status": "ok",
+      "flags": "charged,tiny",
+      "title": "Calcium Cation",
+      "formula": "Ca+2"
+    },
+    {
+      "stitch_id": "CID000000937",
+      "pubchem_cid": 937,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Nicotinate",
+      "formula": "C6H4NO2-"
+    },
+    {
+      "stitch_id": "CID000001117",
+      "pubchem_cid": 1117,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Sulfate Ion",
+      "formula": "O4S-2"
+    },
+    {
+      "stitch_id": "CID000001690",
+      "pubchem_cid": 1690,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Doxorubicin (Adriamycin) HCl",
+      "formula": "C27H30NO11+"
+    },
+    {
+      "stitch_id": "CID000002156",
+      "pubchem_cid": 2156,
+      "status": "ok",
+      "flags": "charged",
+      "title": "[2-[4-[(2-Butylbenzofuran-3-yl)carbonyl]-2,6-diiodophenoxy]ethyl]diethylaminium",
+      "formula": "C25H30I2NO3+"
+    },
+    {
+      "stitch_id": "CID000002173",
+      "pubchem_cid": 2173,
+      "status": "ok",
+      "flags": "charged",
+      "title": "6-{[Amino(phenyl)acetyl]amino}-3,3-dimethyl-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate",
+      "formula": "C16H18N3O4S-"
+    },
+    {
+      "stitch_id": "CID000002370",
+      "pubchem_cid": 2370,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Bethanechol",
+      "formula": "C7H17N2O2+"
+    },
+    {
+      "stitch_id": "CID000002551",
+      "pubchem_cid": 2551,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Carbamylcholine",
+      "formula": "C6H15N2O2+"
+    },
+    {
+      "stitch_id": "CID000002617",
+      "pubchem_cid": 2617,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3-{[(5-methyl-1,3,4-thiadiazol-2-yl)sulfanyl]methyl}-8-oxo-7-[(1H-tetrazol-1-ylacetyl)amino]-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylate",
+      "formula": "C14H13N8O4S3-"
+    },
+    {
+      "stitch_id": "CID000002631",
+      "pubchem_cid": 2631,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3-(Acetyloxymethyl)-7-[[2-(2-amino-1,3-thiazol-4-yl)-2-methoxyiminoacetyl]amino]-8-oxo-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylate",
+      "formula": "C16H16N5O7S2-"
+    },
+    {
+      "stitch_id": "CID000002637",
+      "pubchem_cid": 2637,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3-[(Carbamoyloxy)methyl]-7-methoxy-8-oxo-7-[(thiophen-2-ylacetyl)amino]-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylate",
+      "formula": "C16H16N3O7S2-"
+    },
+    {
+      "stitch_id": "CID000002656",
+      "pubchem_cid": 2656,
+      "status": "ok",
+      "flags": "charged",
+      "title": "7-[[2-(2-Amino-1,3-thiazol-4-yl)-2-methoxyiminoacetyl]amino]-3-[(2-methyl-6-oxido-5-oxo-1,2,4-triazin-3-yl)sulfanylmethyl]-8-oxo-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylate",
+      "formula": "C18H16N8O7S3-2"
+    },
+    {
+      "stitch_id": "CID000002658",
+      "pubchem_cid": 2658,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3-(Carbamoyloxymethyl)-7-[[2-(furan-2-yl)-2-methoxyiminoacetyl]amino]-8-oxo-5-thia-1-azabicyclo[4.2.0]oct-2-ene-2-carboxylate",
+      "formula": "C16H15N4O8S-"
+    },
+    {
+      "stitch_id": "CID000002891",
+      "pubchem_cid": 2891,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "cobalt(2+);[5-(5,6-dimethylbenzimidazol-1-yl)-4-hydroxy-2-(hydroxymethyl)oxolan-3-yl] 1-[3-[2,13,18-tris(2-amino-2-oxoethyl)-7,12,17-tris(3-amino-3-oxopropyl)-3,5,8,8,13,15,18,19-octamethyl-2,7,12,17-tetrahydro-1H-corrin-21-id-3-yl]propanoylamino]propan-2-yl hydrogen phosphate;cyanide",
+      "formula": "C63H89CoN14O14P"
+    },
+    {
+      "stitch_id": "CID000002951",
+      "pubchem_cid": 2951,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Dantrolene(1-)",
+      "formula": "C14H9N4O5-"
+    },
+    {
+      "stitch_id": "CID000003032",
+      "pubchem_cid": 3032,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Arthrotec",
+      "formula": "C14H10Cl2NO2-"
+    },
+    {
+      "stitch_id": "CID000003040",
+      "pubchem_cid": 3040,
+      "status": "ok",
+      "flags": "charged",
+      "title": "6-({[3-(2,6-Dichlorophenyl)-5-methyl-1,2-oxazol-4-yl]carbonyl}amino)-3,3-dimethyl-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate",
+      "formula": "C19H16Cl2N3O5S-"
+    },
+    {
+      "stitch_id": "CID000003075",
+      "pubchem_cid": 3075,
+      "status": "ok",
+      "flags": "charged",
+      "title": "2-[3-Acetyloxy-2-(4-methoxyphenyl)-4-oxo-2,3-dihydro-1,5-benzothiazepin-5-yl]ethyl-dimethylazanium",
+      "formula": "C22H27N2O4S+"
+    },
+    {
+      "stitch_id": "CID000003355",
+      "pubchem_cid": 3355,
+      "status": "ok",
+      "flags": "charged",
+      "title": "[2,5-Bis(2,2,2-trifluoroethoxy)benzoyl]-(piperidin-2-ylmethyl)azanium",
+      "formula": "C17H21F6N2O3+"
+    },
+    {
+      "stitch_id": "CID000003414",
+      "pubchem_cid": 3414,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Phosphonatoformate",
+      "formula": "CO5P-3"
+    },
+    {
+      "stitch_id": "CID000003419",
+      "pubchem_cid": 3419,
+      "status": "ok",
+      "flags": "charged",
+      "title": "4-Cyclohexyl-1-[2-[(2-methyl-1-propanoyloxypropoxy)-(4-phenylbutyl)phosphoryl]acetyl]pyrrolidine-2-carboxylate",
+      "formula": "C30H45NO7P-"
+    },
+    {
+      "stitch_id": "CID000003494",
+      "pubchem_cid": 3494,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Glycopyrronium",
+      "formula": "C19H28NO3+"
+    },
+    {
+      "stitch_id": "CID000003746",
+      "pubchem_cid": 3746,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Atrovent Hfa",
+      "formula": "C20H30NO3+"
+    },
+    {
+      "stitch_id": "CID000003954",
+      "pubchem_cid": 3954,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Loperamide(1+)",
+      "formula": "C29H34ClN2O2+"
+    },
+    {
+      "stitch_id": "CID000004473",
+      "pubchem_cid": 4473,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Benzyl-[2-[5-methoxycarbonyl-2,6-dimethyl-4-(3-nitrophenyl)-1,4-dihydropyridine-3-carbonyl]oxyethyl]-methylazanium",
+      "formula": "C26H30N3O6+"
+    },
+    {
+      "stitch_id": "CID000004607",
+      "pubchem_cid": 4607,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3,3-Dimethyl-6-{[(5-methyl-3-phenyl-1,2-oxazol-4-yl)carbonyl]amino}-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate",
+      "formula": "C19H18N3O5S-"
+    },
+    {
+      "stitch_id": "CID000004609",
+      "pubchem_cid": 4609,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Oxaliplatin (Eloxatin)",
+      "formula": "C8H14N2O4Pt"
+    },
+    {
+      "stitch_id": "CID000004675",
+      "pubchem_cid": 4675,
+      "status": "ok",
+      "flags": "charged",
+      "title": "[17-acetyloxy-10,13-dimethyl-2,16-bis(1-methylpiperidin-1-ium-1-yl)-2,3,4,5,6,7,8,9,11,12,14,15,16,17-tetradecahydro-1H-cyclopenta[a]phenanthren-3-yl] acetate",
+      "formula": "C35H60N2O4+2"
+    },
+    {
+      "stitch_id": "CID000004730",
+      "pubchem_cid": 4730,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3,3-Dimethyl-7-oxo-6-[(2-phenoxyacetyl)amino]-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate",
+      "formula": "C16H17N2O5S-"
+    },
+    {
+      "stitch_id": "CID000004834",
+      "pubchem_cid": 4834,
+      "status": "ok",
+      "flags": "charged",
+      "title": "6-{[{[(4-Ethyl-2,3-dioxopiperazin-1-yl)carbonyl]amino}(phenyl)acetyl]amino}-3,3-dimethyl-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate",
+      "formula": "C23H26N5O7S-"
+    },
+    {
+      "stitch_id": "CID000004873",
+      "pubchem_cid": 4873,
+      "status": "ok",
+      "flags": "multi_component,tiny",
+      "title": "Potassium Chloride",
+      "formula": "ClK"
+    },
+    {
+      "stitch_id": "CID000004991",
+      "pubchem_cid": 4991,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Pyridostigmine",
+      "formula": "C9H13N2O2+"
+    },
+    {
+      "stitch_id": "CID000005234",
+      "pubchem_cid": 5234,
+      "status": "ok",
+      "flags": "multi_component,tiny",
+      "title": "Sodium Chloride",
+      "formula": "ClNa"
+    },
+    {
+      "stitch_id": "CID000005596",
+      "pubchem_cid": 5596,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Trosec",
+      "formula": "C25H30NO3+"
+    },
+    {
+      "stitch_id": "CID000008953",
+      "pubchem_cid": 8953,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": null,
+      "formula": "CHNaO3"
+    },
+    {
+      "stitch_id": "CID000009433",
+      "pubchem_cid": 9433,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Aminophylline",
+      "formula": "C16H24N10O4"
+    },
+    {
+      "stitch_id": "CID000014888",
+      "pubchem_cid": 14888,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Arsenic Trioxide",
+      "formula": "As2O3"
+    },
+    {
+      "stitch_id": "CID000024011",
+      "pubchem_cid": 24011,
+      "status": "ok",
+      "flags": "tiny",
+      "title": "Selenium sulfide (SeS)",
+      "formula": "SSe"
+    },
+    {
+      "stitch_id": "CID000024486",
+      "pubchem_cid": 24486,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Calcium chloride 6-hydrate",
+      "formula": "CaCl2H12O6"
+    },
+    {
+      "stitch_id": "CID000028112",
+      "pubchem_cid": 28112,
+      "status": "ok",
+      "flags": "multi_component,tiny",
+      "title": "Lithium aluminum hydride",
+      "formula": "AlH4Li"
+    },
+    {
+      "stitch_id": "CID000038904",
+      "pubchem_cid": 38904,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Azane;cyclobutane-1,1-dicarboxylic acid;platinum",
+      "formula": "C6H14N2O4Pt"
+    },
+    {
+      "stitch_id": "CID000039765",
+      "pubchem_cid": 39765,
+      "status": "ok",
+      "flags": "charged",
+      "title": "Vecuronium",
+      "formula": "C34H57N2O4+"
+    },
+    {
+      "stitch_id": "CID000047320",
+      "pubchem_cid": 47320,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Atracurium Besylate",
+      "formula": "C65H82N2O18S2"
+    },
+    {
+      "stitch_id": "CID000060696",
+      "pubchem_cid": 60696,
+      "status": "ok",
+      "flags": "charged",
+      "title": "[(2S,3S,10S,13S,16S,17R)-3-hydroxy-10,13-dimethyl-2-morpholin-4-yl-16-(1-prop-2-enylpyrrolidin-1-ium-1-yl)-2,3,4,5,6,7,8,9,11,12,14,15,16,17-tetradecahydro-1H-cyclopenta[a]phenanthren-17-yl] acetate",
+      "formula": "C32H53N2O4+"
+    },
+    {
+      "stitch_id": "CID000060754",
+      "pubchem_cid": 60754,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Omniscan",
+      "formula": "C16H28GdN5O9"
+    },
+    {
+      "stitch_id": "CID000060831",
+      "pubchem_cid": 60831,
+      "status": "ok",
+      "flags": "charged",
+      "title": "7-{[Hydroxydi(thiophen-2-yl)acetyl]oxy}-9,9-dimethyl-3-oxa-9-azatricyclo[3.3.1.0~2,4~]nonan-9-ium",
+      "formula": "C19H22NO4S2+"
+    },
+    {
+      "stitch_id": "CID000072467",
+      "pubchem_cid": 72467,
+      "status": "ok",
+      "flags": "charged",
+      "title": "3-[[2-[2-[2-[[2-[[4-[[2-[[6-amino-2-[3-amino-1-[(2,3-diamino-3-oxopropyl)amino]-3-oxopropyl]-5-methylpyrimidine-4-carbonyl]amino]-3-[(2R,3S,4S,5S,6S)-3-[(2R,3S,4S,5R,6R)-4-carbamoyloxy-3,5-dihydroxy-6-(hydroxymethyl)oxan-2-yl]oxy-4,5-dihydroxy-6-(hydroxymethyl)oxan-2-yl]oxy-3-(1H-imidazol-5-yl)propanoyl]amino]-3-hydroxy-2-methylpentanoyl]amino]-3-hydroxybutanoyl]amino]ethyl]-1,3-thiazol-4-yl]-1,3-thiazole-4-carbonyl]amino]propyl-dimethylsulfanium",
+      "formula": "C55H84N17O21S3+"
+    },
+    {
+      "stitch_id": "CID000145068",
+      "pubchem_cid": 145068,
+      "status": "ok",
+      "flags": "tiny",
+      "title": "Nitric Oxide",
+      "formula": "NO"
+    },
+    {
+      "stitch_id": "CID000160051",
+      "pubchem_cid": 160051,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "2-(chloromethyl)oxirane;prop-2-en-1-amine;N-prop-2-enyldecan-1-amine;trimethyl-[6-(prop-2-enylamino)hexyl]azanium;chloride;hydrochloride",
+      "formula": "C31H67Cl3N4O"
+    },
+    {
+      "stitch_id": "CID000176168",
+      "pubchem_cid": 176168,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Lanthanum carbonate--water (2/3/1)",
+      "formula": "C3H2La2O10"
+    },
+    {
+      "stitch_id": "CID000444013",
+      "pubchem_cid": 444013,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Gadoversetamide",
+      "formula": "C20H34GdN5O10"
+    },
+    {
+      "stitch_id": "CID003081884",
+      "pubchem_cid": 3081884,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Glatiramer (acetate)",
+      "formula": "C25H45N5O13"
+    },
+    {
+      "stitch_id": "CID003085017",
+      "pubchem_cid": 3085017,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "2-(Chloromethyl)oxirane; prop-2-en-1-amine",
+      "formula": "C6H12ClNO"
+    },
+    {
+      "stitch_id": "CID004479097",
+      "pubchem_cid": 4479097,
+      "status": "ok",
+      "flags": "multi_component,charged",
+      "title": "cobalt;[5-(5,6-dimethylbenzimidazol-1-yl)-4-hydroxy-2-(hydroxymethyl)oxolan-3-yl] 1-[3-[2,13,18-tris(2-amino-2-oxoethyl)-7,12,17-tris(3-amino-3-oxopropyl)-3,5,8,8,13,15,18,19-octamethyl-2,7,12,17-tetrahydro-1H-corrin-21-id-3-yl]propanoylamino]propan-2-yl phosphate;hydrate",
+      "formula": "C62H90CoN13O15P-2"
+    },
+    {
+      "stitch_id": "CID006398525",
+      "pubchem_cid": 6398525,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "CID 6398525",
+      "formula": "C11H60Al9O55S8"
+    },
+    {
+      "stitch_id": "CID006435110",
+      "pubchem_cid": 6435110,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Ivermectin (USAN:USP:INN:BAN)",
+      "formula": "C95H146O28"
+    },
+    {
+      "stitch_id": "CID006918453",
+      "pubchem_cid": 6918453,
+      "status": "ok",
+      "flags": "multi_component",
+      "title": "Ridauran",
+      "formula": "C20H34AuO9PS"
+    }
+  ]
+}

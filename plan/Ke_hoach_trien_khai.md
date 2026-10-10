@@ -332,7 +332,8 @@ Cả nhóm cùng chấm bộ giải thích, để tránh tình trạng một ng�
 - [ ] Gặp giảng viên, trình bày bảng ở mục 3.1 và đề xuất đổi phạm vi.
 - [ ] Sửa các link sai trong `docs/literature/literature-review.xlsx` (danh sách ở mục 14 báo cáo đánh giá).
 - [ ] Chốt giao thức đánh giá ở mục 5.1 (vocabulary, tập cặp, nhãn chưa quan sát, quyền đọc dữ liệu của từng chế độ).
-- [ ] **GĐ1a, làm ngay song song:** dựng `src/` và môi trường; ETL chỉ đọc, manifest, schema, kiểm tra chất lượng dữ liệu; đo độ phủ cấu trúc phân tử qua PubChem.
+- [x] **GĐ1a, làm ngay song song:** dựng `src/` và môi trường; ETL chỉ đọc, manifest, schema, kiểm tra chất lượng dữ liệu; đo độ phủ cấu trúc phân tử qua PubChem. *(Xong 2026-10-10: QA 32/32; cấu trúc 645/645, 58 thuốc cần xem tay. B1 không bị chặn bởi độ phủ cấu trúc.)*
+- [ ] Xem tay nhóm thuốc vô cơ/ion bị gắn cờ trong `structure_coverage.json` và quyết định giữ, đánh dấu hay loại khỏi B1.
 - [ ] Chỉ đóng băng split (GĐ1b) sau khi hai mục trên đã chốt.
 - [ ] Cập nhật `CLAUDE.md` và file này sau khi chốt.
 
@@ -342,5 +343,6 @@ Cả nhóm cùng chấm bộ giải thích, để tránh tình trạng một ng�
 
 | Ngày | Thay đổi |
 |---|---|
+| 2026-10-10 | GĐ1a hoàn thành. Độ phủ cấu trúc 100% nên rủi ro "thiếu cấu trúc cho B1" giảm; vẫn đề xuất B2 trước vì đơn giản hơn, B1 có thể làm ngay sau. |
 | 2026-10-10 | Sửa theo review: thêm mục 5.1 (giao thức đánh giá chung, xử lý nhãn chưa quan sát, vocabulary cố định); tách GĐ1a (chạy song song GĐ0) và GĐ1b (cách ly hai chế độ, 4 test rò rỉ); thêm bước mapping cấu trúc cho B1; mốc bắt buộc là B0 + một trong B1/B2 (đề xuất B2 trước); GĐ4 giữ `status = dự đoán`, cổng đo claim support và coverage; tách thiếu target khỏi ngoài vocabulary; sửa lập luận về độ phủ của A theo số đo mới (đơn 3 thuốc: 57% có ≥1 cặp có nhãn). |
 | 2026-10-10 | Tạo kế hoạch đầu tiên, tổng hợp từ Report 1/method và báo cáo đánh giá 08/10 cùng phần kiểm chứng 10/10. Toàn bộ ở trạng thái đề xuất. |

@@ -12,7 +12,7 @@ DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đ
 
 _Cập nhật lần cuối: 2026-10-10_
 
-- **Giai đoạn:** ý tưởng / chốt phạm vi. `src/` chưa có mã triển khai: chưa có pipeline, mô hình, test hay môi trường khóa phiên bản.
+- **Giai đoạn:** GĐ0 (chốt phạm vi) đang chờ nhóm và giảng viên; **GĐ1a đã xong** trên nhánh `gd1a-data-foundation`: môi trường khóa phiên bản, ETL, QA (32/32 kiểm tra đạt), mapping cấu trúc. Chưa có vocabulary, split, data view, mô hình.
 - **Hướng đang nghiêng về:** phương án B, với A là mốc đầu tiên (chi tiết ở mục 8 và 15 của báo cáo đánh giá). Lộ trình theo giai đoạn GĐ0–GĐ6, kèm cổng chuyển giai đoạn và lý do, nằm ở `plan/Ke_hoach_trien_khai.md`; hiện đang ở **GĐ0 (chốt phạm vi)**; GĐ1a (môi trường, ETL chỉ đọc, manifest, QA, độ phủ cấu trúc) được phép làm song song. **Chưa đóng băng split** cho tới khi giao thức đánh giá ở mục 5.1 của file plan được chốt.
   - A: tra cứu và tổng hợp bằng chứng tương tác đã ghi nhận cho đơn thuốc.
   - B: mô hình dự đoán nhẹ theo **cặp thuốc** (đa nhãn tác dụng phụ), cộng giải thích có nguồn; đơn nhiều thuốc được tổng hợp từ các cặp.
@@ -30,6 +30,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-10 | Hoàn thành GĐ1a: package `dsp391m` (etl, quality, structures), `.venv` + `requirements.txt`, test pytest; Parquet không commit, manifest/QA/cache PubChem được commit | Bắt đầu nền dữ liệu song song GĐ0 như kế hoạch cho phép | Đã làm |
 | 2026-10-10 | Sửa kế hoạch theo review: thêm giao thức đánh giá chung (mục 5.1), cách ly hai chế độ ở tầng dữ liệu, mapping cấu trúc cho B1, mốc bắt buộc B0 + một trong B1/B2; GĐ1a (ETL, manifest, QA) được chạy song song GĐ0 | Tránh bảng metric không so sánh được và rò rỉ nhãn qua lookup/cache | Đề xuất, chưa chốt |
 | 2026-10-10 | Tạo `plan/Ke_hoach_trien_khai.md`: lộ trình A → B theo giai đoạn GĐ0–GĐ6, một nhánh mở rộng tùy chọn | Gom ý tưởng ban đầu và phân tích thành lộ trình có thứ tự và lý do | Đề xuất, chưa chốt |
 | 2026-10-10 | Sắp xếp lại repo thành `data/`, `docs/`, `analysis/` và `src/`; thêm `README.md` hướng dẫn nhanh | Tách dữ liệu gốc, tài liệu nộp và hồ sơ phân tích để dễ tìm; cập nhật script và lệnh theo đường dẫn mới | Đã làm |
@@ -49,13 +50,29 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
   - `sources/`: nguồn tải thêm (Decagon mono, targets-all, HODDI v1 tại commit `700d0da…`) và bản text của các báo cáo/literature review để đọc nhanh.
   - `qa/`: bản PDF và ảnh trang được render để kiểm tra bố cục tài liệu.
 - `plan/Ke_hoach_trien_khai.md`: kế hoạch triển khai sống (lộ trình, giai đoạn, cổng, lịch, các chỗ cần sửa trong báo cáo nộp).
-- `src/`: vị trí dự kiến cho mã triển khai; hiện chỉ có ghi chú cấu trúc.
+- `src/dsp391m/`: package triển khai (xem `src/README.md`). `paths.py` giữ mọi đường dẫn chuẩn và tên snapshot (`decagon_v1`).
+- `data/processed/decagon_v1/`: đầu ra ETL. File `*.parquet` bị gitignore (sinh lại được); `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
+- `data/external/pubchem/`: cache nguyên văn phản hồi PubChem, được commit để chạy lại ở chế độ `--offline`.
+- `tests/`: pytest; test đánh dấu `slow` chạy trên dữ liệu thật.
 
 ## Lệnh
 
-Môi trường hiện dùng: Python 3.12, pandas 2.2, numpy 1.26 (chưa có requirements hay virtualenv khóa phiên bản). `build_report.py` cần thêm `python-docx`.
+Môi trường: Python 3.12 trong `.venv` của dự án, phiên bản khóa trong `requirements.txt` (có RDKit). `build_report.py` cần thêm `python-docx`.
 
 ```bash
+# Cài đặt lần đầu
+python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e .
+
+# GĐ1a: ETL -> QA -> mapping cấu trúc (chạy theo thứ tự; QA thoát mã 1 nếu có kiểm tra thất bại)
+.venv/bin/python -m dsp391m.etl
+.venv/bin/python -m dsp391m.quality
+.venv/bin/python -m dsp391m.structures --offline   # bỏ --offline để gọi PubChem khi thiếu cache
+
+# Test: nhanh (mặc định), trên dữ liệu thật, hoặc một test
+.venv/bin/pytest
+.venv/bin/pytest -m slow
+.venv/bin/pytest tests/test_etl.py::test_tables_are_canonical
+
 # Kiểm toán lại dữ liệu Decagon gốc (quét toàn bộ combo ~233 MB, mất vài chục giây)
 python3 analysis/2026-10-08/audit_data.py
 # Kiểm toán nguồn bổ sung (cần drug_target_coverage.csv do audit_data.py sinh ra)
@@ -66,7 +83,7 @@ python3 analysis/2026-10-08/probe_hoddi_shortcut.py
 python3 analysis/2026-10-08/build_report.py
 ```
 
-Các script dùng `Path(__file__)` nên chạy được từ bất kỳ thư mục nào. Chưa có lệnh build, lint hay test cho `src/`; bổ sung vào đây khi có.
+Các script trong `analysis/` dùng `Path(__file__)` nên chạy được từ bất kỳ thư mục nào. Chưa có linter. Khi logic ETL thay đổi kết quả, đổi `SNAPSHOT` trong `paths.py` thay vì ghi đè snapshot cũ; nếu đổi số đếm kỳ vọng, sửa `EXPECTED` trong `quality.py` cùng mục *Sự thật về dữ liệu* bên dưới.
 
 ## Sự thật về dữ liệu (đã kiểm chứng trên snapshot trong `data/decagon/`)
 
@@ -76,6 +93,7 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **targets:** chỉ **284/645** thuốc của combo có target. Trung vị 11 target mỗi thuốc, nhưng `CID000000271` (calcium cation) có 2.840 target. File `targets-all` chính thức cũng không tăng độ phủ này.
 - **ppi:** 715.612 cạnh không hướng, 19.081 gene; bậc trung vị 33, lớn nhất 2.519. Cạnh không có dấu (kích hoạt/ức chế) và gồm cả liên hệ chức năng, nên không gọi chung là "tương tác vật lý trực tiếp".
 - Bộ 3 thuốc ngẫu nhiên: khoảng 8,6% có đủ target cho cả 3 thuốc. Về nhãn theo cặp: 57% có ít nhất một cặp có nhãn, 43% không cặp nào có nhãn, khoảng 10% có nhãn cho cả 3 cặp. Với đơn 5 thuốc: 86% có ít nhất một cặp có nhãn. (Đo ngày 2026-10-10, 5.000 mẫu, seed 391.) Tra cứu theo cặp chỉ phủ một phần; nhánh cơ chế thiếu dữ liệu ở đa số truy vấn.
+- **Cấu trúc phân tử** (PubChem, 2026-10-10): 645/645 thuốc combo có SMILES và RDKit tạo được Morgan fingerprint. 58 thuốc bị gắn cờ (`charged`, `multi_component`, `tiny`): phần lớn là dạng ion hóa hợp lệ của thuốc (penicillin dạng carboxylate, amoni bậc 4), nhưng có nhóm cần xem tay vì không phải hoạt chất đặc hiệu (calcium cation, NaCl, KCl, sulfate ion, nitric oxide, lithium aluminum hydride, CID 6398525). Không có InChIKey trùng. Danh sách đầy đủ trong `data/processed/decagon_v1/structure_coverage.json`.
 - Tên tác dụng phụ có lỗi chính tả (ví dụ "neumonia"). Dùng CUI làm khóa và giữ tên gốc để truy vết.
 - Nạp combo bằng `dtype='category'` để tiết kiệm RAM. Không dựng toàn bộ 4,6 triệu cạnh thành object NetworkX; dùng bảng tra cứu hoặc ma trận thưa.
 

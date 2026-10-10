@@ -1,0 +1,222 @@
+{
+  "snapshot": "decagon_v1",
+  "checked_at": "2026-10-10T09:44:18+00:00",
+  "verified_snapshot": true,
+  "passed": true,
+  "measured": {
+    "pair_label_rows": 4649441,
+    "combo_drugs": 645,
+    "labeled_pairs": 63473,
+    "effects": 1317,
+    "effects_at_least_500_rows": 963,
+    "rows_in_effects_at_least_500": 4576287,
+    "combo_drugs_with_targets": 284,
+    "drug_target_rows": 18690,
+    "target_genes": 3648,
+    "target_genes_not_in_ppi": 8,
+    "ppi_edges": 715612,
+    "ppi_genes": 19081,
+    "labels_per_pair_median": 53.0,
+    "labels_per_pair_max": 540,
+    "ppi_degree_median": 33.0,
+    "ppi_degree_max": 2519,
+    "targets_per_drug_max": 2840,
+    "possible_pairs": 207690
+  },
+  "checks": [
+    {
+      "group": "invariant",
+      "name": "drug_idx_is_0_to_n",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "stitch_id_unique",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "effect_idx_is_0_to_n",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "effect_cui_unique",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "effect_name_present",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "pairs_canonical_a_lt_b",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "pair_drugs_valid",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "pair_drugs_in_combo",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "pair_effects_valid",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "pair_labels_unique",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "effect_n_rows_consistent",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "targets_unique",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "targets_drug_valid",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "ppi_canonical_a_lt_b",
+      "ok": true
+    },
+    {
+      "group": "invariant",
+      "name": "ppi_unique",
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "pair_label_rows",
+      "value": 4649441,
+      "expected": 4649441,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "combo_drugs",
+      "value": 645,
+      "expected": 645,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "labeled_pairs",
+      "value": 63473,
+      "expected": 63473,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "effects",
+      "value": 1317,
+      "expected": 1317,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "effects_at_least_500_rows",
+      "value": 963,
+      "expected": 963,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "rows_in_effects_at_least_500",
+      "value": 4576287,
+      "expected": 4576287,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "combo_drugs_with_targets",
+      "value": 284,
+      "expected": 284,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "drug_target_rows",
+      "value": 18690,
+      "expected": 18690,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "target_genes",
+      "value": 3648,
+      "expected": 3648,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "target_genes_not_in_ppi",
+      "value": 8,
+      "expected": 8,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "ppi_edges",
+      "value": 715612,
+      "expected": 715612,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "ppi_genes",
+      "value": 19081,
+      "expected": 19081,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "labels_per_pair_median",
+      "value": 53.0,
+      "expected": 53,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "labels_per_pair_max",
+      "value": 540,
+      "expected": 540,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "ppi_degree_median",
+      "value": 33.0,
+      "expected": 33,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "ppi_degree_max",
+      "value": 2519,
+      "expected": 2519,
+      "ok": true
+    },
+    {
+      "group": "expected",
+      "name": "targets_per_drug_max",
+      "value": 2840,
+      "expected": 2840,
+      "ok": true
+    }
+  ]
+}

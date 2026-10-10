@@ -1,0 +1,7 @@
+# Python 3.12. Cài: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e .
+pandas==2.2.2
+numpy==1.26.4
+pyarrow==17.0.0
+requests==2.32.3
+rdkit==2024.3.5
+pytest==8.3.3

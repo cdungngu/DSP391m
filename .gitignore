@@ -12,3 +12,8 @@ venv/
 .env
 .env.*
 !.env.example
+*.egg-info/
+.pytest_cache/
+
+# Dữ liệu đã xử lý: sinh lại bằng `python -m dsp391m.etl`; chỉ commit manifest và báo cáo kiểm tra
+data/processed/**/*.parquet

@@ -1,0 +1,55 @@
+{
+  "snapshot": "decagon_v1",
+  "created_at": "2026-10-10T09:44:10+00:00",
+  "git_commit": "8563ce6e90116ded2d81cbb822f2036593b89658",
+  "raw": {
+    "combo": {
+      "file": "bio-decagon-combo.csv",
+      "sha256": "60bd3d071345473236f56638ebb732c3c964f0fd3468fdd29a444bcc1bf80d35"
+    },
+    "targets": {
+      "file": "bio-decagon-targets.csv",
+      "sha256": "dd7ca7ecbe4026c6be15c043d9214ec30ad36db32b2ccceeae4091b3b9f1e564"
+    },
+    "ppi": {
+      "file": "bio-decagon-ppi.csv",
+      "sha256": "3665bf9b78b1d0a99c2504879eafad06cb4cf708aecbcac0c480e90e5e77027c"
+    }
+  },
+  "tables": {
+    "drugs": {
+      "file": "drugs.parquet",
+      "rows": 645,
+      "sha256": "188b64071bc6a9acf7bdb1587cad7fa86fdb13891f1ab372ab22fab3dee0ebb4"
+    },
+    "effects": {
+      "file": "effects.parquet",
+      "rows": 1317,
+      "sha256": "372791631334fe94c448ed9b66dc7896a9fda4e52ddc8ce2ba2fca3e39d2a221"
+    },
+    "pair_labels": {
+      "file": "pair_labels.parquet",
+      "rows": 4649441,
+      "sha256": "fb25f2508db2f4b1fbd51e95bd35f427e4946e26b45bd3d1a0c4bf39a96a8581"
+    },
+    "drug_targets": {
+      "file": "drug_targets.parquet",
+      "rows": 18690,
+      "sha256": "0308dbca35fe2d9348b016c8a9e39efaf792ce0a28a4058a06d5d1ef88748e67"
+    },
+    "ppi": {
+      "file": "ppi.parquet",
+      "rows": 715612,
+      "sha256": "2bab5aaa632eaf5a673397dd24887706ca76ae6a796641739b9813251c1f5149"
+    }
+  },
+  "etl_stats": {
+    "combo_self_rows_dropped": 0,
+    "combo_duplicate_or_reverse_rows_dropped": 0,
+    "effects_with_multiple_names": 0,
+    "target_duplicate_rows_dropped": 0,
+    "ppi_self_rows_dropped": 0,
+    "ppi_duplicate_or_reverse_rows_dropped": 0
+  },
+  "seconds": 10.0
+}
