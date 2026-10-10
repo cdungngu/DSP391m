@@ -1,0 +1,16 @@
+{
+  "note": "Pilot split 80/20 by pair, seed 0; NOT the official split. Full-matrix evaluation.",
+  "test_pairs": 12694,
+  "labels": 963,
+  "positive_rate": 0.07445631749556335,
+  "popularity": {
+    "macro_ap": 0.07445631749556335,
+    "macro_auroc": 0.5,
+    "micro_ap": 0.2264912353210067
+  },
+  "b0_per_drug_sum": {
+    "macro_ap": 0.2701062996786754,
+    "macro_auroc": 0.8368162979425939,
+    "micro_ap": 0.35058980790195526
+  }
+}

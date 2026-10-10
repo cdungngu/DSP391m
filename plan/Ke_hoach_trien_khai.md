@@ -1,59 +1,63 @@
 # Kế hoạch triển khai dự án — lộ trình sau phân tích
 
-**DSP391m · Group 8** · _Cập nhật lần cuối: 2026-10-10_ · Trạng thái: **đề xuất, chưa chốt**
+**DSP391m · Group 8** · _Cập nhật lần cuối: 2026-10-10_ · Trạng thái: **đã chốt (v2)**, thay đổi tiếp theo ghi ở mục 13
 
 ## 0 Cách đọc file này
 
-File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tại sao**. Nó tổng hợp hai nguồn:
+File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tại sao**. Nó tổng hợp:
 
 - **Ý tưởng ban đầu** của nhóm: `docs/submission/Report_1_Introduction.docx`, `method_rp2.docx`, `report.pdf`.
-- **Phân tích và đánh giá** ngày 08/10, cùng phần kiểm chứng lại ngày 10/10: `analysis/2026-10-08/Bao_cao_danh_gia_huong_trien_khai.md`. Đây là nơi chứa bằng chứng chi tiết, số liệu và nguồn [S01–S34].
+- **Phân tích và đánh giá** ngày 08/10 cùng phần kiểm chứng ngày 10/10: `analysis/2026-10-08/Bao_cao_danh_gia_huong_trien_khai.md` (bằng chứng chi tiết, nguồn [S01–S34]).
+- **Các quyết định ngày 10/10** (mục 0.1) và thử nghiệm B0 (mục 4).
 
-Đây là **tài liệu sống**. Khi nhóm chốt hoặc đổi một quyết định, sửa file này và ghi vào *Nhật ký thay đổi* ở cuối. Trạng thái tổng của dự án và nhật ký quyết định nằm trong `CLAUDE.md`. Trong file này, mọi mục ghi **(đề xuất)** đều chưa được nhóm hoặc giảng viên xác nhận.
+Đây là **tài liệu sống**. Khi đổi quyết định, sửa file này và ghi vào mục 13. Trạng thái tổng của dự án nằm trong `CLAUDE.md`.
+
+### 0.1 Các quyết định đã chốt (2026-10-10)
+
+| # | Quyết định | Nguồn |
+|---|---|---|
+| Q1 | Coi đây là **dự án thật, không phải môn học**: không có cổng duyệt của giảng viên; đích là sản phẩm dùng được và đánh giá trung thực | Người dùng |
+| Q2 | Thời gian **6 tuần**. API LLM và GPU thuê ngoài khi cần, nên không phải ràng buộc cứng | Người dùng |
+| Q3 | **Chưa huấn luyện mô hình ở giai đoạn đầu.** Chỉ huấn luyện nếu phân tích chi phí–lợi ích cho thấy đáng (mục 4) | Người dùng; Claude phân tích |
+| Q4 | **Có người bên dược hỗ trợ**, nên nhánh nguồn cơ chế (D) được **nâng từ mở rộng lên lõi** | Người dùng |
+| Q5 | Giao thức đánh giá D1–D7 (mục 6.1), cách xử lý thuốc bị gắn cờ, quy trình git | Claude chốt theo ủy quyền của người dùng |
 
 ---
 
 ## 1 Tóm tắt một trang
 
-**Hướng đi chính (đề xuất):** làm **A trước, sau đó B**. Nếu còn thời gian thì làm **đúng một** hướng mở rộng.
+**Hướng đi:** xây sản phẩm **tra cứu và giải thích bằng chứng** (A) cộng **nguồn cơ chế có kiểm chứng của dược sĩ** (D) trước, **không huấn luyện mô hình**.
+
+- Phần dự đoán cho cặp chưa có dữ liệu dùng **B0**: đếm tần suất theo từng thuốc. B0 không cần huấn luyện, nhưng đã có tín hiệu thật (AUROC 0,84 trong thử nghiệm).
+- **Cuối tuần 3** có một cổng quyết định: chỉ huấn luyện B2 nếu đạt các tiêu chí ở mục 4.4.
 
 ```
- GĐ0 Chốt phạm vi ──► GĐ1 Nền dữ liệu ──► GĐ2 Mốc A ──► GĐ3 Baseline B ──► GĐ4 Giải thích ──► GĐ5 Đánh giá ──► GĐ6 Báo cáo
-  (trả lời 4 câu hỏi,   (ETL, split theo     (tra cứu       (dự đoán theo     (truy xuất có     (ablation,       (sửa claim,
-   hỏi giảng viên)       cặp, chống rò rỉ)    bằng chứng,    cặp: B0→B1→B2)    nguồn, verifier,  seed, latency)   demo)
-                                              demo sớm)                        abstain)
-        │                     │                   │                │
-     [cổng]                [cổng]              [cổng]           [cổng]
-  phạm vi được duyệt   giao thức đánh giá   demo chạy được,   B0 + một trong
-  (GĐ1 ETL được chạy   đã chốt; không giao  báo đúng phần     B1/B2 tái lập
-   song song)          cặp; tách 2 chế độ   thiếu dữ liệu     qua 3 seed
-                                                                   │
-                                                                   └──► (tùy chọn, chọn MỘT) B3 GNN/TIP · cold-start · C HODDI · D nguồn cơ chế
+ Tuần 1            Tuần 2              Tuần 3                    │ Tuần 4               Tuần 5        Tuần 6
+ GĐ1b split +      GĐ2 demo tra cứu    GĐ4 giải thích: LLM +     │ Nhánh theo cổng M:   GĐ5 đánh giá  GĐ6 đóng gói
+ data view +       (evidence mode)     verifier + abstain;       │ (a) huấn luyện B2    với gold set  demo, báo cáo,
+ test rò rỉ        GĐ3 nguồn cơ chế    B0 cho cặp chưa có nhãn   │ (b) mở rộng bằng     của dược sĩ   data card
+ (GĐ1a đã xong)    (ChEMBL, DailyMed)  gold set v1 của dược sĩ   │     chứng, giao diện
+                                                         [CỔNG M]┘
 ```
-
-- **A — Tra cứu và tổng hợp bằng chứng cho đơn thuốc.** Với mỗi cặp thuốc trong đơn, lấy các tác dụng phụ đã ghi nhận, gộp lại và trình bày có nguồn.
-- **B — Dự đoán tác dụng phụ theo cặp bằng mô hình nhẹ, cộng giải thích có nguồn.** Đơn nhiều thuốc được tổng hợp từ các cặp.
 
 **Ba lý do chính:**
 
-1. **Dữ liệu Decagon chỉ có nhãn theo cặp.** Vì vậy không thể chứng minh "tác dụng phụ chỉ xuất hiện khi đủ cả 3 thuốc". Lời hứa nên là "dự đoán theo cặp, tổng hợp cho đơn".
-2. **Tra cứu thuần (A) chỉ phủ một phần các cặp trong đơn.** Chỉ 30,6% cặp thuốc có nhãn. Với đơn 3 thuốc ngẫu nhiên, 57% có ít nhất một cặp có nhãn, nhưng chỉ khoảng 10% có nhãn cho cả 3 cặp. A trả lời được phần đã ghi nhận; B bổ sung bài toán dự đoán cho các nhãn và cặp chưa quan sát. Việc B cần thiết đến mức nào còn phụ thuộc yêu cầu môn học (GĐ0) và kết quả thực nghiệm.
-3. **Nhánh suy luận cơ chế qua target/PPI thiếu dữ liệu.** Chỉ 284/645 thuốc có target, và chỉ khoảng 8,6% bộ 3 thuốc có đủ target. Nhánh này chỉ nên là *bằng chứng bổ sung khi có*, không phải xương sống của hệ thống.
+1. **Giá trị sản phẩm nằm ở bằng chứng, không nằm ở điểm số mô hình.** Nhãn Decagon là liên hệ thống kê từ báo cáo tự phát (FAERS/TWOSIDES) và rất chung chung (buồn nôn, thiếu máu...). Với người dùng là dược sĩ, một cảnh báo có nguồn (nhãn thuốc, cơ chế ChEMBL) đáng tin hơn một điểm dự đoán.
+2. **B0 đã cho tín hiệu dự đoán mà không cần huấn luyện.** Huấn luyện B2 tốn khoảng 1 tuần công. Lợi ích có thể có (AP còn xa mức trần) nhưng chưa biết lớn đến đâu. Vì vậy quyết định được hoãn tới khi có dữ liệu thật để cân nhắc (mục 4).
+3. **Có dược sĩ nên nhánh cơ chế (D) khả thi**, bù đúng điểm yếu lớn nhất của ý tưởng ban đầu: PPI không có dấu, 56% thuốc thiếu target, và LLM dễ bịa cơ chế.
 
 ---
 
 ## 2 Xuất phát điểm: ý tưởng ban đầu
 
-Report 1 và method đặt ra bốn trụ cột:
-
 | Trụ cột | Nội dung ban đầu |
 |---|---|
 | Graph RAG thuần | Truy xuất subgraph (drug → target → PPI → target → drug cùng cạnh tác dụng phụ đã biết), serialize thành text rồi đưa cho LLM. **Không huấn luyện mô hình**; GNN là future work. |
-| Đơn k ≥ 3 thuốc | Hứa dự đoán tác dụng phụ cho đơn từ 3 thuốc trở lên, xem đây là khoảng trống so với các phương pháp theo cặp. |
-| Ba Tier đầu ra | Tier 1: known pairwise. Tier 2: amplified (target chung của ≥3 thuốc). Tier 3: newly emergent (bridge PPI giữa hai thuốc, chưa có nhãn). |
-| LLM qua API | Một lần gọi API, ưu tiên độ trễ thấp; lấy DDI-GPT làm baseline tham chiếu. Cắt protein hub theo một ngưỡng bậc. |
+| Đơn k ≥ 3 thuốc | Hứa dự đoán tác dụng phụ cho đơn từ 3 thuốc trở lên. |
+| Ba Tier đầu ra | Tier 1: known pairwise. Tier 2: amplified (target chung của ≥3 thuốc). Tier 3: newly emergent (bridge PPI). |
+| LLM qua API | Một lần gọi API, ưu tiên độ trễ thấp; DDI-GPT làm baseline tham chiếu; cắt hub theo ngưỡng bậc. |
 
-Ý tưởng này **có định hướng tốt**: bài toán quan trọng, dữ liệu chuẩn, Graph RAG hợp lý, và việc kiểm tra path chống bịa đặt là một điểm hay. Vấn đề nằm ở chỗ **lời hứa vượt quá những gì dữ liệu cho phép chứng minh**.
+Ý tưởng này **có định hướng tốt**, và tinh thần "không huấn luyện, dùng truy xuất và LLM" **được giữ lại** ở v2. Vấn đề nằm ở chỗ **lời hứa vượt quá những gì dữ liệu cho phép chứng minh** (mục 3).
 
 ---
 
@@ -63,286 +67,274 @@ Report 1 và method đặt ra bốn trụ cột:
 
 | Phát hiện | Số liệu (đã kiểm chứng) | Hệ quả cho thiết kế |
 |---|---|---|
-| Nhãn chỉ có theo cặp | Mỗi cạnh combo nối đúng 2 thuốc | Không có nhãn để kiểm chứng tương tác bậc 3. Đổi lời hứa thành "theo cặp, tổng hợp cho đơn". |
-| Nhãn cặp rất thưa | 63.473 / 207.690 cặp có nhãn (30,6%); bộ 3 ngẫu nhiên: 57% có ≥1 cặp có nhãn, khoảng 10% có đủ cả 3 cặp | A chỉ phủ một phần: đơn 3 thuốc ngẫu nhiên có 57% trường hợp có ít nhất một cặp có nhãn (trung vị 24 dòng nhãn), nhưng chỉ khoảng 10% có đủ nhãn cho cả 3 cặp. B bổ sung phần dự đoán cho nhãn chưa quan sát. |
-| Thiếu target | 284/645 thuốc (44,0%) có target; `targets-all` không cải thiện | Nhánh cơ chế phải hỗ trợ trả về "chưa đủ bằng chứng". |
-| Tier 2 hầu như không kích hoạt | Đơn 3 thuốc: 8,6% có đủ target; 0,8% có target chung của ≥3 thuốc | Tier 2 không phải tính năng dùng được trên thực tế. |
-| Target bất thường | `CID000000271` (calcium cation) có 2.840 target | Cần xử lý ngoại lệ và giới hạn số path. |
-| PPI không có dấu | 715.612 cạnh, không có kích hoạt/ức chế; bậc trung vị 33, lớn nhất 2.519 | Một đường PPI không chứng minh được cơ chế; cắt hub cứng có thể làm mất protein quan trọng. |
-| Số liệu khác bài gốc | 1.317 nhãn (963 nhãn nếu lọc ≥500 dòng), 19.081 gene | Báo cáo phải ghi đúng snapshot đang dùng, không chép con số 964 / 19.085 của bài gốc. |
-| HODDI có shortcut | Một quy tắc chỉ dựa trên "thuốc đã thấy ở mẫu dương" đạt 86,9% accuracy (86,2% với 3–5 thuốc) | HODDI chưa dùng được làm đường chính; cần negative khó hơn. |
-| DDI-GPT khác bài toán | Theo bảng LR: phân loại nhị phân 63.437 cặp dương / âm (chưa xác minh toàn văn) | Không so trực tiếp với bài toán 963 nhãn. Baseline đúng là Decagon, TIP và tensor factorization. |
-| Literature review có lỗi | Nhiều link sai hoặc trỏ sang bài khác (mục 14 báo cáo đánh giá) | Sửa trước khi viết related work. |
+| Nhãn chỉ có theo cặp | Mỗi cạnh combo nối đúng 2 thuốc | Không kiểm chứng được tương tác bậc 3. Lời hứa là "theo cặp, tổng hợp cho đơn". |
+| Nhãn cặp thưa | 63.473 / 207.690 cặp có nhãn (30,6%). Đơn 3 thuốc ngẫu nhiên: 57% có ≥1 cặp có nhãn, khoảng 10% có đủ cả 3 cặp | Tra cứu chỉ phủ một phần. Cặp chưa có nhãn cần B0 (dự đoán) hoặc nguồn ngoài (D). |
+| Thiếu target | 284/645 thuốc (44,0%) có target | Cần nguồn cơ chế khác (ChEMBL), và trả về "chưa đủ bằng chứng cơ chế" khi vẫn thiếu. |
+| Tier 2 hầu như không kích hoạt | Đơn 3 thuốc: 8,6% có đủ target; 0,8% có target chung của ≥3 thuốc | Bỏ Tier 2. |
+| PPI không có dấu | 715.612 cạnh, không có kích hoạt/ức chế | PPI chỉ là bối cảnh; chiều tác động lấy từ ChEMBL `action_type`. |
+| Cấu trúc phân tử | 645/645 thuốc có SMILES và fingerprint; 58 thuốc bị gắn cờ | Không chặn mô hình nào; khoảng 10 chất vô cơ/ion cần dược sĩ xem (mục 6.1). |
+| Số liệu khác bài gốc | 1.317 nhãn (963 nhãn khi lọc ≥500 dòng), 19.081 gene | Ghi đúng snapshot, không chép 964 / 19.085. |
+| HODDI có shortcut | Quy tắc "thuốc đã thấy ở mẫu dương" đạt 86,9% accuracy | Không dùng HODDI. |
+| DDI-GPT khác bài toán | Phân loại nhị phân cặp (theo bảng LR) | Chỉ là related work. |
 
 ### 3.2 Giữ, sửa và bỏ so với ý tưởng ban đầu
 
 | | Thành phần | Ghi chú |
 |---|---|---|
-| **Giữ** | Graph RAG trên Decagon | Vẫn là phần giải thích của hệ thống |
-| **Giữ** | LLM qua API, một lần gọi | Thêm cache và đường trả kết quả theo template khi API lỗi |
+| **Giữ** | Không huấn luyện ở giai đoạn đầu | B0 là phép đếm; B2 chỉ làm nếu qua cổng M |
+| **Giữ** | Graph RAG + LLM qua API, một lần gọi | Thêm cache, template dự phòng, verifier |
 | **Giữ** | Giao diện nhận 3–5 thuốc | Ghi rõ là "tổng hợp theo cặp" |
-| **Giữ** | Kiểm tra path trong subgraph | Mở rộng thành verifier đầy đủ hơn (mục GĐ4) |
-| **Sửa** | Ba Tier | Thành hai trường độc lập: `status` (quan sát / dự đoán / thiếu dữ liệu) và `evidence_type` |
-| **Sửa** | Cắt hub theo ngưỡng cứng | Thành phạt mềm theo bậc, giới hạn số path, có ablation so sánh |
-| **Sửa** | "Không huấn luyện mô hình" | Thêm mô hình nhẹ theo cặp (B0–B2) |
-| **Sửa** | "Clinical decision-support" | Thành "research prototype" |
-| **Sửa** | "Low latency" | Thành mục tiêu cần đo (p95) |
-| **Sửa** | DDI-GPT làm baseline | Chuyển thành related work; baseline là các mô hình cùng bài toán |
-| **Bỏ** | "Amplified effect", "arising only from the combined regimen" | Dữ liệu không thể chứng minh |
+| **Giữ** | Kiểm tra path | Mở rộng thành verifier đầy đủ |
+| **Sửa** | Ba Tier | Thành `status` (quan sát / dự đoán / thiếu dữ liệu) + `evidence_type` |
+| **Sửa** | Cơ chế chỉ dựa trên target/PPI | Thêm ChEMBL (chiều tác động) và DailyMed (đoạn nhãn thuốc), dược sĩ kiểm tra |
+| **Sửa** | Cắt hub theo ngưỡng cứng | Phạt mềm theo bậc, giới hạn số path |
+| **Sửa** | "Clinical decision-support", "low latency" | "Research prototype"; latency là mục tiêu cần đo |
+| **Bỏ** | "Amplified", "arising only from the combined regimen"; HODDI; GNN | Không chứng minh được, hoặc không đáng công trong 6 tuần |
 
 ---
 
-## 4 Các hướng có thể đi và lý do chọn
+## 4 Có nên huấn luyện mô hình không? — phân tích chi phí và lợi ích
 
-| Hướng | Làm gì | Chứng minh được | **Không** chứng minh được | Chi phí | Khi nào chọn |
-|---|---|---|---|---|---|
-| **A** Tra cứu bằng chứng | Lookup cạnh đã biết theo cặp, gộp cho đơn, LLM/template tóm tắt có nguồn | Truy xuất đúng, đầy đủ, giải thích trung thực | Dự đoán cái chưa biết | Thấp (CPU + API) | Luôn làm, là **mốc đầu tiên** |
-| **B** Dự đoán theo cặp + giải thích | Mô hình nhẹ xếp hạng 963 nhãn cho cặp chưa thấy; giải thích có nguồn | Dự đoán trên nhãn giữ lại, có baseline và metric | Tương tác bậc cao, nhân quả | Trung bình (CPU, có thể thêm 1 GPU) | **Hướng chính** đề xuất |
-| **C** Tổ hợp 3–5 thuốc trên HODDI | Mô hình tập hợp (DeepSets...) với negative khó và split theo thời gian | Liên hệ tổ hợp với biến cố được báo cáo | Hiệp đồng dược lý | Cao (làm sạch, negative, split) | Chỉ khi có thêm thời gian và muốn trọng tâm nghiên cứu |
-| **D** Suy luận cơ chế có giới hạn | Thêm ChEMBL/DailyMed để có chiều tác động, áp dụng cho danh mục thuốc nhỏ | Giải thích sâu hơn | Phủ rộng | Cao (cần người đọc dược học) | Khi có người kiểm tra chuyên môn |
-| **E** GNN lớn + nhiều LLM agent | Pipeline nghiên cứu phức tạp | — | Khó truy nguyên lỗi | Rất cao | Không nên làm ở đồ án này |
+### 4.1 Thử nghiệm B0 (2026-10-10)
 
-**Kết luận (đề xuất): B, với A làm mốc đầu.**
+Đây là phép thử **tạm thời** trên một lần chia 80/20 theo cặp (seed 0), **không** phải split chính thức. Chấm trên toàn bộ 963 nhãn cho 12.694 cặp test; tỷ lệ dương 7,45%.
 
-- **Vì sao A trước:** rẻ, có demo sớm, và là phương án dự phòng nếu B trễ. Khung đầu ra của A (schema, tổng hợp theo cặp, trình bày nguồn) được B dùng lại nguyên vẹn.
-- **Vì sao không dừng ở A:** A có độ phủ không đầy đủ trên các cặp trong đơn (khoảng 69% cặp không có nhãn) và chỉ trả lời được những gì đã ghi nhận. B bổ sung một bài toán dự đoán nhãn chưa quan sát, có nhãn, baseline và metric. Mức độ cần thiết của B còn phụ thuộc yêu cầu môn học (GĐ0); nếu môn học không đòi hỏi huấn luyện, A cộng phần đánh giá giải thích vẫn là một đồ án hợp lệ.
-- **Vì sao B chứ không phải C:** B có nhãn sạch, baseline đã có trong văn liệu, và chạy được trên CPU. C có rủi ro dữ liệu đã được đo (shortcut 86%), nên chỉ nên là nhánh phụ có cổng dừng rõ ràng.
+| Phương pháp | Huấn luyện? | Macro AP | Macro AUROC | Micro AP |
+|---|---|---|---|---|
+| Độ phổ biến của nhãn (giống nhau cho mọi cặp) | Không | 0,074 | 0,500 | 0,226 |
+| **B0: `f(A,e) + f(B,e)`**, với f là tỷ lệ cặp train của thuốc có nhãn e | **Không**, chỉ đếm | **0,270** | **0,837** | **0,351** |
+
+**Đọc kết quả:**
+
+- B0 đã có tín hiệu thật mà không cần huấn luyện: AUROC 0,84, AP gấp 3,6 lần mức ngẫu nhiên.
+- AP 0,27 còn xa mức trần, nên một mô hình học **có thể** cải thiện, nhưng không biết được bao nhiêu nếu chưa thử.
+- Tensor factorization báo AUROC 0,978 [S04] nhưng đo trên random edge split với mẫu âm lấy mẫu, nên **không so trực tiếp** được với con số trên.
+
+### 4.2 Chi phí và lợi ích của từng lựa chọn
+
+Công sức là **ước lượng**, chưa đo.
+
+| Lựa chọn | Công sức | Tài nguyên | Lợi ích kỳ vọng | Giá trị cho sản phẩm |
+|---|---|---|---|---|
+| **B0** (đếm) | 0,5–1 ngày công | CPU, vài giây | Đã đo: AUROC 0,84 | Có điểm "dự đoán" cho cặp chưa có nhãn, và bằng chứng mức thuốc dễ giải thích ("A đi cùng e trong X% cặp") |
+| **B2** DistMult/SimplE | 4–6 ngày công (lấy mẫu âm, train, tune, 3 seed) | CPU đủ; GPU giúp nhanh hơn | Chưa biết. Có thể tăng AP; đã được chứng minh mạnh trên random split | Xếp hạng tốt hơn, nhưng **khó giải thích**: embedding không cho lý do; vẫn chỉ là liên hệ thống kê |
+| B1 fingerprint + logistic | 3–4 ngày công | CPU | Chưa biết; cho phép thuốc mới (cold-start) | Chỉ có giá trị nếu sản phẩm cần thuốc ngoài 645 thuốc |
+| GNN/TIP | 1,5–2 tuần công | GPU | Biên lợi ích nhỏ so với B2 (theo văn liệu) | Thấp |
+| A + D (không huấn luyện) | Khoảng 2,5 tuần công | CPU + API | Bằng chứng có nguồn, cơ chế có chiều tác động | **Cao nhất**: dược sĩ dùng và kiểm chứng được |
+
+### 4.3 Kết luận
+
+**Chưa huấn luyện ở tuần 1–3.** Ba lý do:
+
+- (1) B0 đã đủ làm tín hiệu "dự đoán" ban đầu.
+- (2) Phần giá trị nhất của sản phẩm (bằng chứng và cơ chế) không phụ thuộc vào mô hình.
+- (3) Lợi ích của B2 chưa biết và chỉ là thống kê, trong khi chi phí khoảng một tuần công.
+
+Quyết định huấn luyện được đặt ở **cổng M** cuối tuần 3, khi đã có dữ liệu thật để cân nhắc.
+
+### 4.4 Cổng M (cuối tuần 3) — điều kiện để huấn luyện B2
+
+Chỉ huấn luyện B2 ở tuần 4 khi **cả ba** điều kiện đều đạt:
+
+1. **Lõi sản phẩm đúng tiến độ:** GĐ2, GĐ3 và GĐ4 đã qua cổng.
+2. **Dự đoán thật sự được dùng:** dược sĩ xem top-10 dự đoán B0 của khoảng 20 cặp chưa có nhãn, và đánh giá rằng dự đoán có ích nhưng xếp hạng chưa tốt. Nếu dược sĩ thấy dự đoán thống kê không hữu ích dù xếp hạng tốt hơn, thì huấn luyện không đáng.
+3. **Có khoảng 5 ngày công rảnh** ở tuần 4 mà không làm trễ GĐ5.
+
+**Nếu làm B2:** chỉ giữ B2 khi nó vượt B0 về macro AP trên **val** ít nhất **+0,02**, nhất quán qua 3 seed. Nếu không, giữ B0. Đây cũng là một kết quả đáng báo cáo.
+
+**Nếu không làm B2:** tuần 4 dùng để mở rộng bằng chứng (thêm thuốc vào danh mục demo, thêm phần nhãn DailyMed) và làm giao diện.
 
 ---
 
-## 5 Lộ trình theo giai đoạn
+## 5 Các hướng và lựa chọn
 
-Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước đã đạt. Thứ tự này được chọn để **phần nào phụ thuộc thì làm sau, phần nào làm sai sẽ hỏng mọi thứ thì làm trước**. Ngoại lệ duy nhất: **GĐ1a được chạy song song với GĐ0**, vì nó không phụ thuộc vào quyết định phạm vi.
-
-### GĐ0 — Chốt phạm vi
-
-- **Mục tiêu:** biết chắc nhóm được phép và cần làm gì.
-- **Việc chính:**
-  1. Trả lời 4 câu hỏi mở: môn học có bắt buộc huấn luyện mô hình không; thời gian, phần cứng và ngân sách API; Report 1 đã nộp chưa; có người kiểm tra nội dung dược học không.
-  2. Trình bày với giảng viên việc điều chỉnh phạm vi, kèm các số liệu ở mục 3.1.
-  3. Chốt **giao thức đánh giá** ở mục 5.1. Phần này phải xong trước khi đóng băng split (GĐ1b).
-- **Vì sao đứng đầu:** câu trả lời quyết định làm B hay chỉ làm A, và có cần sửa Report 1 không.
-- **Sản phẩm:** dòng quyết định trong `CLAUDE.md`; cập nhật trạng thái của file này.
-- **Cổng:** phạm vi được nhóm và giảng viên chấp nhận; mục 5.1 chuyển từ "đề xuất" sang "đã chốt".
-
-### 5.1 Giao thức đánh giá — chốt trước khi đóng băng split
-
-Đây là các mặc định **(đề xuất)**. Mục đích là để B0, B1 và B2 được chấm trên **cùng một** tập và cùng một quy tắc; nếu không, bảng AP/AUROC sẽ không so sánh được.
-
-| Quyết định | Đề xuất | Lý do |
+| Hướng | Vai trò trong v2 | Lý do |
 |---|---|---|
-| Vocabulary nhãn | **Danh sách cố định 963 nhãn** (≥500 dòng trên toàn snapshot), chốt và lưu thành file trước khi split. Báo cáo thêm, ở dạng phân tích độ nhạy, số nhãn khi áp ngưỡng chỉ trên train | Trùng quy ước của Decagon và tensor factorization nên so sánh được với văn liệu. Danh sách chỉ dùng tần suất nhãn, không dùng danh tính cặp test; phải công bố rõ việc này |
-| Tập cặp đánh giá chính | Các cặp có ít nhất một nhãn trong 963 nhãn. Chia 70/10/20 theo cặp | Đây là những cặp có nhãn đã ghi nhận; mọi nhãn của một cặp nằm cùng một split |
-| Nhãn chưa quan sát khi **chấm điểm** | Với mỗi cặp val/test, chấm **toàn bộ 963 nhãn**. Nhãn có ghi nhận là 1; nhãn vắng mặt là 0, gọi là **"âm giả định"**, không phải "an toàn". **Không** lấy mẫu âm khi chấm | Mọi baseline được chấm trên cùng một ma trận cố định, không phụ thuộc cách mỗi mô hình lấy mẫu |
-| Nhãn chưa quan sát khi **huấn luyện** | B0: đếm trên train. B1: BCE đa nhãn đầy đủ trên các cặp train, ô vắng mặt là âm giả định. B2: lấy mẫu âm bằng cách thay nhãn (hoặc một thuốc) của bộ ba dương, lọc bỏ các bộ ba dương đã biết trong train, **tỷ lệ cố định trong config** (khởi đầu 1:1, thử 1:5 trên val) | Mỗi mô hình huấn luyện theo cách phù hợp với nó, nhưng tất cả đều được chấm bằng một bộ chấm điểm chung |
-| Metric | Macro AP (trên các nhãn có ít nhất 1 dương trong test), micro AP, AUROC; kèm kết quả theo nhóm tần suất nhãn và theo thuốc có / không có target | AP phù hợp với ma trận nhãn thưa |
-| Dùng validation và test | Chọn mô hình và hyperparameter **chỉ** trên val. Test chạy **một lần** khi đã khóa cấu hình | Tránh tune trên test |
-| Cặp hoàn toàn chưa ghi nhận (khoảng 69% còn lại) | **Không** đưa vào metric chính. Khi báo cáo phải ghi rõ: kết quả chính là "dự đoán nhãn cho cặp đã có báo cáo nhưng bị giữ lại", **không phải** khả năng dự đoán cho cặp chưa từng được ghi nhận. Nếu muốn, có thể thêm thí nghiệm phụ "cặp có được báo cáo hay không" và nêu rõ đây là bài toán positive–unlabeled | Cặp vắng mặt không có nhãn âm thật nên không thể chấm như thể có |
+| **A** Tra cứu bằng chứng Decagon | **Lõi** | Rẻ, demo sớm, là nền cho mọi phần khác |
+| **D** Nguồn cơ chế (ChEMBL, DailyMed) + dược sĩ | **Lõi** (trước đây là mở rộng) | Có dược sĩ; bù chỗ thiếu target và PPI không có dấu |
+| **B0** Dự đoán bằng đếm | **Lõi** | Không cần huấn luyện; đã đo được tín hiệu |
+| **B2** Mô hình học | **Có điều kiện** (cổng M) | Chi phí khoảng 1 tuần công, lợi ích chưa biết |
+| B1, GNN/TIP, HODDI (C), nhiều agent (E) | **Không làm** | Không đáng công trong 6 tuần, hoặc dữ liệu có vấn đề |
+
+---
+
+## 6 Lộ trình theo giai đoạn
+
+Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước đã đạt. Ngoại lệ: GĐ3 (nguồn cơ chế) có thể chạy song song với GĐ2 vì không phụ thuộc nhau.
+
+### 6.1 Giao thức đánh giá (đã chốt)
+
+| # | Quyết định | Đã chốt | Lý do |
+|---|---|---|---|
+| D1 | Vocabulary nhãn | **Danh sách cố định 963 nhãn** (≥500 dòng trên toàn snapshot), lưu thành file trước khi split | Trùng quy ước của Decagon; chỉ dùng tần suất nhãn, không dùng danh tính cặp test (công bố rõ) |
+| D2 | Chia tập | Theo cặp, **70/10/20, seed 391**; mọi nhãn của một cặp nằm cùng split | Không giao cặp giữa các split |
+| D3 | Chấm điểm | Mỗi cặp val/test được chấm trên **toàn bộ 963 nhãn**; nhãn vắng mặt là "âm giả định"; không lấy mẫu âm khi chấm | Một ma trận chấm chung cho mọi phương pháp |
+| D4 | Cách diễn đạt kết quả | "Dự đoán nhãn cho cặp đã có báo cáo nhưng bị giữ lại", **không phải** dự đoán cho cặp chưa từng được ghi nhận | Cặp vắng mặt không có nhãn âm thật |
+| D5 | Metric | **Macro AP** là chính; micro AP và macro AUROC là phụ; tách theo nhóm tần suất nhãn và theo thuốc có/không có target | AP phù hợp với ma trận thưa |
+| D6 | Mô hình | **B0 bắt buộc; B2 theo cổng M**; không làm B1/GNN | Mục 4 |
+| D7 | Ngưỡng nghiệm thu phần giải thích | Trên bộ dev: **claim support ≥ 90%** và **coverage ≥ 70%** (tạm thời; dược sĩ xác nhận sau pilot tuần 3, **trước** khi chạy đánh giá cuối) | Tránh chọn ngưỡng sau khi đã thấy kết quả |
+| — | Validation và test | Chọn cấu hình chỉ trên val; test chạy **một lần** | Tránh tune trên test |
+| — | Thuốc bị gắn cờ cấu trúc | **Giữ tất cả** trong dữ liệu, tra cứu và B0. Dược sĩ xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai (CID 28112 lithium aluminum hydride, CID 6398525); kết quả ghi vào data card | Nhãn của các chất này vẫn là dữ liệu thật |
 
 ### GĐ1 — Nền dữ liệu
 
-**GĐ1a — bắt đầu ngay, song song với GĐ0:**
+- **GĐ1a — xong 2026-10-10:** môi trường, ETL chỉ đọc, manifest, QA 32/32, cấu trúc phân tử 645/645.
+- **GĐ1b — tuần 1:**
+  - Lưu file vocabulary (D1); chia tập theo cặp (D2).
+  - **Data view tách hai chế độ:**
+    - *Evidence mode* đọc toàn bộ snapshot.
+    - *Prediction mode* chỉ đọc nhãn train, đã loại cả val lẫn test.
+    - Khóa cache gồm `mode`, `split_id` và `snapshot_hash`.
+  - **4 test rò rỉ:**
+    - (a) không có cặp nào giao giữa các split;
+    - (b) không còn cạnh val/test trong dữ liệu train;
+    - (c) prediction mode không truy xuất được nhãn val/test;
+    - (d) không có cache hit chéo giữa hai chế độ.
+  - **Vì sao vẫn cần dù chưa huấn luyện:** B0 cần split để được chấm trung thực, và giữ split sẵn để B2 có thể làm ngay nếu qua cổng M.
+  - **Cổng:** 4 test đạt; hash khớp manifest.
 
-- Dựng môi trường (`requirements` khóa phiên bản) và khung `src/`.
-- ETL **chỉ đọc** ba CSV Decagon gốc, xuất Parquet, kèm manifest SHA256. Tái dùng logic đếm và kiểm tra trong `analysis/2026-10-08/audit_data.py`.
-- Định nghĩa schema; kiểm tra chất lượng dữ liệu (số đếm, trùng lặp, độ phủ). Kết quả phải khớp mục *Sự thật về dữ liệu* trong `CLAUDE.md`.
-- **Ánh xạ ID sang cấu trúc phân tử** (phụ thuộc của B1): STITCH CID → PubChem CID → SMILES và InChIKey qua PUG REST, có cache, rồi parse bằng RDKit.
-  - Báo độ phủ: bao nhiêu thuốc có cấu trúc và tạo được fingerprint.
-  - Liệt kê các trường hợp mơ hồ (salt, ion, ví dụ CID 271) và các trường hợp không parse được.
-  - Lấy luôn tên thuốc để hiển thị.
+### GĐ2 — Demo tra cứu (evidence mode), tuần 2
 
-**GĐ1b — sau khi GĐ0 và mục 5.1 đã chốt:**
+- **Thứ tự làm:**
+  1. CLI nhận ID thuốc → tạo mọi cặp → lookup → gộp theo `effect_id`, giữ `contributing_pairs` → xuất theo **template**, có báo phần thiếu dữ liệu.
+  2. Cho nhập bằng tên thuốc (dùng tên PubChem đã có).
+  3. Thêm bối cảnh target/PPI có giới hạn.
+- **Phân biệt ba trường hợp:**
+  - Thuốc ngoài vocabulary: báo lỗi.
+  - Cặp không có nhãn: `thiếu dữ liệu` cho riêng cặp đó.
+  - Thuốc thiếu target: **giữ kết quả lookup**, chỉ đánh dấu phần cơ chế là thiếu.
+- **Cổng:** demo chạy được với các đơn mẫu, báo đúng cả ba trường hợp.
 
-- Ghi file vocabulary 963 nhãn; chia tập theo cặp 70/10/20 với seed cố định. Dựng đồ thị và feature huấn luyện **sau** khi chia.
-- **Cách ly hai chế độ ở tầng truy cập dữ liệu:**
-  - *Evidence mode* đọc toàn bộ snapshot.
-  - *Prediction mode* chỉ nhận một "data view" được dựng từ split: chỉ chứa nhãn của train, đã loại **cả val lẫn test**.
-  - Code dự đoán và code giải thích **không được** import bảng lookup đầy đủ.
-  - Khóa cache gồm `mode`, `split_id` và `snapshot_hash`. Cache của evidence mode không bao giờ được đọc trong prediction mode.
-- Test tự động phải kiểm tra:
-  - (a) không có cặp nào giao giữa các split;
-  - (b) không còn cạnh val/test trong đồ thị train;
-  - (c) bộ truy xuất của prediction mode không trả về được nhãn nào của cặp val/test;
-  - (d) không có cache hit chéo giữa hai chế độ.
-- **Vì sao ở đây:** mọi phần sau đều đọc từ đây. Chia tập muộn, hoặc để hai chế độ dùng chung bảng lookup và cache, là nguồn rò rỉ nhãn khó phát hiện nhất.
-- **Sản phẩm:** `src/` có ETL, mapping, split, data view, test; data card ngắn (bao gồm độ phủ cấu trúc).
-- **Cổng:** cả 4 test (a)–(d) đạt; hash khớp manifest; đã biết độ phủ cấu trúc.
+### GĐ3 — Nguồn cơ chế và nhãn thuốc (D), tuần 2, song song GĐ2
 
-### GĐ2 — Mốc A: tra cứu bằng chứng (evidence mode)
+- **Danh mục demo:** dược sĩ chọn khoảng **50 thuốc** thường dùng chung trong số 645 thuốc. Phần D làm sâu trên danh mục này trước khi mở rộng.
+- **ChEMBL:** InChIKey (đã có) → `molecule_chembl_id` → mechanism (`target`, `action_type`: inhibitor, agonist...). Đây là quan hệ **có chiều** mà PPI không có. Đo độ phủ trên 645 thuốc và trên danh mục demo.
+- **DailyMed:** tên hoạt chất → SPL `set_id` → các mục *Drug Interactions*, *Warnings*, *Adverse Reactions*, chia đoạn và giữ `set_id`, version, ngày. Đây là nguồn văn bản cho câu giải thích.
+- **Dược sĩ kiểm tra:** mapping của danh mục demo, và các trường hợp mơ hồ (salt, ion, chế phẩm phối hợp).
+- **Cổng:** độ phủ ChEMBL và DailyMed được đo; mapping của danh mục demo đã được dược sĩ duyệt.
 
-- **Mục tiêu:** demo end-to-end đầu tiên.
-- **Việc chính, theo thứ tự:**
-  1. CLI nhận **ID thuốc** → tạo mọi cặp → lookup → gộp theo `effect_id`, giữ `contributing_pairs` và nguồn → xuất theo **template** (không LLM), có báo phần thiếu dữ liệu.
-  2. Thêm tên thuốc để nhập và hiển thị.
-  3. Thêm bằng chứng target/PPI khi có (giới hạn số path, phạt mềm theo bậc).
-  4. Cuối cùng mới thêm **một lần gọi LLM qua API** với schema JSON cố định, mỗi phát biểu trích ID bằng chứng.
-- **Phân biệt rõ ba trường hợp, không gộp chung:**
+### GĐ4 — Giải thích + dự đoán B0, tuần 3
 
-  | Trường hợp | Đầu ra |
-  |---|---|
-  | Thuốc ngoài vocabulary hoặc tên mơ hồ | Báo lỗi hoặc yêu cầu chọn lại; không xử lý thuốc đó |
-  | Cặp không có nhãn đã ghi nhận | `status = thiếu dữ liệu` cho cặp đó; các cặp khác vẫn trả kết quả |
-  | Thuốc thiếu target | **Giữ nguyên kết quả lookup**; chỉ ghi vào `missing_data` rằng phần **bằng chứng cơ chế** bị thiếu |
+- **Dự đoán:**
+  - Viết bộ chấm điểm dùng chung (D3, D5).
+  - Chấm B0 trên **val**; test giữ cho GĐ5.
+  - Với cặp chưa có nhãn, B0 cho top-k ở `status = dự đoán`, kèm bằng chứng mức thuốc.
+- **Loại bằng chứng, xếp theo độ mạnh:**
+  1. Đoạn nhãn thuốc DailyMed nói trực tiếp về cặp hoặc nhóm thuốc;
+  2. Cơ chế ChEMBL có chiều tác động;
+  3. Nhãn Decagon đã quan sát;
+  4. Bằng chứng mức thuốc của B0;
+  5. Bối cảnh target/PPI (gắn nhãn "bối cảnh, không phải cơ chế").
+- **LLM:**
+  - Một lần gọi API với schema JSON; mỗi phát biểu trích ID bằng chứng; được phép trả "insufficient evidence".
+  - Phần cơ chế mặc định là "chưa đủ bằng chứng", trừ khi có nguồn loại 1 hoặc 2.
+- **Verifier:** ID có thật; quan hệ và chiều đúng; bằng chứng thuộc đúng chế độ và data view; không có câu khẳng định quá mức.
+- **Gold set v1:** dược sĩ lập khoảng 20 trường hợp dev (tách riêng khỏi bộ đánh giá cuối).
+- **Cổng:** đạt ngưỡng D7 trên bộ dev, sau đó đến **cổng M** (mục 4.4).
 
-- **Vì sao ở đây:** có sản phẩm chạy được sớm để kiểm tra pipeline và schema. Đây là phương án dự phòng nếu GĐ3–4 trễ, và B sẽ dùng lại schema của bước này.
-- **Sản phẩm:** CLI demo; schema đầu ra (`drug_pair`, `effect_id`, `status`, `evidence_ids`, `explanation`, `missing_data`, `contributing_pairs`, …).
-- **Cổng:** demo chạy được với các đơn mẫu, và báo đúng phần thiếu dữ liệu ở cả ba trường hợp trên.
+### GĐ4' — Tuần 4, theo kết quả cổng M
 
-### GĐ3 — Baseline dự đoán theo cặp (bắt đầu B)
+- **(a) Nếu qua cổng M:** huấn luyện B2 (lấy mẫu âm theo mục 6.1, tỷ lệ cố định trong config), so với B0 trên val qua 3 seed.
+- **(b) Nếu không qua:** mở rộng bằng chứng ra thêm thuốc, thêm phần nhãn, làm giao diện web đơn giản.
 
-- **Mục tiêu:** dự đoán 963 nhãn cho các cặp bị giữ lại, theo giao thức ở mục 5.1.
-- **Bước đầu tiên:** viết **bộ chấm điểm dùng chung**. Bộ này nhận ma trận điểm (cặp × 963 nhãn) và trả về mọi metric. Mọi mô hình đều đi qua nó.
-- **Mốc bắt buộc: B0 + một trong B1/B2.** Mô hình còn lại làm sau, khi mốc này đã chạy ổn.
-  - **B0:** tần suất nhãn, và **baseline theo từng thuốc** `score(A,B,e) = f(A,e) + f(B,e)` học từ train.
-  - **B2 (đề xuất làm trước):** DistMult hoặc SimplE đã đối xứng hóa, embedding 64–128 chiều. Lý do làm trước: chỉ cần ID thuốc, không phụ thuộc vào phần mapping cấu trúc.
-  - **B1:** Morgan fingerprint, ghép `(u+v, |u−v|, u⊙v)`, rồi logistic đa nhãn. Chỉ cam kết lịch cho B1 khi độ phủ cấu trúc ở GĐ1a đã đủ. Thuốc thiếu cấu trúc dùng điểm của B0 làm dự phòng; báo kết quả trên toàn bộ test và riêng trên phần có cấu trúc.
-- **Vì sao trước GNN:** các nhãn phổ biến nhất trong Decagon rất chung chung (hạ huyết áp, thiếu máu, buồn nôn...). Giả thuyết cần kiểm tra là phần lớn tín hiệu đến từ từng thuốc riêng lẻ. Nếu mô hình phức tạp không vượt được B0 thì đó là một kết quả đáng báo cáo, không phải thất bại. Tensor factorization đã được báo cáo là nhanh và mạnh trên đúng 963 nhãn này [S04]. Lưu ý: chỉ số của tác giả đo trên random split, không phải pair split.
-- **Sản phẩm:** bảng kết quả trên val (để chọn mô hình) và một lần chạy test cuối.
-- **Cổng:** B0 + một mô hình tái lập được qua 3 seed; hyperparameter đã khóa trước khi chạy test.
+### GĐ5 — Đánh giá, tuần 5
 
-### GĐ4 — Giải thích có nguồn cho dự đoán (prediction mode)
+- **Gold set cuối:** dược sĩ lập khoảng **100 cặp + 30 đơn 3–5 thuốc**, phân tầng theo có/không nhãn Decagon, có/không target, có/không đoạn DailyMed. Hai người chấm độc lập (dược sĩ + một thành viên) với nhãn: supported / contradicted / insufficient / citation mismatch / overclaim.
+- **Ba nhóm thí nghiệm:**
+  1. **Dự đoán:** B0 (và B2 nếu có) trên **test**, chạy một lần.
+  2. **Giải thích:** claim support, citation precision, coverage.
+  3. **Vận hành:** p50/p95 latency, số token, chi phí, lỗi API.
+- **Ablation (cùng model API):** LLM không truy xuất; Graph RAG đơn giản theo ý tưởng gốc; chỉ Decagon; Decagon + ChEMBL + DailyMed + verifier.
 
-- **Mục tiêu:** đặt điểm dự đoán của B cạnh bằng chứng liên quan, và **nói rõ bằng chứng hỗ trợ được đến đâu**.
-- **Nguyên tắc:** một path hợp lệ trong đồ thị chỉ chứng minh quan hệ trong đồ thị, **không** đủ để nói "cặp này gây tác dụng phụ e".
-  - Vì vậy kết quả luôn giữ `status = dự đoán`.
-  - Trường cơ chế mặc định là **"chưa đủ bằng chứng giải thích cơ chế"**, trừ khi có nguồn trực tiếp nói về đúng outcome đó. Nguồn như vậy chỉ có ở nhánh mở rộng D.
-- **Các loại bằng chứng của bản đầu** (chỉ lấy từ data view của train):
-  1. Bằng chứng mức thuốc: A (hoặc B) đi cùng e trong bao nhiêu cặp train. Đây cũng là tín hiệu của B0.
-  2. Các cặp train tương tự có nhãn e.
-  3. Bối cảnh target/PPI khi có, gắn nhãn rõ là "bối cảnh, không phải cơ chế".
-- **Việc chính:**
-  - Truy xuất có budget: 10–20 path, khoảng 4.000–8.000 input token. Đây là điểm khởi đầu để đo, chưa phải giá trị tối ưu.
-  - Không dùng nhãn val/test để chọn path.
-  - Verifier kiểm tra: ID có thật; quan hệ và chiều đúng; path liền mạch; bằng chứng thuộc đúng data view; không có câu nào khẳng định quá mức.
-  - Cho phép abstain.
-- **Vì sao sau GĐ3:** cần có điểm dự đoán thật để giải thích, và cần tách rõ lợi ích đến từ mô hình hay từ phần giải thích.
-- **Cổng:** trên một bộ dev khoảng 20 trường hợp (tách khỏi bộ đánh giá cuối), đo **tỷ lệ phát biểu được nguồn hỗ trợ** và **coverage**, đạt mức tối thiểu đã thống nhất từ trước. Chỉ demo chạy được thì chưa đủ để qua cổng.
+### GĐ6 — Đóng gói, tuần 6
 
-### GĐ5 — Đánh giá
-
-- **Ba nhóm thí nghiệm, đo riêng:**
-  1. **Dự đoán:** macro AP, micro AP, AUROC; kết quả tách theo nhóm tần suất nhãn và theo thuốc có / không có target.
-  2. **Truy xuất và giải thích:** citation precision, claim support, abstention coverage. Bộ gán nhãn tay khoảng 50 cặp, hai người chấm độc lập.
-  3. **Vận hành:** p50/p95 latency, số token, lỗi API.
-- **Ablation:**
-  - Với cùng model API: LLM không truy xuất, Graph RAG đơn giản theo ý tưởng gốc, và bản có verifier.
-  - So sánh cắt hub cứng với phạt mềm theo bậc.
-- **Báo cáo:** mean ± std qua 3 seed; bootstrap theo cặp.
-
-### GĐ6 — Báo cáo và demo
-
-- Sửa các claim trong báo cáo nộp theo mục 9; viết data card và model card; đóng gói demo.
-- Báo cáo phải khớp đúng các thí nghiệm đã chạy, không trình bày mục tiêu như kết quả.
-
-### Mở rộng — chỉ chọn MỘT, sau khi GĐ3 đạt cổng
-
-| Nhánh | Điều kiện vào | Điều kiện dừng |
-|---|---|---|
-| B3 GNN/TIP | B0, B1 và B2 ổn định, còn ≥2 tuần | Không vượt B2 qua nhiều seed thì giữ B2 |
-| Cold-start (thuốc mới) | Muốn kiểm tra khả năng tổng quát hóa sang thuốc chưa thấy | Chỉ mô hình có feature ngoại sinh (fingerprint) mới được gọi là inductive |
-| C HODDI 3–5 thuốc | Nhóm chủ động chọn trọng tâm nghiên cứu | Không qua được kiểm tra negative hoặc group split thì dừng, quay về B |
-| D Nguồn cơ chế (ChEMBL, DailyMed) | Có người đọc dược học | Mapping thuốc không đạt trên danh mục demo thì thu hẹp phạm vi |
+- Demo (CLI hoặc web đơn giản), data card, cập nhật tài liệu (mục 10). Báo cáo phải khớp đúng các thí nghiệm đã chạy.
 
 ---
 
-## 6 Lịch thời gian (ước lượng, chưa phải cam kết)
+## 7 Lịch 6 tuần (ước lượng)
 
-**Phương án chính, 6 tuần:**
-
-| Tuần | Giai đoạn | Điều kiện kết thúc |
+| Tuần | Việc | Điều kiện kết thúc |
 |---|---|---|
-| 0 (ngay) | GĐ0 | Phạm vi được duyệt; mục 5.1 đã chốt |
-| 1 | GĐ1a (song song GĐ0), rồi GĐ1b | Manifest, độ phủ cấu trúc; giao thức 5.1 chốt; split và 4 test rò rỉ đạt |
-| 2 | GĐ2 + bộ chấm điểm + B0 | Demo A báo đúng phần thiếu dữ liệu; B0 chạy qua bộ chấm điểm |
-| 3 | GĐ3 | B0 + một trong B1/B2 tái lập được qua 3 seed |
-| 4 | GĐ4 (+ mô hình B còn lại nếu kịp) | Đạt ngưỡng claim support và coverage trên bộ dev |
-| 5 | GĐ5 | Bảng kết quả kèm độ bất định |
-| 6 | GĐ6 | Báo cáo và demo khớp thí nghiệm |
-
-**Biến thể:**
-
-- **Chỉ có 2–3 tuần:** làm GĐ1 rút gọn, rồi GĐ2 (A), rồi đánh giá phần truy xuất và giải thích. Bỏ phần huấn luyện mô hình.
-- **Có 8 tuần:** lịch 6 tuần, cộng **một** nhánh mở rộng ở tuần 7–8.
+| 1 | GĐ1b; dược sĩ chọn danh mục demo và xem các thuốc bị gắn cờ | 4 test rò rỉ đạt; có danh mục demo |
+| 2 | GĐ2 (demo tra cứu) ‖ GĐ3 (ChEMBL, DailyMed) | Demo báo đúng phần thiếu; độ phủ D đã đo |
+| 3 | GĐ4: bộ chấm điểm, B0, LLM, verifier, gold set v1 | Đạt D7 trên dev; **quyết định cổng M** |
+| 4 | (a) B2 hoặc (b) mở rộng bằng chứng và giao diện | Theo nhánh đã chọn |
+| 5 | GĐ5: gold set cuối, đánh giá, ablation | Bảng kết quả kèm độ bất định |
+| 6 | GĐ6: đóng gói | Demo và tài liệu khớp thí nghiệm |
 
 ---
 
-## 7 Phân công gợi ý (4 vai trò, chưa gán tên)
+## 8 Phân công gợi ý (4 thành viên + dược sĩ)
 
 | Vai trò | Phụ trách |
 |---|---|
-| Dữ liệu và mapping | GĐ1, vocabulary, PubChem, data card |
-| Mô hình và split | Split, B0–B2, chạy seed |
-| Truy xuất và giải thích | Path retrieval, prompt, verifier |
-| API, demo và đánh giá | Gọi LLM, cache, demo, harness đo latency và metric |
+| Dữ liệu và mapping | GĐ1b, ChEMBL/DailyMed mapping, data card |
+| Truy xuất và dự đoán | Lookup, B0, bộ chấm điểm, B2 nếu có |
+| Giải thích | Chọn bằng chứng, prompt, verifier |
+| Sản phẩm và đánh giá | API LLM, cache, demo, harness đo latency và metric |
+| **Dược sĩ** | Danh mục demo, duyệt mapping, gold set, chấm giải thích, xét cổng M |
 
-Cả nhóm cùng chấm bộ giải thích, để tránh tình trạng một người viết prompt rồi tự chấm.
-
----
-
-## 8 Tiêu chí thành công và tiêu chí dừng
-
-Đây là các mục tiêu nghiệm thu **(đề xuất)**, cần đo, chưa phải kết quả. Nên thống nhất mức tối thiểu với giảng viên **trước khi** nhìn kết quả.
-
-- **Dự đoán:** mô hình bắt buộc (B1 hoặc B2) vượt B0 về macro AP trên test pair split, qua 3 seed, chấm bằng bộ chấm điểm dùng chung theo mục 5.1. Kết quả chỉ được diễn giải là "dự đoán nhãn cho cặp đã có báo cáo nhưng bị giữ lại".
-- **Giải thích:** bản có verifier giảm số claim không có nguồn hỗ trợ so với Graph RAG đơn giản trên cùng bộ đánh giá. Luôn báo **cả** tỷ lệ claim được hỗ trợ lẫn coverage; không được loại bớt các trường hợp khó để nâng tỷ lệ.
-- **Vận hành:** p95 lookup cục bộ dưới 1 giây; p95 toàn pipeline dưới 15 giây.
-- **Quy tắc nâng cấp:** chỉ thêm mô hình phức tạp hơn khi mô hình trước đã tái lập được.
-- **Quy tắc dừng:** mô hình phức tạp không vượt baseline nhẹ thì dùng baseline nhẹ và tập trung vào chất lượng giải thích.
-- **Không bao giờ:** hiển thị citation không tồn tại, hoặc biến "thiếu dữ liệu" thành kết luận "an toàn".
+Người viết prompt không tự chấm toàn bộ phần giải thích.
 
 ---
 
-## 9 Những gì cần sửa trong báo cáo nộp (Report 2/3)
+## 9 Tiêu chí thành công
 
-| Câu hoặc ý cũ | Sửa thành |
+Đây là mục tiêu nghiệm thu, chưa phải kết quả.
+
+- **Giải thích (chính):** claim support ≥ 90% và coverage ≥ 70% trên gold set cuối. Bản đầy đủ phải giảm số claim không có nguồn hỗ trợ so với Graph RAG đơn giản.
+- **Dự đoán:** báo B0 trên test theo D3–D5. Nếu có B2, chỉ giữ khi vượt B0 theo mục 4.4.
+- **Vận hành:** p95 lookup dưới 1 giây; p95 toàn pipeline dưới 15 giây.
+- **Không bao giờ:** hiển thị citation không tồn tại, biến "thiếu dữ liệu" thành "an toàn", hay trình bày dự đoán thống kê như cơ chế.
+
+---
+
+## 10 Tài liệu cần cập nhật cho khớp hướng mới
+
+Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong `docs/submission/` không cần nộp lại. Nhưng nếu dùng lại để giới thiệu dự án, cần sửa:
+
+| Ý cũ | Sửa thành |
 |---|---|
-| "predicts … adverse effects for regimens of three or more drugs" | Dự đoán theo cặp, tổng hợp bằng chứng cho đơn 3–5 thuốc |
-| "Taking DDI-GPT as the baseline reference" | DDI-GPT là related work (bài toán nhị phân); baseline là tần suất, fingerprint và tensor factorization |
-| Ba Tier (known / amplified / emergent) | `status` + `evidence_type` |
-| "Training a GNN … is out of scope" | Có mô hình nhẹ theo cặp; GNN là mở rộng tùy chọn |
-| "clinical decision-support framework" | "research prototype for drug interaction prediction and evidence review" |
-| "minimal inference latency" | Mục tiêu latency đo bằng p95 |
-| 645 thuốc / 19.085 protein / 964 nhãn | Ghi riêng "thống kê bài gốc" và "thống kê snapshot": 1.317 nhãn, 963 nhãn sau khi lọc, 19.081 gene |
-| Cắt hub theo ngưỡng | Phạt mềm theo bậc, có ablation |
+| Dự đoán cho đơn ≥3 thuốc | Theo cặp, tổng hợp bằng chứng cho đơn 3–5 thuốc |
+| DDI-GPT làm baseline | Related work |
+| Ba Tier | `status` + `evidence_type` |
+| Cơ chế từ target/PPI | ChEMBL + DailyMed có dược sĩ kiểm tra; PPI là bối cảnh |
+| "Clinical decision-support", "minimal latency" | "Research prototype"; latency đo bằng p95 |
+| 645 / 19.085 / 964 | Thống kê của snapshot (mục 3.1) |
 | Related work | Thêm K-Paths, CBR-DDI, tensor factorization, DDI-Ben; sửa các link sai trong LR |
 
-**Cách trình bày gợi ý:** gọi đây là *"điều chỉnh phạm vi dựa trên kiểm toán dữ liệu"* và đưa bảng ở mục 3.1 vào báo cáo. Việc tự phát hiện giới hạn của dữ liệu rồi điều chỉnh cho phù hợp là điểm cộng về phương pháp, không phải điểm trừ.
-
 ---
 
-## 10 Rủi ro chính
+## 11 Rủi ro chính
 
 | Rủi ro | Cách xử lý |
 |---|---|
-| Giảng viên không chấp nhận đổi phạm vi | Giữ giao diện đa thuốc và Graph RAG; trình bày B như phần bổ sung dựa trên số liệu kiểm toán |
-| Rò rỉ nhãn giữa train và val/test | Split trước khi tạo feature; prediction mode chỉ đọc data view của train; khóa cache gồm mode và split; 4 test tự động ở GĐ1b |
-| Mỗi baseline được chấm một kiểu | Giao thức 5.1 chốt trước; một bộ chấm điểm dùng chung |
-| Thiếu cấu trúc phân tử cho B1 | Đo độ phủ ở GĐ1a; làm B2 trước; B1 dùng B0 làm dự phòng |
-| Thiếu target ở 56% thuốc | Giữ kết quả lookup và dự đoán; chỉ đánh dấu phần bằng chứng cơ chế là thiếu; báo coverage theo từng thuốc |
-| LLM trả lời quá chắc chắn | Schema cố định, verifier, cho phép abstain, có template dự phòng |
-| Mô hình phức tạp không vượt baseline | Chấp nhận baseline nhẹ; báo cáo đây là một phát hiện |
-| Thời gian không đủ | A là mốc đã hoàn thành; chỉ làm một nhánh mở rộng |
-| Chi phí API | Chạy pilot 50–100 query, có cache, giới hạn số lần retry |
+| Rò rỉ nhãn | Data view theo chế độ; khóa cache gồm mode và split; 4 test tự động |
+| Độ phủ ChEMBL/DailyMed thấp | Làm sâu trên danh mục demo trước; báo coverage theo từng thuốc; trả "chưa đủ bằng chứng" thay vì đoán |
+| Mapping tên thuốc sai (salt, chế phẩm phối hợp) | Dược sĩ duyệt danh mục demo; lưu các trường hợp chưa phân giải |
+| LLM bịa cơ chế | Schema, verifier, abstain, cơ chế mặc định là "chưa đủ" |
+| Dược sĩ không đủ thời gian | Gold set nhỏ trước (20 trường hợp), mở rộng dần; chấm theo đợt |
+| Tiếc vì không huấn luyện | Cổng M có tiêu chí rõ; split sẵn sàng để làm B2 ngay |
+| Chi phí API | Pilot 50–100 query, cache, giới hạn số lần retry |
 
 ---
 
-## 11 Việc cần làm ngay (tuần này)
+## 12 Việc cần làm ngay (tuần 1)
 
-- [ ] Cả nhóm thống nhất trả lời 4 câu hỏi mở (GĐ0).
-- [ ] Gặp giảng viên, trình bày bảng ở mục 3.1 và đề xuất đổi phạm vi.
-- [ ] Sửa các link sai trong `docs/literature/literature-review.xlsx` (danh sách ở mục 14 báo cáo đánh giá).
-- [ ] Chốt giao thức đánh giá ở mục 5.1 (vocabulary, tập cặp, nhãn chưa quan sát, quyền đọc dữ liệu của từng chế độ).
-- [x] **GĐ1a, làm ngay song song:** dựng `src/` và môi trường; ETL chỉ đọc, manifest, schema, kiểm tra chất lượng dữ liệu; đo độ phủ cấu trúc phân tử qua PubChem. *(Xong 2026-10-10: QA 32/32; cấu trúc 645/645, 58 thuốc cần xem tay. B1 không bị chặn bởi độ phủ cấu trúc.)*
-- [ ] Xem tay nhóm thuốc vô cơ/ion bị gắn cờ trong `structure_coverage.json` và quyết định giữ, đánh dấu hay loại khỏi B1.
-- [ ] Chỉ đóng băng split (GĐ1b) sau khi hai mục trên đã chốt.
-- [ ] Cập nhật `CLAUDE.md` và file này sau khi chốt.
+- [x] GĐ1a: môi trường, ETL, QA, cấu trúc phân tử.
+- [x] Chốt quyết định Q1–Q5 và giao thức D1–D7.
+- [ ] **Claude:** GĐ1b, gồm vocabulary, split 70/10/20 seed 391, data view theo chế độ, 4 test rò rỉ.
+- [ ] **Dược sĩ:** chọn khoảng 50 thuốc cho danh mục demo; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `data/processed/decagon_v1/structure_coverage.json`.
+- [ ] **Nhóm:** gán người cho 4 vai trò ở mục 8; sửa các link sai trong `docs/literature/literature-review.xlsx`.
 
 ---
 
-## 12 Nhật ký thay đổi của kế hoạch
+## 13 Nhật ký thay đổi của kế hoạch
 
 | Ngày | Thay đổi |
 |---|---|
-| 2026-10-10 | GĐ1a hoàn thành. Độ phủ cấu trúc 100% nên rủi ro "thiếu cấu trúc cho B1" giảm; vẫn đề xuất B2 trước vì đơn giản hơn, B1 có thể làm ngay sau. |
-| 2026-10-10 | Sửa theo review: thêm mục 5.1 (giao thức đánh giá chung, xử lý nhãn chưa quan sát, vocabulary cố định); tách GĐ1a (chạy song song GĐ0) và GĐ1b (cách ly hai chế độ, 4 test rò rỉ); thêm bước mapping cấu trúc cho B1; mốc bắt buộc là B0 + một trong B1/B2 (đề xuất B2 trước); GĐ4 giữ `status = dự đoán`, cổng đo claim support và coverage; tách thiếu target khỏi ngoài vocabulary; sửa lập luận về độ phủ của A theo số đo mới (đơn 3 thuốc: 57% có ≥1 cặp có nhãn). |
-| 2026-10-10 | Tạo kế hoạch đầu tiên, tổng hợp từ Report 1/method và báo cáo đánh giá 08/10 cùng phần kiểm chứng 10/10. Toàn bộ ở trạng thái đề xuất. |
+| 2026-10-10 | **v2.** Chốt Q1–Q5 (dự án thật, 6 tuần, chưa huấn luyện, có dược sĩ). Thử nghiệm B0: macro AP 0,270, AUROC 0,837, không cần huấn luyện. Lõi đổi thành A + D + B0; B2 có điều kiện qua cổng M cuối tuần 3; bỏ B1, GNN, HODDI. Giao thức D1–D7 đã chốt. Lịch 6 tuần viết lại. |
+| 2026-10-10 | GĐ1a hoàn thành: QA 32/32, cấu trúc 645/645. |
+| 2026-10-10 | Sửa theo review: giao thức đánh giá chung, tách GĐ1a/GĐ1b, cách ly hai chế độ, mapping cấu trúc, GĐ4 giữ `status = dự đoán`. |
+| 2026-10-10 | Tạo kế hoạch đầu tiên (v1, đề xuất). |
