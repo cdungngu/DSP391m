@@ -7,10 +7,12 @@ Chạy: python -m dsp391m.splits [--snapshot-dir DIR]
 - pair_splits.parquet: drug_a, drug_b, split ("train" | "val" | "test").
 - split_manifest.json: tham số, số đếm, hash, phân tích độ nhạy vocabulary.
 
-Split được đóng băng: chạy lại với cùng tham số phải cho cùng hash. Muốn đổi thì tạo split_id mới,
-không ghi đè split cũ.
+Split được đóng băng: chạy lại với cùng tham số chỉ xác minh, không ghi; đổi tham số với cùng split_id sẽ bị
+từ chối. Mọi nơi đọc split phải qua load_verified_split() (kiểm tra checksum và snapshot).
 """
 import argparse
+import hashlib
+import json
 from pathlib import Path
 
 import numpy as np
@@ -59,15 +61,67 @@ def train_only_vocab_size(pair_labels: pd.DataFrame, pairs: pd.DataFrame, min_ro
     return int((rows["effect_idx"].value_counts() >= min_rows * RATIOS["train"]).sum())
 
 
-def run(snap: Path | None = None, split_id: str = SPLIT_ID, min_rows: int = MIN_ROWS) -> dict:
+class SplitExistsError(RuntimeError):
+    """Split ID đã tồn tại với tham số hoặc snapshot khác: phải dùng split ID mới."""
+
+
+class SplitIntegrityError(RuntimeError):
+    """File split hoặc snapshot không khớp manifest: không được dùng."""
+
+
+SPLIT_FILES = ("label_vocab.parquet", "pair_splits.parquet")
+
+
+def _params(min_rows: int, seed: int) -> dict:
+    return {"min_rows": min_rows, "ratios": RATIOS, "seed": seed, "unit": "unordered drug pair"}
+
+
+def _snapshot_labels_sha(snap: Path) -> str:
+    """Hash pair_labels theo manifest snapshot, sau khi xác minh file thật khớp manifest."""
+    expected = read_json(snap / "manifest.json")["tables"]["pair_labels"]["sha256"]
+    if sha256(snap / "pair_labels.parquet") != expected:
+        raise SplitIntegrityError(f"{snap / 'pair_labels.parquet'} không khớp manifest của snapshot")
+    return expected
+
+
+def load_verified_split(snap: Path, split_id: str = SPLIT_ID) -> tuple[pd.DataFrame, pd.DataFrame, str]:
+    """Đọc split sau khi kiểm tra checksum và quan hệ với snapshot. Trả về (vocab, pairs, split_hash)."""
+    d = split_dir(snap, split_id)
+    if not (d / "split_manifest.json").exists():
+        raise SplitIntegrityError(f"Không có split {split_id!r} trong {snap}")
+    manifest = read_json(d / "split_manifest.json")
+    if manifest.get("split_id") != split_id:
+        raise SplitIntegrityError(f"Manifest ghi split_id {manifest.get('split_id')!r}, khác {split_id!r}")
+    if manifest["snapshot_pair_labels_sha256"] != _snapshot_labels_sha(snap):
+        raise SplitIntegrityError(f"Split {split_id!r} được tạo từ snapshot khác")
+    for name in SPLIT_FILES:
+        if sha256(d / name) != manifest["files"][name]:
+            raise SplitIntegrityError(f"{name} của split {split_id!r} không khớp checksum trong manifest")
+    split_hash = hashlib.sha256(json.dumps([split_id, manifest["files"]], sort_keys=True).encode()).hexdigest()[:16]
+    return pd.read_parquet(d / "label_vocab.parquet"), pd.read_parquet(d / "pair_splits.parquet"), split_hash
+
+
+def run(snap: Path | None = None, split_id: str = SPLIT_ID, min_rows: int = MIN_ROWS, seed: int = SEED) -> dict:
+    """Tạo split mới. Nếu split ID đã tồn tại: cùng tham số và snapshot thì chỉ xác minh, không ghi;
+    khác thì báo SplitExistsError. Split đã đóng băng không bao giờ bị ghi đè."""
     snap = snap or snapshot_dir()
     out = split_dir(snap, split_id)
-    out.mkdir(parents=True, exist_ok=True)
+    labels_sha = _snapshot_labels_sha(snap)
+    if (out / "split_manifest.json").exists():
+        existing = read_json(out / "split_manifest.json")
+        if existing["params"] != _params(min_rows, seed) or existing["snapshot_pair_labels_sha256"] != labels_sha:
+            raise SplitExistsError(
+                f"Split {split_id!r} đã tồn tại với tham số/snapshot khác; hãy dùng split_id mới thay vì ghi đè")
+        load_verified_split(snap, split_id)
+        return existing
+    if out.exists() and any(out.iterdir()):
+        raise SplitExistsError(f"{out} có file nhưng thiếu manifest; xem lại bằng tay trước khi tạo split")
+
     effects = pd.read_parquet(snap / "effects.parquet")
     pair_labels = pd.read_parquet(snap / "pair_labels.parquet")
-
     vocab = build_vocabulary(effects, min_rows)
-    pairs = split_pairs(pair_labels, vocab)
+    pairs = split_pairs(pair_labels, vocab, seed=seed)
+    out.mkdir(parents=True, exist_ok=True)
     vocab.to_parquet(out / "label_vocab.parquet", index=False)
     pairs.to_parquet(out / "pair_splits.parquet", index=False)
 
@@ -76,14 +130,14 @@ def run(snap: Path | None = None, split_id: str = SPLIT_ID, min_rows: int = MIN_
         "split_id": split_id,
         "created_at": utc_now(),
         "snapshot": read_json(snap / "manifest.json")["snapshot"],
-        "snapshot_pair_labels_sha256": read_json(snap / "manifest.json")["tables"]["pair_labels"]["sha256"],
-        "params": {"min_rows": min_rows, "ratios": RATIOS, "seed": SEED, "unit": "unordered drug pair"},
+        "snapshot_pair_labels_sha256": labels_sha,
+        "params": _params(min_rows, seed),
         "labels_in_vocab": len(vocab),
         "pairs_in_split": len(pairs),
         "labeled_pairs_without_vocab_label": len(labeled) - len(pairs),
         "pairs_per_split": pairs["split"].value_counts().reindex(list(RATIOS)).to_dict(),
         "sensitivity_train_only_vocab_size": train_only_vocab_size(pair_labels, pairs, min_rows),
-        "files": {name: sha256(out / name) for name in ("label_vocab.parquet", "pair_splits.parquet")},
+        "files": {name: sha256(out / name) for name in SPLIT_FILES},
     }
     write_json(out / "split_manifest.json", manifest)
     return manifest

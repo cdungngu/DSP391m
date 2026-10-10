@@ -324,7 +324,8 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 
 - [x] GĐ1a: môi trường, ETL, QA, cấu trúc phân tử.
 - [x] Chốt quyết định Q1–Q5 và giao thức D1–D7.
-- [x] **Claude:** GĐ1b, gồm vocabulary, split 70/10/20 seed 391, data view theo chế độ, 4 test rò rỉ. *(Xong 2026-10-10: 44.430/6.347/12.695 cặp; vocab chỉ tính trên train còn 959 nhãn, gần như trùng 963.)*
+- [x] **Claude:** GĐ1b, gồm vocabulary, split 70/10/20 seed 391, data view theo chế độ, 4 test rò rỉ. *(Xong 2026-10-10: 44.430/6.347/12.695 cặp; vocab chỉ tính trên train còn 959 nhãn, chênh 4 nhãn, chưa đo ảnh hưởng lên metric.)*
+- [x] Sửa 3 lỗi bảo vệ dữ liệu theo review (metadata trong prediction view, ghi đè split, xác minh khi đọc split). Bước đánh giá tiếp theo: **B0 trên val chính thức**; test giữ cho GĐ5.
 - [ ] **Dược sĩ:** chọn khoảng 50 thuốc cho danh mục demo; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `data/processed/decagon_v1/structure_coverage.json`.
 - [ ] **Nhóm:** gán người cho 4 vai trò ở mục 8; sửa các link sai trong `docs/literature/literature-review.xlsx`.
 
@@ -334,6 +335,7 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 
 | Ngày | Thay đổi |
 |---|---|
+| 2026-10-10 | Sửa GĐ1b theo review: metadata của prediction view chỉ tính trên train; split không ghi đè được; xác minh checksum và snapshot khi đọc split; khóa cache gồm split_hash. |
 | 2026-10-10 | GĐ1b hoàn thành; split `pair_70-10-20_s391` đóng băng và commit. |
 | 2026-10-10 | **v2.** Chốt Q1–Q5 (dự án thật, 6 tuần, chưa huấn luyện, có dược sĩ). Thử nghiệm B0: macro AP 0,270, AUROC 0,837, không cần huấn luyện. Lõi đổi thành A + D + B0; B2 có điều kiện qua cổng M cuối tuần 3; bỏ B1, GNN, HODDI. Giao thức D1–D7 đã chốt. Lịch 6 tuần viết lại. |
 | 2026-10-10 | GĐ1a hoàn thành: QA 32/32, cấu trúc 645/645. |

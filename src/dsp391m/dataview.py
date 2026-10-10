@@ -17,7 +17,7 @@ import pandas as pd
 
 from .manifest import read_json
 from .paths import ROOT, snapshot_dir
-from .splits import SPLIT_ID, split_dir
+from .splits import SPLIT_ID, SplitIntegrityError, load_verified_split  # noqa: F401  (re-export cho caller)
 
 EVIDENCE = "evidence"
 PREDICTION = "prediction"
@@ -35,6 +35,7 @@ class DataView:
     mode: str
     split_id: str | None
     snapshot_hash: str
+    split_hash: str | None
     drugs: pd.DataFrame = field(repr=False)
     effects: pd.DataFrame = field(repr=False)
     pair_labels: pd.DataFrame = field(repr=False)
@@ -42,7 +43,7 @@ class DataView:
     ppi: pd.DataFrame = field(repr=False)
 
     def cache_key(self, *parts) -> str:
-        payload = json.dumps([self.mode, self.split_id, self.snapshot_hash, *parts], default=str)
+        payload = json.dumps([self.mode, self.split_id, self.split_hash, self.snapshot_hash, *parts], default=str)
         return hashlib.sha256(payload.encode()).hexdigest()
 
     def labels_for_pair(self, drug_x: int, drug_y: int) -> pd.DataFrame:
@@ -57,24 +58,30 @@ def _load_common(snap: Path) -> dict[str, pd.DataFrame]:
 
 def evidence_view(snap: Path | None = None) -> DataView:
     snap = snap or snapshot_dir()
-    return DataView(EVIDENCE, None, snapshot_hash(snap), pair_labels=pd.read_parquet(snap / "pair_labels.parquet"),
+    return DataView(EVIDENCE, None, snapshot_hash(snap), None, pair_labels=pd.read_parquet(snap / "pair_labels.parquet"),
                     **_load_common(snap))
 
 
-def _split_tables(snap: Path, split_id: str) -> tuple[pd.DataFrame, pd.DataFrame]:
-    d = split_dir(snap, split_id)
-    return pd.read_parquet(d / "label_vocab.parquet"), pd.read_parquet(d / "pair_splits.parquet")
-
-
 def prediction_view(split_id: str = SPLIT_ID, snap: Path | None = None) -> DataView:
+    """Chỉ nhãn train. Mọi metadata suy ra từ nhãn (tần suất nhãn, thuốc có trong combo) được tính lại trên
+    train; các cột tính trên toàn snapshot bị bỏ để không lộ thông tin val/test."""
     snap = snap or snapshot_dir()
-    vocab, pairs = _split_tables(snap, split_id)
+    vocab, pairs, split_hash = load_verified_split(snap, split_id)
     train_pairs = pairs.loc[pairs["split"] == "train", ["drug_a", "drug_b"]]
     labels = pd.read_parquet(snap / "pair_labels.parquet")
     labels = labels[labels["effect_idx"].isin(vocab["effect_idx"])].merge(train_pairs, on=["drug_a", "drug_b"])
+    labels = labels.reset_index(drop=True)
     common = _load_common(snap)
-    common["effects"] = common["effects"][common["effects"]["effect_idx"].isin(vocab["effect_idx"])]
-    return DataView(PREDICTION, split_id, snapshot_hash(snap), pair_labels=labels.reset_index(drop=True), **common)
+
+    effects = common["effects"]
+    effects = effects[effects["effect_idx"].isin(vocab["effect_idx"])].drop(columns="n_rows")
+    counts = labels["effect_idx"].value_counts()
+    common["effects"] = effects.assign(n_rows_train=effects["effect_idx"].map(counts).fillna(0).astype(np.int64))
+
+    train_drugs = set(labels["drug_a"]) | set(labels["drug_b"])
+    drugs = common["drugs"].drop(columns="in_combo")
+    common["drugs"] = drugs.assign(in_train=drugs["drug_idx"].isin(train_drugs))
+    return DataView(PREDICTION, split_id, snapshot_hash(snap), split_hash, pair_labels=labels, **common)
 
 
 def load_eval_targets(split: str, split_id: str = SPLIT_ID, snap: Path | None = None
@@ -83,7 +90,7 @@ def load_eval_targets(split: str, split_id: str = SPLIT_ID, snap: Path | None = 
     if split not in ("val", "test"):
         raise ValueError("Chỉ dùng cho val hoặc test")
     snap = snap or snapshot_dir()
-    vocab, pairs = _split_tables(snap, split_id)
+    vocab, pairs, _ = load_verified_split(snap, split_id)
     pairs = pairs.loc[pairs["split"] == split, ["drug_a", "drug_b"]].reset_index(drop=True)
     labels = pd.read_parquet(snap / "pair_labels.parquet").merge(vocab[["effect_idx", "label_idx"]], on="effect_idx")
     labels = labels.merge(pairs.reset_index(names="row"), on=["drug_a", "drug_b"])
@@ -97,7 +104,7 @@ class Cache:
 
     def __init__(self, view: DataView, root: Path = CACHE_DIR):
         self.view = view
-        self.dir = root / view.mode / (view.split_id or "full") / view.snapshot_hash
+        self.dir = root / view.mode / (view.split_id or "full") / (view.split_hash or "-") / view.snapshot_hash
 
     def _path(self, *parts) -> Path:
         return self.dir / f"{self.view.cache_key(*parts)}.json"
