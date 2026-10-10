@@ -14,7 +14,7 @@ _Cập nhật lần cuối: 2026-10-10_
 
 - **Bối cảnh (chốt 2026-10-10):** đây là **dự án thật, không phải môn học**: không có cổng duyệt của giảng viên. Còn **6 tuần**; API LLM và GPU thuê ngoài khi cần; **có người bên dược** hỗ trợ (danh mục demo, duyệt mapping, gold set, chấm giải thích).
 - **Hướng đã chốt (plan v2):** lõi là **A** (tra cứu bằng chứng Decagon) + **D** (cơ chế ChEMBL `action_type`, đoạn nhãn DailyMed, dược sĩ kiểm tra) + **B0** (dự đoán bằng đếm tần suất theo từng thuốc, **không huấn luyện**). **B2** (DistMult/SimplE) chỉ làm nếu qua **cổng M** cuối tuần 3 (plan mục 4.4). Không làm B1, GNN, HODDI. Chi tiết và lịch ở `plan/Ke_hoach_trien_khai.md`.
-- **Giai đoạn:** GĐ1a và **GĐ1b xong** (split `pair_70-10-20_s391` đã đóng băng, data view theo chế độ, 4 test rò rỉ đạt). **Tiếp theo (tuần 2):** GĐ2 demo tra cứu ‖ GĐ3 nguồn cơ chế ChEMBL/DailyMed. Giao thức D1–D7 ở plan mục 6.1.
+- **Giai đoạn:** GĐ1a, GĐ1b xong. **GĐ2 (demo tra cứu) xong phần lõi**: `python -m dsp391m.lookup`. Phần dở: 253/645 thuốc chưa có tên (`name_source = pending`) do PubChem chặn tạm thời; chạy lại `python -m dsp391m.names` để bổ sung từ cache. **Tiếp theo:** B0 trên val chính thức (bộ chấm điểm dùng chung) và GĐ3 (ChEMBL/DailyMed).
 - **Đang chờ dược sĩ:** danh mục demo khoảng 50 thuốc; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `structure_coverage.json`.
 - **Tài liệu cũ:** `docs/submission/*` vẫn mô tả thiết kế cũ. Không cần nộp lại; nếu dùng lại thì sửa theo plan mục 10.
 
@@ -24,6 +24,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-10 | Hoàn thành lõi GĐ2: `names.py` (tên thuốc qua PubChem synonyms + CID liên quan, symbol gene NCBI), `lookup.py` (tra cứu theo cặp, gộp theo tác dụng phụ với cặp đóng góp và evidence ID, bối cảnh target/PPI phạt mềm theo bậc, tách 3 trường hợp thiếu dữ liệu). Xếp hạng mặc định: số cặp đóng góp, hòa thì nhãn hiếm trước; `--sort enrichment` là tùy chọn | Demo cho thấy cả hai cách xếp hạng đều có điểm yếu; nhãn Decagon lẫn chỉ định và bệnh nền (ví dụ hyperlipaemia đi cùng simvastatin) | Đã làm |
 | 2026-10-10 | Sửa GĐ1b theo review: prediction view bỏ metadata tính trên toàn snapshot (`effects.n_rows` → `n_rows_train`, `drugs.in_combo` → `in_train`); `splits.run` không ghi đè split đã có (cùng tham số thì chỉ xác minh, khác thì `SplitExistsError`); mọi nơi đọc split qua `load_verified_split` (checksum file và snapshot, nếu sai thì `SplitIntegrityError`); khóa cache gồm `split_hash`; 6 test hồi quy | Review phát hiện metadata val/test lọt vào prediction view, split "đóng băng" vẫn ghi đè được, và loader không xác minh file | Đã làm |
 | 2026-10-10 | Hoàn thành GĐ1b: `splits.py` (vocab 963, split 70/10/20 seed 391, commit file split), `dataview.py` (evidence/prediction view, `load_eval_targets`, `Cache` khóa theo chế độ), `tests/test_leakage.py` | Đóng băng split để B0 được chấm trung thực và B2 có thể làm ngay nếu qua cổng M | Đã làm |
 | 2026-10-10 | **Chốt plan v2:** dự án thật (không cổng giảng viên), 6 tuần, có dược sĩ; lõi A + D + B0 không huấn luyện; B2 qua cổng M cuối tuần 3; bỏ B1/GNN/HODDI; chốt giao thức D1–D7; giữ mọi thuốc bị gắn cờ, dược sĩ xem lại | Thử nghiệm B0 (`analysis/2026-10-10/b0_pilot.json`): macro AP 0,270, AUROC 0,837 mà không cần huấn luyện; giá trị sản phẩm nằm ở bằng chứng có nguồn | Đã chốt (thay thế các dòng "Đề xuất" ngày 08/10 và 10/10 về B) |
@@ -52,6 +53,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 - `data/processed/decagon_v1/`: đầu ra ETL. File `*.parquet` bị gitignore (sinh lại được); `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
 - `data/processed/decagon_v1/splits/pair_70-10-20_s391/`: split **đã đóng băng** (vocab, phân chia cặp, manifest có hash), được commit. Muốn đổi thì tạo `split_id` mới, không ghi đè.
 - `data/cache/`: cache theo chế độ (gitignore).
+- `data/processed/decagon_v1/drug_names.parquet`, `gene_names.parquet`: bảng tên lấy từ API ngoài, được commit.
+- `data/external/ncbi/`: cache symbol gene (đã cắt gọn), được commit.
 - `data/external/pubchem/`: cache nguyên văn phản hồi PubChem, được commit để chạy lại ở chế độ `--offline`.
 - `tests/`: pytest; test đánh dấu `slow` chạy trên dữ liệu thật.
 
@@ -67,6 +70,10 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/
 .venv/bin/python -m dsp391m.etl
 .venv/bin/python -m dsp391m.quality
 .venv/bin/python -m dsp391m.structures --offline   # bỏ --offline để gọi PubChem khi thiếu cache
+# Tên thuốc và gene (gọi PubChem/NCBI, có cache; --offline chỉ dùng cache). Nếu báo CHƯA XONG thì chạy lại sau
+.venv/bin/python -m dsp391m.names
+# GĐ2: tra cứu bằng chứng cho đơn thuốc (tên, STITCH ID hoặc PubChem CID; --json để xuất JSON)
+.venv/bin/python -m dsp391m.lookup aspirin simvastatin omeprazole fluoxetine --top 10
 # GĐ1b: vocabulary + split (đã đóng băng và commit; chạy lại chỉ để kiểm tra hash, không ghi đè bằng tham số khác)
 .venv/bin/python -m dsp391m.splits
 
@@ -97,6 +104,9 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - Bộ 3 thuốc ngẫu nhiên: khoảng 8,6% có đủ target cho cả 3 thuốc. Về nhãn theo cặp: 57% có ít nhất một cặp có nhãn, 43% không cặp nào có nhãn, khoảng 10% có nhãn cho cả 3 cặp. Với đơn 5 thuốc: 86% có ít nhất một cặp có nhãn. (Đo ngày 2026-10-10, 5.000 mẫu, seed 391.) Tra cứu theo cặp chỉ phủ một phần; nhánh cơ chế thiếu dữ liệu ở đa số truy vấn.
 - **B0 (thử nghiệm, split tạm 80/20 seed 0):** chấm toàn ma trận 12.694 cặp × 963 nhãn (tỷ lệ dương 7,45%): độ phổ biến của nhãn đạt macro AP 0,074; B0 `f(A,e)+f(B,e)` đạt macro AP 0,270, macro AUROC 0,837, micro AP 0,351.
 - **Split chính thức `pair_70-10-20_s391`:** 63.472 cặp có nhãn trong vocab, chia 44.430 / 6.347 / 12.695 (1 cặp chỉ có nhãn ngoài vocab bị loại). Prediction view còn 3.198.361 dòng nhãn train. Nếu chỉ tính ngưỡng ≥500 dòng trên train (ngưỡng nhân 0,7) thì vocab còn 959 nhãn: chênh 4 nhãn, **chưa đánh giá ảnh hưởng đến metric** (muốn kết luận thì so sánh hai vocab trên cùng val). Tỷ lệ dương của val: 7,49%.
+- **Tên thuốc** (`names_report.json`): 374/645 thuốc có tên ngay từ CID gốc. CID gốc của Decagon thường là dạng flat hoặc ion (ví dụ CID 2173 là anion của ampicillin) nên không có tên; khi đó lấy tên từ CID cha hoặc CID cùng connectivity có nhiều synonym nhất (ampicillin → CID 6249). Mọi tên lấy theo cách này có `needs_review` (có thể nhầm đồng phân lập thể). PubChem chặn IP (HTTP 429) sau khoảng 1.000 request liên tiếp và kéo dài hơn 30 phút: tránh gọi dồn, luôn dùng cache. 3.648/3.648 gene target có symbol NCBI.
+- **Hạn chế của nhãn Decagon thấy qua demo:** nhãn lẫn chỉ định và bệnh nền của nhóm bệnh nhân (hyperlipaemia xuất hiện ở mọi cặp có simvastatin), tên nhãn đôi khi lạ (C0011860 có tên "Mod"). Xếp theo số cặp đẩy nhãn chung chung lên đầu; xếp theo mức trội đẩy nhãn hiếm, có thể là nhiễu. Chưa có cách xếp hạng đã kiểm chứng; cần dược sĩ và nguồn GĐ3.
+- **Độ trễ GĐ2** (300 đơn ngẫu nhiên, k = 3/5/10): tải chỉ mục 0,7 giây; truy vấn p50 15 ms, p95 228 ms, tối đa 687 ms. Đạt mục tiêu p95 tra cứu dưới 1 giây.
 - **Cấu trúc phân tử** (PubChem, 2026-10-10): 645/645 thuốc combo có SMILES và RDKit tạo được Morgan fingerprint. 58 thuốc bị gắn cờ (`charged`, `multi_component`, `tiny`): phần lớn là dạng ion hóa hợp lệ của thuốc (penicillin dạng carboxylate, amoni bậc 4), nhưng có nhóm cần xem tay vì không phải hoạt chất đặc hiệu (calcium cation, NaCl, KCl, sulfate ion, nitric oxide, lithium aluminum hydride, CID 6398525). Không có InChIKey trùng. Danh sách đầy đủ trong `data/processed/decagon_v1/structure_coverage.json`.
 - Tên tác dụng phụ có lỗi chính tả (ví dụ "neumonia"). Dùng CUI làm khóa và giữ tên gốc để truy vết.
 - Nạp combo bằng `dtype='category'` để tiết kiệm RAM. Không dựng toàn bộ 4,6 triệu cạnh thành object NetworkX; dùng bảng tra cứu hoặc ma trận thưa.

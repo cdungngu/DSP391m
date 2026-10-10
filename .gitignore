@@ -21,3 +21,6 @@ data/processed/**/*.parquet
 !data/processed/*/splits/**/*.parquet
 # Cache truy xuất/LLM theo chế độ
 data/cache/
+# Bảng tên lấy từ API ngoài (PubChem/NCBI): commit để chạy được mà không cần mạng
+!data/processed/*/drug_names.parquet
+!data/processed/*/gene_names.parquet

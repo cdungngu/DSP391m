@@ -205,6 +205,11 @@ Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước
   - Thuốc thiếu target: **giữ kết quả lookup**, chỉ đánh dấu phần cơ chế là thiếu.
 - **Cổng:** demo chạy được với các đơn mẫu, báo đúng cả ba trường hợp.
 
+- **Trạng thái (2026-10-10): lõi đã xong.** `python -m dsp391m.lookup`. Phát hiện cần xử lý ở GĐ3–GĐ5:
+  - **Xếp hạng tác dụng phụ chưa có lời giải tốt.** Theo số cặp thì nhãn chung chung lên đầu; theo mức trội so với tỷ lệ nền thì nhãn hiếm, có thể là nhiễu, lên đầu. Dược sĩ cần đánh giá cách xếp hạng trên gold set; nguồn DailyMed giúp ưu tiên các tương tác có ghi trong nhãn thuốc.
+  - **Nhãn Decagon lẫn chỉ định và bệnh nền** (ví dụ hyperlipaemia ở cặp có simvastatin). Phần giải thích không được trình bày các nhãn này như tác dụng phụ do tương tác.
+  - **Tên thuốc:** 374/645 có tên trực tiếp; 253 thuốc chờ PubChem hết giới hạn tốc độ; các tên suy ra từ CID liên quan cần dược sĩ duyệt.
+
 ### GĐ3 — Nguồn cơ chế và nhãn thuốc (D), tuần 2, song song GĐ2
 
 - **Danh mục demo:** dược sĩ chọn khoảng **50 thuốc** thường dùng chung trong số 645 thuốc. Phần D làm sâu trên danh mục này trước khi mở rộng.
@@ -335,6 +340,7 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 
 | Ngày | Thay đổi |
 |---|---|
+| 2026-10-10 | GĐ2 lõi hoàn thành (tra cứu, gộp, bối cảnh target/PPI, 3 trường hợp thiếu dữ liệu, p95 228 ms). Ghi nhận vấn đề xếp hạng và nhãn lẫn chỉ định; tên thuốc còn thiếu 253. |
 | 2026-10-10 | Sửa GĐ1b theo review: metadata của prediction view chỉ tính trên train; split không ghi đè được; xác minh checksum và snapshot khi đọc split; khóa cache gồm split_hash. |
 | 2026-10-10 | GĐ1b hoàn thành; split `pair_70-10-20_s391` đóng băng và commit. |
 | 2026-10-10 | **v2.** Chốt Q1–Q5 (dự án thật, 6 tuần, chưa huấn luyện, có dược sĩ). Thử nghiệm B0: macro AP 0,270, AUROC 0,837, không cần huấn luyện. Lõi đổi thành A + D + B0; B2 có điều kiện qua cổng M cuối tuần 3; bỏ B1, GNN, HODDI. Giao thức D1–D7 đã chốt. Lịch 6 tuần viết lại. |
