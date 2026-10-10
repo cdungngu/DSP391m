@@ -17,3 +17,7 @@ venv/
 
 # Dữ liệu đã xử lý: sinh lại bằng `python -m dsp391m.etl`; chỉ commit manifest và báo cáo kiểm tra
 data/processed/**/*.parquet
+# Split đã đóng băng phải dùng chung, nên commit
+!data/processed/*/splits/**/*.parquet
+# Cache truy xuất/LLM theo chế độ
+data/cache/

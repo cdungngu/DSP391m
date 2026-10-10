@@ -1,0 +1,29 @@
+{
+  "split_id": "pair_70-10-20_s391",
+  "created_at": "2026-10-10T10:01:06+00:00",
+  "snapshot": "decagon_v1",
+  "snapshot_pair_labels_sha256": "fb25f2508db2f4b1fbd51e95bd35f427e4946e26b45bd3d1a0c4bf39a96a8581",
+  "params": {
+    "min_rows": 500,
+    "ratios": {
+      "train": 0.7,
+      "val": 0.1,
+      "test": 0.2
+    },
+    "seed": 391,
+    "unit": "unordered drug pair"
+  },
+  "labels_in_vocab": 963,
+  "pairs_in_split": 63472,
+  "labeled_pairs_without_vocab_label": 1,
+  "pairs_per_split": {
+    "train": 44430,
+    "val": 6347,
+    "test": 12695
+  },
+  "sensitivity_train_only_vocab_size": 959,
+  "files": {
+    "label_vocab.parquet": "8a4b7e094749cf04974200151c5feb6c993bff11b2e8c03a4267a92d7da7ae5d",
+    "pair_splits.parquet": "4a9626ee786af63346092cba7e6c09e81efe0ed01b5123ad2f9cee2af1e6d4b2"
+  }
+}
