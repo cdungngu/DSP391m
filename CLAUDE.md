@@ -13,7 +13,7 @@ DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đ
 _Cập nhật lần cuối: 2026-10-10_
 
 - **Giai đoạn:** ý tưởng / chốt phạm vi. `src/` chưa có mã triển khai: chưa có pipeline, mô hình, test hay môi trường khóa phiên bản.
-- **Hướng đang nghiêng về:** phương án B, với A là mốc đầu tiên (chi tiết ở mục 8 và 15 của báo cáo đánh giá).
+- **Hướng đang nghiêng về:** phương án B, với A là mốc đầu tiên (chi tiết ở mục 8 và 15 của báo cáo đánh giá). Lộ trình theo giai đoạn GĐ0–GĐ6, kèm cổng chuyển giai đoạn và lý do, nằm ở `plan/Ke_hoach_trien_khai.md`; hiện đang ở **GĐ0 (chốt phạm vi)**; GĐ1a (môi trường, ETL chỉ đọc, manifest, QA, độ phủ cấu trúc) được phép làm song song. **Chưa đóng băng split** cho tới khi giao thức đánh giá ở mục 5.1 của file plan được chốt.
   - A: tra cứu và tổng hợp bằng chứng tương tác đã ghi nhận cho đơn thuốc.
   - B: mô hình dự đoán nhẹ theo **cặp thuốc** (đa nhãn tác dụng phụ), cộng giải thích có nguồn; đơn nhiều thuốc được tổng hợp từ các cặp.
   - C: tương tác bậc cao trên HODDI, chỉ là nhánh phụ có điều kiện.
@@ -30,6 +30,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-10 | Sửa kế hoạch theo review: thêm giao thức đánh giá chung (mục 5.1), cách ly hai chế độ ở tầng dữ liệu, mapping cấu trúc cho B1, mốc bắt buộc B0 + một trong B1/B2; GĐ1a (ETL, manifest, QA) được chạy song song GĐ0 | Tránh bảng metric không so sánh được và rò rỉ nhãn qua lookup/cache | Đề xuất, chưa chốt |
+| 2026-10-10 | Tạo `plan/Ke_hoach_trien_khai.md`: lộ trình A → B theo giai đoạn GĐ0–GĐ6, một nhánh mở rộng tùy chọn | Gom ý tưởng ban đầu và phân tích thành lộ trình có thứ tự và lý do | Đề xuất, chưa chốt |
 | 2026-10-10 | Sắp xếp lại repo thành `data/`, `docs/`, `analysis/` và `src/`; thêm `README.md` hướng dẫn nhanh | Tách dữ liệu gốc, tài liệu nộp và hồ sơ phân tích để dễ tìm; cập nhật script và lệnh theo đường dẫn mới | Đã làm |
 | 2026-10-10 | Tạo CLAUDE.md dạng tài liệu sống | Phạm vi còn thay đổi nhiều | Đã làm |
 | 2026-10-08 | Đề xuất chuyển từ "RAG thuần cho k ≥ 3 thuốc" sang B (dự đoán theo cặp + giải thích), A làm mốc đầu | Chỉ 284/645 thuốc có target; Decagon chỉ có nhãn theo cặp; HODDI có shortcut ở mẫu âm | Đề xuất, chưa chốt |
@@ -46,6 +48,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
   - `audit_data.py`, `audit_external.py`, `probe_hoddi_shortcut.py`: các script kiểm toán chỉ đọc. Kết quả nằm trong `*.json` và `*.csv` cùng thư mục.
   - `sources/`: nguồn tải thêm (Decagon mono, targets-all, HODDI v1 tại commit `700d0da…`) và bản text của các báo cáo/literature review để đọc nhanh.
   - `qa/`: bản PDF và ảnh trang được render để kiểm tra bố cục tài liệu.
+- `plan/Ke_hoach_trien_khai.md`: kế hoạch triển khai sống (lộ trình, giai đoạn, cổng, lịch, các chỗ cần sửa trong báo cáo nộp).
 - `src/`: vị trí dự kiến cho mã triển khai; hiện chỉ có ghi chú cấu trúc.
 
 ## Lệnh
@@ -72,7 +75,7 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **combo:** 4.649.441 dòng; 645 thuốc; 63.473 cặp không thứ tự (30,6% trên 207.690 cặp có thể có); 1.317 nhãn CUI. Lọc nhãn có ≥500 dòng còn 963 nhãn (cùng quy ước với bài tensor factorization). Không có cạnh trùng, cạnh đảo chiều hay cạnh tự nối. Không có nhãn âm, liều, mức độ nặng hay xác suất: cặp vắng mặt nghĩa là **chưa quan sát**, không phải an toàn.
 - **targets:** chỉ **284/645** thuốc của combo có target. Trung vị 11 target mỗi thuốc, nhưng `CID000000271` (calcium cation) có 2.840 target. File `targets-all` chính thức cũng không tăng độ phủ này.
 - **ppi:** 715.612 cạnh không hướng, 19.081 gene; bậc trung vị 33, lớn nhất 2.519. Cạnh không có dấu (kích hoạt/ức chế) và gồm cả liên hệ chức năng, nên không gọi chung là "tương tác vật lý trực tiếp".
-- Bộ 3 thuốc ngẫu nhiên: khoảng 8,6% có đủ target cho cả 3 thuốc, khoảng 9,5% có nhãn cho cả 3 cặp. Nhánh suy luận cơ chế và nhánh tra cứu theo cặp đều thiếu dữ liệu ở đa số truy vấn.
+- Bộ 3 thuốc ngẫu nhiên: khoảng 8,6% có đủ target cho cả 3 thuốc. Về nhãn theo cặp: 57% có ít nhất một cặp có nhãn, 43% không cặp nào có nhãn, khoảng 10% có nhãn cho cả 3 cặp. Với đơn 5 thuốc: 86% có ít nhất một cặp có nhãn. (Đo ngày 2026-10-10, 5.000 mẫu, seed 391.) Tra cứu theo cặp chỉ phủ một phần; nhánh cơ chế thiếu dữ liệu ở đa số truy vấn.
 - Tên tác dụng phụ có lỗi chính tả (ví dụ "neumonia"). Dùng CUI làm khóa và giữ tên gốc để truy vết.
 - Nạp combo bằng `dtype='category'` để tiết kiệm RAM. Không dựng toàn bộ 4,6 triệu cạnh thành object NetworkX; dùng bảng tra cứu hoặc ma trận thưa.
 
@@ -94,6 +97,7 @@ Cập nhật **trong cùng phiên** với thay đổi, không để dồn:
 | Khi nào | Sửa mục nào |
 |---|---|
 | Nhóm chốt hoặc đổi phạm vi, phương án, baseline | Thêm dòng vào *Nhật ký quyết định*; sửa *Trạng thái hiện tại* |
+| Đổi lộ trình, xong một giai đoạn hoặc đổi lịch | Sửa `plan/Ke_hoach_trien_khai.md` (kể cả nhật ký ở cuối file) và giai đoạn hiện tại trong *Trạng thái hiện tại* |
 | Trả lời được một câu hỏi mở | Xóa khỏi *Câu hỏi mở* và ghi kết quả vào *Nhật ký quyết định* |
 | Thêm code, môi trường, test hoặc script mới vào `src/` | Cập nhật *Lệnh* (cài đặt, chạy, test một case) và *Bố cục repo* nếu cấu trúc thay đổi |
 | Phát hiện mới về dữ liệu, hoặc số liệu cũ sai | Sửa *Sự thật về dữ liệu*, ghi rõ nguồn hoặc script đã kiểm chứng |
