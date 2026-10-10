@@ -1,0 +1,80 @@
+Report 2 – Methodology
+Predicting Polypharmacy Side Effects with Graph RAG and an LLM
+Group 8
+Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An
+II. Background
+A. The Knowledge Graph
+The biomedical knowledge graph used in this work contains two node types, drugs and proteins, connected by three relation types summarized in Table I. The drug–drug relation is taken from the Decagon dataset.
+TABLE I
+Relation Types in the Knowledge Graph
+Relation
+Description
+Drug → Protein
+Proteins that a drug binds to or modulates. This is a property of the individual drug and does not depend on co-prescribed drugs.
+Protein ↔ Protein
+A fixed, drug-independent network of physical protein interactions (e.g., signal transduction and shared pathways).
+Drug ↔ Drug
+Previously documented side effects for specific drug pairs, as recorded in Decagon.
+
+Only the third relation is inherently limited to drug pairs, since each polypharmacy edge connects exactly two drugs. The drug–target and protein–protein relations are properties of individual drugs and of the biological network, respectively, so they are equally available for any number of drugs.
+B. Standard Graph-RAG
+Graph-RAG consists of two steps. In the retrieval step, the graph is traversed outward from the entities named in the query to collect the relevant neighborhood, which preserves relational structure instead of relying on text similarity alone. In the generation step, this neighborhood is serialized as text and supplied to a large language model (LLM), so that the model reasons over explicit structure rather than memorized associations. The retrieval step is not intrinsically limited to two entities, since it expands from any set of query entities.
+C. Problem Statement
+Given a drug regimen of k ≥ 3 drugs, we aim to predict its potential side effects. Each prediction is annotated with an interpretive tier and with the supporting path in the retrieved subgraph.
+III. Methodology
+The pipeline operates on the Decagon knowledge graph described in Table I. Fig. 1 shows an example of this graph, with drug and protein nodes connected by drug–protein, protein–protein, and pairwise drug–drug edges. Retrieval traverses the first two edge types for every drug in the queried regimen, while the drug–drug edges supply the known pairwise history.
+
+Fig. 1. Example of the Decagon knowledge graph on which the pipeline operates, showing drug and protein nodes, drug–protein and protein–protein interactions, and pairwise polypharmacy side-effect edges between drugs.
+The proposed pipeline (Fig. 2) has three stages: retrieval of the neighborhood of the queried drugs (Section III-A), pruning of structurally noisy proteins from that neighborhood (Section III-B), and generation of tiered, traceable predictions from the pruned result (Section III-C).
+
+Fig. 2. Overview of the proposed pipeline for a regimen of k ≥ 3 drugs.
+A. Extending Retrieval from Two to k ≥ 3 Drugs
+We observe that retrieval over the drug–target and protein–protein relations is performed for each drug independently, and the results are then combined. This procedure therefore generalizes to any k without modification, as summarized in Table II.
+TABLE II
+Retrieval Sequence for a Regimen of k ≥ 3 Drugs
+Step
+Operation
+Description
+1
+Look up each drug’s targets
+For every drug in the regimen, retrieve its set of target proteins. This lookup does not depend on the other drugs.
+2
+Combine target sets
+Take the union of all target sets to form one neighborhood. This is the usual Graph-RAG gathering step, applied to more sets.
+3
+Find protein bridges
+Using the drug-independent protein network, find connections between targets of different drugs, either by a direct edge or through one intermediate protein.
+4
+Find shared targets
+Identify proteins that are targets of three or more different drugs, by intersecting the target sets from Step 1.
+5
+Attach pairwise history
+For every drug pair in the regimen, add the documented side effects, so that the LLM knows which effects are already known.
+6
+Serialize
+Resolve identifiers to standard drug and gene names, convert the neighborhood (drugs, targets, bridges, shared targets, pairwise history) to text, and pass it to the LLM.
+
+Two steps deserve further explanation. In Step 3, a bridge is restricted to at most two hops: either a direct protein–protein edge between two targets, or a path through a single intermediate protein. Longer paths are not followed, because they would pull in a large number of indirectly related proteins and make the neighborhood too large and noisy. This restriction keeps each bridge biologically direct rather than a multi-step inference. Step 4 yields a signal that pairwise analysis cannot provide: a protein targeted by three drugs at once becomes visible only when the neighborhoods of all three drugs are combined. A protein targeted by exactly two drugs is retained in the neighborhood and is covered by the pairwise history of Step 5, so it does not trigger Tier 2.
+Once assembled, the context is given to the LLM, which is prompted to reason step by step from target perturbation to possible adverse outcomes before producing a final answer.
+B. Pruning Before Passing to the LLM
+Some proteins, such as housekeeping proteins, interact with a very large number of other proteins and would flood the neighborhood with noise unrelated to the mechanism of any specific drug. We therefore filter them out before serialization. A protein is kept if it is a direct target of a drug in the regimen, regardless of its number of connections. Otherwise it is kept only if its connectivity is below a threshold.
+Hub proteins are identified by a connectivity computation. For every protein pulled into the neighborhood, we count how many other proteins it directly connects to across the whole protein–protein network. A protein whose count exceeds the threshold is treated as a generic hub and pruned, since a protein connected to thousands of others carries little information about the drugs in the regimen. Pruned intermediate proteins are removed together with the bridges that depend on them.
+C. Output: Tiered, Traceable Predictions
+The LLM output is organized into three interpretive tiers according to the part of the retrieved structure that supports each prediction (Table III).
+TABLE III
+Interpretive Tiers of Predicted Side Effects
+Tier
+Trigger
+Clinical meaning
+1: Known pairwise effect
+A documented side effect exists for one drug pair in the regimen.
+An independent effect of that pair, unrelated to the other drug(s).
+2: Amplified effect
+A protein is a shared target of three or more drugs in the regimen, and a pairwise effect is documented for at least one pair among those drugs.
+That documented (minor) effect may be escalated because several drugs act on the same target.
+3: Newly emergent effect
+A bridge links the targets of two different drugs, and the predicted effect is not documented for that drug pair.
+A potential adverse event with no pairwise precedent, arising only from the combined regimen.
+
+The output is constrained to a fixed structured format (e.g., JSON). For every predicted side effect, the model must state the assigned tier, the specific path in the retrieved subgraph that supports it, and a plain-language explanation. Each cited path is then checked automatically against the retrieved subgraph, and a prediction whose path does not exist in it is discarded. This makes every Tier 2 or Tier 3 claim traceable to an actual piece of retrieved structure rather than being generated freely, and keeps the predictions machine-readable for downstream use. Tier 3 predictions are hypotheses and require experimental or clinical validation.
+

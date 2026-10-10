@@ -1,0 +1,331 @@
+                      Research Report
+
+
+
+Predicting Polypharmacy Side Eﬀects with
+         Graph RAG and an LLM
+
+
+                            Group 8
+
+
+    Le Van Hung   Nguyen Vu Huy   Nguyen Chi Dung   Do Quoc An
+
+
+
+
+                          October 2026
+Contents
+
+1 Introduction                                                                                       1
+  1.1 Problem and Motivation . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .     1
+  1.2 Related Work . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+       1.2.1 What is already solid . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+       1.2.2 What is still missing . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   1
+  1.3 Objective and Project Scope . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    2
+       1.3.1 Objective . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+       1.3.2 Dataset and suitability . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   2
+       1.3.3 Deliverable and boundaries . . . . . . . . . . . . . . . . . . . . . . . . . . . .      2
+  1.4 Report Structure . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .   3
+
+2 Background                                                                                         3
+  2.1 The Knowledge Graph . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .      3
+  2.2 Standard Graph-RAG . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .       3
+  2.3 Problem Statement . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . . .    4
+
+3 Methodology                                                                                        4
+  3.1 Extending Retrieval from Two to k ≥ 3 Drugs . . . . . . . . . . . . . . . . . . . . . .        4
+  3.2 Pruning Before Passing to the LLM . . . . . . . . . . . . . . . . . . . . . . . . . . .        5
+  3.3 Output: Tiered, Traceable Predictions . . . . . . . . . . . . . . . . . . . . . . . . . .      5
+
+
+
+
+                                                  i
+Introduction
+1.1 Problem and Motivation
+
+Polypharmacy—the concurrent use of several medications by one patient—is common among older
+adults and patients with chronic or complex diseases. Although often necessary, it raises the risk
+of drug–drug interactions (DDIs), especially polypharmacy side eﬀects: adverse events that emerge
+only when two or more drugs are taken together and cannot be attributed to a single drug. Such
+interactions contribute to hospitalisation, morbidity, and post-market drug withdrawal; identifying
+harmful combinations early is therefore a direct patient-safety concern.
+    The problem is fundamentally combinatorial. With thousands of approved drugs, possible
+combinations are too numerous for exhaustive clinical testing, and many interactions surface only
+after market release. Computational screening is consequently essential. Drugs, their protein
+targets, and protein interactions form a natural network, while a side eﬀect between drugs can
+be represented as a typed edge. This project uses that perspective and the Decagon (BioSNAP)
+dataset as its biomedical knowledge graph.
+
+1.2 Related Work
+
+1.2.1 What is already solid
+Multi-relational link prediction on a drug–protein graph is a well-established and eﬀective formula-
+tion. Decagon [1] introduced it, while TIP [2] substantially improved eﬃciency, reporting AUPRC
+0.890 (a 7.2% improvement over Decagon), about 83× faster execution, and roughly threefold lower
+memory use. Strong results have also been reported by molecular-structure approaches such as SSI-
+DDI [3] and biomedical-knowledge-graph approaches including KnowDDI [4] and MKG-FENN [5].
+    Most relevant here, a knowledge graph combined with a large language model (LLM) adds an
+interpretable explanation layer to prediction. DDI-GPT [6] retrieves a subgraph around a drug
+pair, converts it to text, and ﬁne-tunes an LLM to return both a prediction and a gene-level ra-
+tionale. More broadly, large-scale evaluation indicates that even modest LLMs can predict DDIs
+eﬀectively [7]. Recent systems extend this direction with mechanism-conditioned multi-agent rea-
+soning (DDIAgents [9]) and dynamic multi-view graph-and-language reasoning (DrugReason [10]).
+
+1.2.2 What is still missing
+Three gaps motivate this work. First, most systems, including DDI-GPT and DDIAgents, op-
+erate on drug pairs, whereas real polypharmacy commonly involves three or more medications.
+HODDI [8] explicitly targets high-order interactions, but is a benchmark with GNN and hyper-
+graph baselines rather than an end-to-end multi-drug prediction-and-explanation system.
+    Second, locally hosted LLMs and chained multi-agent pipelines can be resource-intensive and
+add substantial inference latency. This project instead uses a single API-based LLM over a retrieved
+subgraph, prioritising simplicity and low latency while extending to multi-drug queries. Third,
+retrieval alone can expose only interactions already represented in the graph; it cannot readily
+
+
+                                                 1
+Polypharmacy Side-Eﬀect Prediction                                                          Group 8
+
+
+estimate calibrated probabilities for genuinely untested combinations. A trained graph model is
+therefore a future extension. Predictions also remain population-level and explanations are not
+necessarily clinician-ready.
+
+1.3 Objective and Project Scope
+
+1.3.1 Objective
+Taking DDI-GPT as a baseline reference, this project develops an end-to-end clinical decision-
+support framework that predicts and explains adverse eﬀects for regimens of three or more drugs.
+The framework establishes an API-driven Graph-RAG pipeline over the Decagon biomedical graph.
+Instead of a heavy locally hosted pairwise model, a lightweight API-based LLM orchestrator pro-
+cesses multi-drug cocktails simultaneously and synthesises multi-hop biological pathways into clin-
+ically interpretable rationales with minimal inference latency.
+    For a queried drug set, the system retrieves a local subgraph containing the drugs, their target
+proteins, protein–protein links among those targets, and known side-eﬀect edges. It serialises this
+evidence into compact context, from which an API-based LLM predicts likely side eﬀects and
+provides a natural-language explanation.
+
+1.3.2 Dataset and suitability
+The Decagon dataset from BioSNAP at Stanford is a standardised resource for polypharmacy side
+eﬀects. It is provided as three connected CSV ﬁles:
+• bio-decagon-targets.csv: human proteins targeted by approximately 645 drugs.
+• bio-decagon-ppi.csv: physical interactions among approximately 19,000 human proteins.
+• bio-decagon-combo.csv: observed side eﬀects, across 964 types, for co-prescribed drug pairs.
+In full, the graph contains 645 drugs, 19,085 proteins, 18,596 drug–protein edges, 715,612 protein–
+protein edges, and 4,651,131 drug–drug side-eﬀect edges. Standard identiﬁers connect the three
+ﬁles without manual labelling or external scraping. The entities map directly to drug and protein
+nodes, and the relations map to typed drug–protein, protein–protein, and drug–drug side-eﬀect
+edges. This structure makes a compact local subgraph available for Graph-RAG.
+
+1.3.3 Deliverable and boundaries
+The deliverable is a functional, low-latency API pipeline that accepts multi-drug queries, dynami-
+cally extracts a local subgraph, and returns qualitative side-eﬀect predictions with mechanistic bio-
+logical rationales. Training a graph neural network to predict novel unobserved adverse edges is out-
+side the current phase. Continuous clinical variables—dose, pharmacokinetics, and renal/hepatic
+clearance—and empirical wet-lab validation are also future work.
+
+
+
+
+                                                 2
+1.4 Report Structure
+
+
+                               Table 1.1: Organisation of the report
+Chapter                              Content
+1 — Introduction                     Problem and motivation, related work and gaps, objective and scope.
+2 — Background and Related Work      Knowledge graphs, Graph-RAG, and LLMs for biomedical predic-
+                                     tion.
+3 — Data and Methodology             Decagon knowledge-graph construction and the Graph-RAG + API-
+                                     LLM pipeline.
+4 — Experiments and Results          Implementation, baselines, and metrics.
+5 — Discussion                       Interpretation, limitations, and practical implications.
+6 — Conclusion and Future Work       Outcomes and directions for extension.
+
+
+
+
+Background
+2.1 The Knowledge Graph
+
+The biomedical knowledge graph contains two node types—drugs and proteins—and three relation
+types (Table 2.1). The drug–drug relation is sourced from Decagon.
+
+
+                        Table 2.1: Relation types in the knowledge graph
+Relation                   Description
+Drug → Protein             Proteins a drug binds to or modulates. This is a property of an individual drug
+                           and does not depend on co-prescribed drugs.
+Protein ↔ Protein          A ﬁxed, drug-independent network of physical protein interactions, including
+                           signal transduction and shared pathways.
+Drug ↔ Drug                Previously documented side eﬀects for speciﬁc drug pairs, as recorded in
+                           Decagon.
+
+
+   Only the third relation is inherently pairwise: each polypharmacy edge connects exactly two
+drugs. Drug–target and protein–protein relations remain available for any number of drugs.
+
+2.2 Standard Graph-RAG
+
+Graph-RAG has two stages. During retrieval, the graph is traversed outward from entities named
+in a query to collect a relevant neighbourhood, preserving relational structure rather than relying
+only on textual similarity. During generation, that neighbourhood is serialised as text and supplied
+to an LLM, allowing the model to reason over explicit structure rather than memorised associations.
+Retrieval is not intrinsically limited to two entities because it can expand from any query set.
+
+
+
+
+                                                   3
+Polypharmacy Side-Eﬀect Prediction                                                             Group 8
+
+
+2.3 Problem Statement
+
+Given a drug regimen of k ≥ 3 drugs, the task is to predict potential side eﬀects. Each prediction
+is annotated with an interpretive tier and the supporting path in the retrieved subgraph.
+
+
+Methodology
+The pipeline operates on the Decagon knowledge graph. Figure 3.1 illustrates the data structure:
+drug and protein nodes are connected by drug–protein, protein–protein, and pairwise drug–drug
+side-eﬀect edges. Retrieval traverses the ﬁrst two edge types for every drug in a queried regimen,
+while drug–drug edges supply known pairwise history.
+
+                       known side eﬀect
+
+            Drug A                        Drug B             Drug C
+
+                                                                            Drug
+                                                                             Protein
+                                                                           — side-eﬀect edge
+
+
+
+           Protein 1                      Protein 2          Protein 3
+
+
+    Figure 3.1: Example Decagon knowledge graph and the relation types used for retrieval.
+
+   The proposed pipeline (Figure 3.2) has three stages: retrieval of the queried drugs’ neighbour-
+hood, pruning of structurally noisy proteins, and generation of tiered, traceable predictions.
+
+
+    Multi-drug query              Retrieve local          Prune hubs and          API LLM:
+          k≥3                       subgraph               noisy bridges      tiered prediction
+
+
+    Figure 3.2: Overview of the proposed Graph-RAG pipeline for a regimen of k ≥ 3 drugs.
+
+
+3.1 Extending Retrieval from Two to k ≥ 3 Drugs
+
+Retrieval over drug–target and protein–protein relations is conducted independently for each drug,
+then combined; it therefore generalises to any k without modiﬁcation (Table 3.1).
+
+
+
+
+                                                      4
+Polypharmacy Side-Eﬀect Prediction                                                                  Group 8
+
+
+
+                     Table 3.1: Retrieval sequence for a regimen of k ≥ 3 drugs
+Step     Operation                     Description
+1        Look up each drug’s tar-      For every drug in the regimen, retrieve its target-protein set inde-
+         gets                          pendently.
+2        Combine target sets           Take the union of all targets to form one neighbourhood.
+3        Find protein bridges          Find direct target-to-target protein edges or paths through one in-
+                                       termediate protein.
+4        Find shared targets           Identify proteins targeted by three or more drugs by intersecting the
+                                       target sets.
+5        Attach pairwise history       For every drug pair, add documented side eﬀects so the LLM knows
+                                       existing evidence.
+6        Serialise                     Resolve identiﬁers to standard drug and gene names; convert drugs,
+                                       targets, bridges, shared targets, and history to text for the LLM.
+
+
+    Bridges are restricted to at most two hops. Longer paths would introduce many indirectly
+related proteins and make the neighbourhood noisy; the restriction keeps each bridge biologically
+direct. Shared targets expose a signal unavailable to pairwise analysis: a protein targeted by three
+drugs becomes visible only after their neighbourhoods are combined. Proteins targeted by exactly
+two drugs remain in the neighbourhood and are covered by pairwise history. The assembled context
+prompts the LLM to reason from target perturbation to possible adverse outcomes before returning
+a ﬁnal answer.
+
+3.2 Pruning Before Passing to the LLM
+
+Housekeeping proteins can interact with very many proteins and ﬂood a neighbourhood with
+mechanism-irrelevant information. They are ﬁltered before serialisation. A direct target of any
+regimen drug is always retained; other proteins are retained only if their global protein-network
+connectivity is below a chosen threshold. A protein above that threshold is treated as a generic
+hub and removed together with bridges that depend on it.
+
+3.3 Output: Tiered, Traceable Predictions
+
+The LLM output is organised into three tiers according to the evidence supporting a prediction
+(Table 3.2).
+
+                        Table 3.2: Interpretive tiers of predicted side eﬀects
+Tier                  Trigger                                         Clinical meaning
+1: Known pairwise     A documented side eﬀect exists for one drug     An independent eﬀect of that pair, un-
+eﬀect                 pair in the regimen.                            related to the other drug(s).
+2: Ampliﬁed eﬀect     A protein is a shared target of three or more   A documented eﬀect may be escalated
+                      drugs, and a pairwise eﬀect is documented       because several drugs act on the same
+                      for at least one pair among them.               target.
+3: Newly emergent     A bridge links targets of two diﬀerent drugs    A potential adverse event with no pair-
+eﬀect                 and the predicted eﬀect is not documented       wise precedent, arising only from the
+                      for that pair.                                  combined regimen.
+
+
+                                                     5
+Polypharmacy Side-Eﬀect Prediction                                                         Group 8
+
+
+    The model is constrained to a ﬁxed structured format (for example, JSON). For every predicted
+side eﬀect it must state the assigned tier, a supporting subgraph path, and a plain-language expla-
+nation. Each cited path is automatically checked against the retrieved subgraph; a prediction with
+no valid path is discarded. Tier 2 and Tier 3 claims are thus traceable to retrieved structure and
+machine-readable for downstream use. Tier 3 predictions remain hypotheses requiring experimental
+or clinical validation.
+
+Bibliography
+
+ [1] M. Zitnik, M. Agrawal, and J. Leskovec, “Modeling polypharmacy side eﬀects with graph
+     convolutional networks (Decagon),” Bioinformatics, vol. 34, no. 13, pp. i457–i466, 2018.
+
+ [2] H. Xu, S. Sang, and H. Lu, “Tri-graph information propagation for polypharmacy side eﬀect
+     prediction (TIP),” arXiv:2001.10516, 2020.
+
+ [3] A. K. Nyamabo, H. Yu, and J.-Y. Shi, “SSI-DDI: substructure–substructure interactions for
+     drug–drug interaction prediction,” Brieﬁngs in Bioinformatics, vol. 22, no. 6, bbab133, 2021.
+
+ [4] Y. Wang, Z. Yang, and Q. Yao, “Accurate and interpretable drug–drug interaction prediction
+     enabled by knowledge subgraph learning (KnowDDI),” Communications Medicine, 2024.
+
+ [5] D. Wu, W. Sun, Y. He, Z. Chen, and X. Luo, “MKG-FENN: A multimodal knowledge graph
+     fused end-to-end neural network for DDI prediction,” AAAI, vol. 38, no. 9, pp. 10216–10224,
+     2024.
+
+ [6] C. Xu, K. C. Bulusu, H. Pan, and O. Elemento, “DDI-GPT: Explainable prediction of drug–
+     drug interactions using LLMs enhanced with knowledge graphs,” bioRxiv, 2024.
+
+ [7] G. De Vito, F. Ferrucci, and A. Angelakis, “LLMs for drug–drug interaction prediction: A
+     comprehensive comparison,” arXiv:2502.06890, 2025.
+
+ [8] Z. Wang et al., “HODDI: A dataset of high-order drug–drug interactions for computational
+     pharmacovigilance,” arXiv:2502.06274, 2025.
+
+ [9] Z. Shen, Y. Liu, Q. Yao, et al., “DDIAgents: Mechanism-conditioned context ﬂow for drug–
+     drug interaction prediction,” arXiv:2606.31085, 2026.
+
+[10] Z. Liu et al., “DrugReason: Dynamic multi-view reasoning over knowledge graph and language
+     evidence,” arXiv:2609.06779, 2026.
+
+
+
+
+                                                6
+

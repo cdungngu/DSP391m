@@ -1,0 +1,32 @@
+{
+  "all": {
+    "train_rows": 180508,
+    "test_rows_after_source_overlap_purge": 25712,
+    "test_positives": 12856,
+    "test_negatives": 12856,
+    "positive_training_drug_vocabulary": 2312,
+    "rule": "positive iff every drug appeared in positive training rows; no chemistry, proteins, or event identity",
+    "TP": 11399,
+    "TN": 10943,
+    "FP": 1913,
+    "FN": 1457,
+    "accuracy": 0.8689327940261357,
+    "balanced_accuracy": 0.8689327940261357,
+    "auroc_binary_score": 0.8689327940261357
+  },
+  "3_to_5": {
+    "train_rows": 66580,
+    "test_rows_after_source_overlap_purge": 9014,
+    "test_positives": 4471,
+    "test_negatives": 4543,
+    "positive_training_drug_vocabulary": 1613,
+    "rule": "positive iff every drug appeared in positive training rows; no chemistry, proteins, or event identity",
+    "TP": 3711,
+    "TN": 4060,
+    "FP": 483,
+    "FN": 760,
+    "accuracy": 0.8621033947193255,
+    "balanced_accuracy": 0.861849122525269,
+    "auroc_binary_score": 0.861849122525269
+  }
+}

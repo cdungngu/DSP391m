@@ -1,0 +1,72 @@
+[
+  {
+    "file": "hoddi_v1_pos.csv",
+    "url": "https://media.githubusercontent.com/media/TIML-Group/HODDI/700d0dafc74810fae3d06b1871b20a0f1df60646/dataset/HODDI_v1/HODDI/Merged_Dataset/pos.csv",
+    "download_date": "2026-10-08",
+    "bytes": 11994867,
+    "sha256": "03078648bd1376e480bb56f1dad34cbee03ef09b1b04af43d6df47e3b1b9294e"
+  },
+  {
+    "file": "hoddi_v1_neg.csv",
+    "url": "https://media.githubusercontent.com/media/TIML-Group/HODDI/700d0dafc74810fae3d06b1871b20a0f1df60646/dataset/HODDI_v1/HODDI/Merged_Dataset/neg.csv",
+    "download_date": "2026-10-08",
+    "bytes": 12217011,
+    "sha256": "8b1a93a89d515bcc1a1134d9e96edee4077c0f99f73a12ac9b5aa412826534ba"
+  },
+  {
+    "file": "decagon_page.html",
+    "url": "https://snap.stanford.edu/decagon/",
+    "download_date": "2026-10-08",
+    "bytes": 11587,
+    "sha256": "255f3f5594c2faf815aab20dccf3627d75c6c7228b3c374dc72daefb844eaca7"
+  },
+  {
+    "file": "ddinter_download.html",
+    "url": "https://ddinter.scbdd.com/download/",
+    "download_date": "2026-10-08",
+    "bytes": 13792,
+    "sha256": "9604b0bbe6a2beca9c9ab1f6f06665f497a63e7f86daffca56d755f8967a07c5"
+  },
+  {
+    "file": "hoddi_paper.html",
+    "url": "https://arxiv.org/html/2502.06274v1",
+    "download_date": "2026-10-08",
+    "bytes": 333192,
+    "sha256": "75ba27521d3025eff8d0332e3c639c7a72457392e0a7b6a5cd658e4ea187cb4c"
+  },
+  {
+    "file": "fast_tensor_paper.html",
+    "url": "https://arxiv.org/html/2404.11374v2",
+    "download_date": "2026-10-08",
+    "bytes": 130853,
+    "sha256": "4f10dea4798256837b2b358d159051e521de4339a60826889840a6e79774e9ba"
+  },
+  {
+    "file": "bio-decagon-targets-all.tar.gz",
+    "url": "https://snap.stanford.edu/decagon/bio-decagon-targets-all.tar.gz",
+    "download_date": "2026-10-08",
+    "bytes": 441556,
+    "sha256": "a9cee9710722802287e76a63cbd5647686d4f93f3f43ab534ce2bf264f9086b8"
+  },
+  {
+    "file": "bio-decagon-mono.tar.gz",
+    "url": "https://snap.stanford.edu/decagon/bio-decagon-mono.tar.gz",
+    "download_date": "2026-10-08",
+    "bytes": 1928066,
+    "sha256": "26e2200092d4e974f1cfae1ce23446ce42ff31a13630b6e0a170153d57451be7"
+  },
+  {
+    "file": "pubchem_probe.json",
+    "url": "https://pubchem.ncbi.nlm.nih.gov/rest/pug/compound/cid/271,2173,3345/property/Title,InChIKey,CanonicalSMILES/JSON",
+    "download_date": "2026-10-08",
+    "bytes": 704,
+    "sha256": "815393e727cef04607f501a50386ba83d0a6538111e08d8420df85b51a30b935"
+  },
+  {
+    "file": "hoddi_eval_source.py",
+    "url": "https://raw.githubusercontent.com/TIML-Group/HODDI/main/demo1_dataset_processing_and_statistics/demo1-3_generate_evaluation_set.py",
+    "download_date": "2026-10-08",
+    "bytes": 1867,
+    "sha256": "2244fc3825ca033730b6002603a6026fb02db1865ca9c2145b73182fdec20549"
+  }
+]

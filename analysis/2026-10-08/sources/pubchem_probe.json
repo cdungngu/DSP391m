@@ -1,0 +1,24 @@
+{
+  "PropertyTable": {
+    "Properties": [
+      {
+        "CID": 271,
+        "ConnectivitySMILES": "[Ca+2]",
+        "InChIKey": "BHPQYMZQTOCNFJ-UHFFFAOYSA-N",
+        "Title": "Calcium Cation"
+      },
+      {
+        "CID": 2173,
+        "ConnectivitySMILES": "CC1(C(N2C(S1)C(C2=O)NC(=O)C(C3=CC=CC=C3)N)C(=O)[O-])C",
+        "InChIKey": "AVKUERGKIZMTKX-UHFFFAOYSA-M",
+        "Title": "6-{[Amino(phenyl)acetyl]amino}-3,3-dimethyl-7-oxo-4-thia-1-azabicyclo[3.2.0]heptane-2-carboxylate"
+      },
+      {
+        "CID": 3345,
+        "ConnectivitySMILES": "CCC(=O)N(C1CCN(CC1)CCC2=CC=CC=C2)C3=CC=CC=C3",
+        "InChIKey": "PJMPHNIQZUBGLI-UHFFFAOYSA-N",
+        "Title": "Fentanyl"
+      }
+    ]
+  }
+}

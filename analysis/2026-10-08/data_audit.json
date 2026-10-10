@@ -1,0 +1,205 @@
+{
+  "audit_date": "2026-10-08",
+  "files": {
+    "combo": {
+      "bytes": 232835373,
+      "sha256": "60bd3d071345473236f56638ebb732c3c964f0fd3468fdd29a444bcc1bf80d35",
+      "rows": 4649441,
+      "columns": [
+        "STITCH 1",
+        "STITCH 2",
+        "Polypharmacy Side Effect",
+        "Side Effect Name"
+      ],
+      "missing": {
+        "STITCH 1": 0,
+        "STITCH 2": 0,
+        "Polypharmacy Side Effect": 0,
+        "Side Effect Name": 0
+      },
+      "exact_duplicates": 0
+    },
+    "targets": {
+      "bytes": 360999,
+      "sha256": "dd7ca7ecbe4026c6be15c043d9214ec30ad36db32b2ccceeae4091b3b9f1e564",
+      "rows": 18690,
+      "columns": [
+        "STITCH",
+        "Gene"
+      ],
+      "missing": {
+        "STITCH": 0,
+        "Gene": 0
+      },
+      "exact_duplicates": 0
+    },
+    "ppi": {
+      "bytes": 8503643,
+      "sha256": "3665bf9b78b1d0a99c2504879eafad06cb4cf708aecbcac0c480e90e5e77027c",
+      "rows": 715612,
+      "columns": [
+        "Gene 1",
+        "Gene 2"
+      ],
+      "missing": {
+        "Gene 1": 0,
+        "Gene 2": 0
+      },
+      "exact_duplicates": 0
+    }
+  },
+  "combo": {
+    "drugs": 645,
+    "effects": 1317,
+    "names": 1317,
+    "distinct_effect_name_pairs": 1317,
+    "unordered_pairs": 63473,
+    "self_rows": 0,
+    "unique_unordered_triples": 4649441,
+    "duplicate_unordered_triples": 0,
+    "labels_at_least_500_rows": 963,
+    "rows_in_labels_at_least_500": 4576287,
+    "label_frequency_quantiles": {
+      "0.0": 1.0,
+      "0.25": 450.0,
+      "0.5": 1596.0,
+      "0.75": 4758.0,
+      "0.9": 9530.2,
+      "0.95": 13619.200000000004,
+      "0.99": 21395.91999999999,
+      "1.0": 28568.0
+    },
+    "labels_per_pair_quantiles": {
+      "0.0": 1.0,
+      "0.25": 25.0,
+      "0.5": 53.0,
+      "0.75": 99.0,
+      "0.9": 165.0,
+      "0.95": 210.0,
+      "0.99": 305.0,
+      "1.0": 540.0
+    },
+    "top_effects": [
+      {
+        "effect_id": "C0020649",
+        "effect_name": "arterial pressure NOS decreased",
+        "rows": 28568
+      },
+      {
+        "effect_id": "C0002871",
+        "effect_name": "anaemia",
+        "rows": 27006
+      },
+      {
+        "effect_id": "C0013404",
+        "effect_name": "Difficulty breathing",
+        "rows": 26037
+      },
+      {
+        "effect_id": "C0027497",
+        "effect_name": "nausea",
+        "rows": 25190
+      },
+      {
+        "effect_id": "C0032285",
+        "effect_name": "neumonia",
+        "rows": 24430
+      },
+      {
+        "effect_id": "C0015672",
+        "effect_name": "Fatigue",
+        "rows": 24260
+      },
+      {
+        "effect_id": "C0030193",
+        "effect_name": "Pain",
+        "rows": 23894
+      },
+      {
+        "effect_id": "C0011991",
+        "effect_name": "diarrhea",
+        "rows": 23848
+      },
+      {
+        "effect_id": "C0004093",
+        "effect_name": "asthenia",
+        "rows": 23515
+      },
+      {
+        "effect_id": "C0042963",
+        "effect_name": "emesis",
+        "rows": 23043
+      }
+    ]
+  },
+  "targets": {
+    "drugs": 284,
+    "genes": 3648,
+    "combo_drugs_with_targets": 284,
+    "combo_drugs_without_targets": 361,
+    "target_only_drugs": 0,
+    "target_genes_in_ppi": 3640,
+    "target_genes_not_in_ppi": 8,
+    "targets_per_drug_quantiles": {
+      "0.0": 1.0,
+      "0.5": 11.0,
+      "0.9": 170.40000000000003,
+      "0.95": 184.0,
+      "0.99": 206.0,
+      "1.0": 2840.0
+    }
+  },
+  "ppi": {
+    "genes": 19081,
+    "unordered_edges_including_loops": 715612,
+    "self_rows": 0,
+    "duplicate_or_reverse_rows": 0,
+    "degree_quantiles": {
+      "0.0": 1.0,
+      "0.5": 33.0,
+      "0.9": 201.0,
+      "0.95": 285.0,
+      "0.99": 525.4000000000015,
+      "1.0": 2519.0
+    },
+    "top_degrees": {
+      "351": 2519,
+      "1994": 1986,
+      "4914": 1911,
+      "7157": 1771,
+      "728378": 1556,
+      "3320": 1494,
+      "653269": 1479,
+      "445582": 1474,
+      "8452": 1471,
+      "653781": 1453
+    }
+  },
+  "retrieval_synthetic_probe": {
+    "3": {
+      "uniform_random_regimens": 1000,
+      "all_drugs_have_targets_rate": 0.086,
+      "any_shared_target_at_least_3_rate": 0.008,
+      "union_targets_median": 14.0,
+      "known_pairwise_label_rows_median": 24.0,
+      "known_pairwise_label_rows_p95": 309.14999999999986
+    },
+    "5": {
+      "uniform_random_regimens": 1000,
+      "all_drugs_have_targets_rate": 0.018,
+      "any_shared_target_at_least_3_rate": 0.052,
+      "union_targets_median": 158.0,
+      "known_pairwise_label_rows_median": 134.5,
+      "known_pairwise_label_rows_p95": 741.0999999999999
+    },
+    "10": {
+      "uniform_random_regimens": 1000,
+      "all_drugs_have_targets_rate": 0.0,
+      "any_shared_target_at_least_3_rate": 0.305,
+      "union_targets_median": 186.0,
+      "known_pairwise_label_rows_median": 847.0,
+      "known_pairwise_label_rows_p95": 2460.3999999999996
+    }
+  },
+  "seconds": 3.97
+}

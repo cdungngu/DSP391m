@@ -1,0 +1,245 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+<title>SNAP: Modeling Polypharmacy using Graph Convolutional Networks</title>
+
+<!-- Standard reset, fonts and grids -->
+<link rel="stylesheet" type="text/css" href="../styles/reset-fonts-grids.css">
+<!-- CSS for Menu -->
+<link rel="stylesheet" type="text/css" href="../styles/sam/menu.css">
+<!-- Dependency source files -->
+  <script type="text/javascript" src="../styles/yahoo-dom-event.js"></script>
+  <script type="text/javascript" src="../styles/container_core.js"></script>
+
+  <!-- Menu source file -->
+  <script type="text/javascript" src="../styles/menu.js"></script>
+  <!-- styles for the whole website -->
+  <link href="../styles/styles.css" rel="stylesheet" type="text/css" />
+  <!-- javascript for the menu -->
+  <script type="text/javascript">
+    YAHOO.util.Event.onContentReady("graphgardenmainmenu", function () {
+    var oMenu = new YAHOO.widget.Menu("graphgardenmainmenu", { position: "static", hidedelay:  0, lazyload: true }); oMenu.render(); });
+  </script>
+</head>
+
+<body class="yui-skin-sam" id="yahoo-com">
+
+<div id="doc" class="yui-t1">
+
+<div id="hd">
+<!-- START: header -->
+<div id="header"><a href="http://cs.stanford.edu/~jure/"><img id="by-jure" src="../images/by_jure.gif" alt="By Jure Leskovec" /></a><img id="mld-logo" src="../images/empty_logo.png" alt="" /><a href="http://www.stanford.edu/"><img id="cmu-logo" src="../images/stanford.png" alt="Stanford University" /></a></div>
+<!-- END: header -->
+</div>
+
+<!-- START: left column -->
+<div id="left-column">
+<!--BEGIN left_column.html -->
+  <a href="../index.html"><img id="snap-logo" src="../images/snap_logo.png" alt="SNAP logo" /></a>
+
+  <div id="graphgardenmainmenu" class="yuimenu">
+
+    <div class="bd">
+      <ul class="first-of-type">
+      <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel"
+      href="../snap/index.html">SNAP graph library</a>
+        <div id="snaplib" class="yuimenu">
+          <div class="bd">
+            <ul>
+              <li class="yuimenuitem"><a class="yuimenuitemlabel" href="../snap/download.html">Download</a></li>
+              <li class="yuimenuitem"><a class="yuimenuitemlabel" href="../snap/doc.html">Documentation</a></li>
+
+              <li class="yuimenuitem"><a class="yuimenuitemlabel" href="../snap/license.html">License</a></li>
+            </ul>
+          </div>
+        </div>
+      </li>
+      <li class="yuimenuitem first-of-type"><a class="yuimenuitemlabel" href="../data/index.html">Large networks</a>
+        <div id="datasets" class="yuimenu">
+          <div class="bd">
+
+            <ul>
+              <li class="yuimenuitem"><a class="yuimenuitemlabel"
+            href="../data/index.html">Large networks</a></li>
+              <li class="yuimenuitem"><a class="yuimenuitemlabel"
+            href="../data/other.html">Web datasets</a></li>
+              <li class="yuimenuitem"><a class="yuimenuitemlabel"
+            href="../data/links.html">Other resources</a></li>
+            </ul>
+          </div>
+        </div>
+
+      </li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel"  href="../news.html">What's new</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel"  href="../papers.html">Papers</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel"  href="../links.html">Links</a></li>
+      <li class="yuimenuitem"><a class="yuimenuitemlabel"  href="../about.html">About</a></li>
+      </ul>
+    </div>
+
+  </div>
+
+  <ul id="links-under-menu">
+    
+  </ul>
+<!--END left_column.html -->
+</div>
+<!-- END: left column -->
+
+
+<!-- START: right column -->
+<div id="right-column">
+
+<h1>Graph Neural Networks for Multirelational Link Prediction</h1>
+
+<div class="call-out-green">
+<p>
+<b>Decagon</b> is a graph convolutional neural network for multirelational link prediction in heterogeneous graphs.
+</p>
+</div>
+
+<p>
+Decagon's graph convolutional neural network (GCN) model is a general approach for multirelational link prediction in any multimodal network. Decagon handles multimodal graphs with large numbers of edge types.
+</p>
+
+<p>
+Here we specifically focus on using Decagon for computational pharmacology. In particular, we model <i>polypharmacy side effects</i>. The use of multiple drugs, termed <i>polypharmacy</i>, is common to treat patients with complex diseases or co-existing medical conditions. However, a major consequence of polypharmacy is a much higher risk of adverse side effects for the patient. Polypharmacy side effects emerge because of drug-drug interactions, in which activity of one drug may change, favorably or unfavorably, if taken with another drug. Discovering polypharmacy side effects is a challenge with significant implications for patient mortality and morbidity.
+</p>
+
+<br />
+<a href="polypharmacy-side-effect.png"><img src="polypharmacy-side-effect.png" width="400" style="display: block; margin: 0 auto;"></img><br /></a>
+
+<p>
+The approach constructs a multimodal graph of protein-protein interactions, drug-protein target interactions, and the polypharmacy side effects, which are represented as drug-drug interactions, where each side effect is an edge of a different type. Decagon then predicts the exact side effect, if any, through which a given drug combination manifests clinically. 
+</p>
+
+<p>
+In computational pharmacology, Decagon creates an opportunity to use large molecular, pharmacological, and patient population data to flag and prioritize polypharmacy side effects for follow-up analysis via formal pharmacological studies.
+</p>
+
+<h2>Publication</h2>
+
+<p>
+<a href="https://academic.oup.com/bioinformatics/article/34/13/i457/5045770">Modeling polypharmacy side effects with graph convolutional networks.</a><br>
+Marinka Zitnik, Monica Agrawal and Jure Leskovec.<br>
+<i>Bioinformatics</i>, 2018. <br>
+Presented at <a href="https://www.iscb.org/ismb2018">ISMB 2018</a>. <a href="https://arxiv.org/abs/1802.00543">[arXiv]</a> <a href="https://www.biorxiv.org/content/early/2018/02/02/258814">[biorXiv]</a> <a href="http://stanford.edu/~marinka/slides/decagon-ismb18.pdf">[Slides]</a> <a href="http://stanford.edu/~marinka/posters/zitnik-ISMB2018.png">[Poster]</a> <a href="https://news.stanford.edu/2018/07/10/ai-predicts-drug-pair-side-effects/">[Stanford News]</a><br>
+
+<div class="code">@article{Zitnik2018,
+  title={Modeling polypharmacy side effects with graph convolutional networks},
+  author={Zitnik, Marinka and Agrawal, Monica and Leskovec, Jure},
+  journal={Bioinformatics},
+  volume={34},
+  number={13},
+  pages={457–466},
+  year={2018}
+}
+</div>
+
+</p>
+
+<h2>Multimodal graph of polypharmacy</h2>
+
+<p>
+Figure below shows an example graph of polypharmacy side effects derived from genomic and patient population data. A multimodal graph consists of protein-protein interactions, drug-protein targets, and drug-drug interactions encoded by 964 different polypharmacy side effects (i.e., edge types r<sup>i</sup>, i = 1, ..., 964). Side information is integrated into the model in the form of additional protein and drug feature vectors.
+</p>
+
+<br />
+<a href="polypharmacy-graph.png"><img src="polypharmacy-graph.png" width="600" style="display: block; margin: 0 auto;"></img><br /></a>
+
+<p>
+In the figure, highlighted graph neighbors of Ciprofloxacin (node C) indicate this drug targets four proteins and interacts with three other drugs. The graph encodes information that Ciprofloxacin (node C) taken together with Doxycycline (node D) or with Simvastatin (node S) increases the risk of bradycardia side effect (side effect type r<sup>2</sup>), and its combination with Mupirocin (M) increases the risk of gastrointestinal bleed side effect r<sup>1</sup>. 
+</p>
+
+<p>
+Decagon predicts associations between pairs of drugs and side effects (shown in red) with the goal of identifying polypharmacy side effects, i.e., side effects which cannot be attributed to either individual drug in the pair.
+</p>
+
+<h2>Decagon's graph convolutional neural network</h2>
+
+<p>
+Decagon takes as input a multimodal graph of molecular and patient data and trains a graph convolutional neural network. The neural model can then be used to analyze, characterize, and predict polypharmacy side effects.
+</p>
+
+<br />
+<a href="decagon-overview.png"><img src="decagon-overview.png" width="700" style="display: block; margin: 0 auto;"></img><br /></a>
+
+<p>
+Decagon has two main components:
+<ul>
+<li><i>an encoder</i>: a graph convolutional network (GCN) operating on the graph and producing embeddings for nodes,</li>
+<li><i>a decoder</i>: a tensor factorization model using these embeddings to model polypharmacy side effects.</li>
+</ul>
+Figure below shows Decagon's encoder in the form of a GCN per-layer update for a single drug node (left), and Decagon's decoder in the form of a tensor factorization model (right). 
+</p>
+
+<br />
+<a href="decagon-architecture-1.png"><img src="decagon-architecture-1.png" width="700" style="display: block; margin: 0 auto;"></img><br /></a>
+
+<p>
+Figure below show a batch of neural networks that compute embeddings of six drug nodes. In Decagon, neural networks differ from node to node but they all share the same set of relation type-specific trainable parameters.
+</p>
+
+<br />
+<a href="decagon-architecture-2.png"><img src="decagon-architecture-2.png" width="500" style="display: block; margin: 0 auto;"></img><br /></a>
+
+<h2>Molecular network and polypharmacy data</h2>
+
+<table id="datatab" summary="Table of datasets" style="margin-top:15px;margin-bottom:20px;">
+<tr>
+  <th>File</th>
+  <th>Description</th>
+</tr>
+<tr>
+  <td><a href="bio-decagon-ppi.tar.gz">bio-decagon-ppi.tar.gz</a></td>
+  <td>Protein-protein interaction network</td>
+</tr>
+<tr>
+  <td><a href="bio-decagon-targets.tar.gz">bio-decagon-targets.tar.gz</a></td>
+  <td>Drug-target protein associations</td>
+</tr>
+<tr>
+  <td><a href="bio-decagon-targets-all.tar.gz">bio-decagon-targets-all.tar.gz</a></td>
+  <td>Drug-target protein associations culled from several curated databases</td>
+</tr>
+<tr>
+  <td><a href="bio-decagon-combo.tar.gz">bio-decagon-combo.tar.gz</a></td>
+  <td>Polypharmacy side effects in the form of (drug A, side effect type, drug B) triples</td>
+</tr>
+<tr>
+  <td><a href="bio-decagon-mono.tar.gz">bio-decagon-mono.tar.gz</a></td>
+  <td>Side effects of individual drugs in the form of (drug A, side effect type) tuples</td>
+</tr>
+<tr>
+  <td><a href="bio-decagon-effectcategories.tar.gz">bio-decagon-effectcategories.tar.gz</a></td>
+  <td>Side effect categories</td>
+</tr>
+</table>
+
+<h2>Code</h2>
+
+<p>
+A TensorFlow implementation of Decagon is available on <a href="https://github.com/marinkaz/decagon">GitHub.</a>
+</p>
+
+
+</div>
+<!-- END: right column -->
+
+<div id="footer">
+<!-- you can put something here -->
+</div>
+</div>
+
+<script type="text/javascript">
+var gaJsHost = (("https:" == document.location.protocol) ? "https://ssl." : "http://www.");
+document.write(unescape("%3Cscript src='" + gaJsHost + "google-analytics.com/ga.js' type='text/javascript'%3E%3C/script%3E"));
+</script>
+<script type="text/javascript">
+try {
+var pageTracker = _gat._getTracker("UA-342639-4");
+pageTracker._trackPageview();
+} catch(err) {}</script>
+</body>
+</html>
