@@ -1,0 +1,57 @@
+{
+  "model": "b0_popularity",
+  "split": "val",
+  "split_id": "pair_70-10-20_s391",
+  "split_hash": "3362fa700fa27f78",
+  "snapshot_hash": "ef4ef8a0cb8515d2",
+  "git_commit": "f2aa90788122a2f07fd8ee40cd269cb1cd0014ec",
+  "created_at": "2026-10-16T16:58:32+00:00",
+  "n_pairs": 6347,
+  "n_labels": 963,
+  "positive_rate": 0.0749078762814003,
+  "metrics": {
+    "macro_ap": 0.0749078762814003,
+    "micro_ap": 0.22634912859924972,
+    "macro_auroc": 0.5,
+    "labels_scored": 963
+  },
+  "ci95": {
+    "n": 100,
+    "unit": "pair",
+    "macro_ap": [
+      0.07326161729051313,
+      0.07615495975973147
+    ],
+    "micro_ap": [
+      0.2230628840982339,
+      0.22929535261580947
+    ]
+  },
+  "groups": {
+    "label_freq_rare": {
+      "labels": 321,
+      "macro_ap": 0.01548503058083712
+    },
+    "label_freq_mid": {
+      "labels": 321,
+      "macro_ap": 0.048077267598153915
+    },
+    "label_freq_common": {
+      "labels": 321,
+      "macro_ap": 0.1611613306652099
+    },
+    "pairs_no_targets": {
+      "pairs": 1782,
+      "macro_ap": 0.06706560237193675
+    },
+    "pairs_one_has_targets": {
+      "pairs": 3174,
+      "macro_ap": 0.07314034526373095
+    },
+    "pairs_both_have_targets": {
+      "pairs": 1391,
+      "macro_ap": 0.08898772930566101
+    }
+  },
+  "seconds": 139.8
+}

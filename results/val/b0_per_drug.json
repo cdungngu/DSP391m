@@ -1,0 +1,57 @@
+{
+  "model": "b0_per_drug",
+  "split": "val",
+  "split_id": "pair_70-10-20_s391",
+  "split_hash": "3362fa700fa27f78",
+  "snapshot_hash": "ef4ef8a0cb8515d2",
+  "git_commit": "f2aa90788122a2f07fd8ee40cd269cb1cd0014ec",
+  "created_at": "2026-10-16T17:00:54+00:00",
+  "n_pairs": 6347,
+  "n_labels": 963,
+  "positive_rate": 0.0749078762814003,
+  "metrics": {
+    "macro_ap": 0.27143087161244805,
+    "micro_ap": 0.3507798528881193,
+    "macro_auroc": 0.8360128227815079,
+    "labels_scored": 963
+  },
+  "ci95": {
+    "n": 100,
+    "unit": "pair",
+    "macro_ap": [
+      0.27025859787606243,
+      0.2796880596174901
+    ],
+    "micro_ap": [
+      0.34588960611563013,
+      0.35480821284549263
+    ]
+  },
+  "groups": {
+    "label_freq_rare": {
+      "labels": 321,
+      "macro_ap": 0.17749407382632088
+    },
+    "label_freq_mid": {
+      "labels": 321,
+      "macro_ap": 0.24554634373547193
+    },
+    "label_freq_common": {
+      "labels": 321,
+      "macro_ap": 0.3912521972755515
+    },
+    "pairs_no_targets": {
+      "pairs": 1782,
+      "macro_ap": 0.2655572084476728
+    },
+    "pairs_one_has_targets": {
+      "pairs": 3174,
+      "macro_ap": 0.2741447166540435
+    },
+    "pairs_both_have_targets": {
+      "pairs": 1391,
+      "macro_ap": 0.30495649423554727
+    }
+  },
+  "seconds": 226.8
+}

@@ -1,0 +1,83 @@
+{
+  "created_at": "2026-10-16T17:05:32+00:00",
+  "source": "https://dailymed.nlm.nih.gov/dailymed/services/v2",
+  "requested": [
+    "aspirin",
+    "simvastatin",
+    "omeprazole",
+    "fluoxetine",
+    "furosemide",
+    "diazepam",
+    "ciprofloxacin",
+    "metformin"
+  ],
+  "unresolved": [],
+  "status": [
+    {
+      "stitch_id": "CID000002244",
+      "name": "aspirin",
+      "status": "ok",
+      "setid": "338aea3b-a38f-424f-9006-3ede3825bf90",
+      "chunks": 7,
+      "has_drug_interactions": false
+    },
+    {
+      "stitch_id": "CID000002764",
+      "name": "ciprofloxacin",
+      "status": "ok",
+      "setid": "4deea61e-f3ca-b35d-e063-6294a90a9d41",
+      "chunks": 29,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000003016",
+      "name": "diazepam",
+      "status": "ok",
+      "setid": "c57af2a2-aa9a-4dac-a200-e0d845005d05",
+      "chunks": 9,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000003386",
+      "name": "fluoxetine",
+      "status": "ok",
+      "setid": "d121146e-7439-4169-a421-dab7b882b8aa",
+      "chunks": 36,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000003440",
+      "name": "furosemide",
+      "status": "ok",
+      "setid": "d5b9f12e-d1e9-42de-90f2-c9ba33a86457",
+      "chunks": 5,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000004091",
+      "name": "metformin",
+      "status": "ok",
+      "setid": "056072d8-6228-4914-831d-ee7c0661b742",
+      "chunks": 11,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000004594",
+      "name": "omeprazole",
+      "status": "ok",
+      "setid": "c5e3a37a-f6e3-43d4-a8a9-54db6c271908",
+      "chunks": 21,
+      "has_drug_interactions": true
+    },
+    {
+      "stitch_id": "CID000054454",
+      "name": "simvastatin",
+      "status": "ok",
+      "setid": "b2d6c7ac-304b-4cba-974c-d9a23a069925",
+      "chunks": 11,
+      "has_drug_interactions": true
+    }
+  ],
+  "drugs_in_store": 8,
+  "chunks_in_store": 129
+}

@@ -24,3 +24,6 @@ data/cache/
 # Bảng tên lấy từ API ngoài (PubChem/NCBI): commit để chạy được mà không cần mạng
 !data/processed/*/drug_names.parquet
 !data/processed/*/gene_names.parquet
+!data/processed/*/dailymed_sections.parquet
+!data/processed/*/chembl_map.parquet
+!data/processed/*/chembl_mechanisms.parquet
