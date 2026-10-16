@@ -21,9 +21,10 @@ import json
 from pathlib import Path
 
 import pandas as pd
+import requests
 
 from . import names as names_mod
-from .http import batch_key, cached, request
+from .http import OfflineCacheMiss, batch_key, cached, request
 from .manifest import utc_now, write_json
 from .paths import EXTERNAL_DIR, snapshot_dir
 
@@ -98,8 +99,13 @@ def map_drugs(structures: pd.DataFrame, offline: bool = False) -> pd.DataFrame:
             cands, match = exact.get(neutral[d.inchikey], []), "neutralized"
         if not cands and isinstance(d.inchikey, str):
             match = "connectivity"
-            cands = _get_all("molecule", {"molecule_structures__standard_inchi_key__startswith": d.inchikey[:14],
-                                          "only": only}, "molecules", offline)
+            try:
+                cands = _get_all("molecule", {"molecule_structures__standard_inchi_key__startswith": d.inchikey[:14],
+                                              "only": only}, "molecules", offline)
+            except (requests.RequestException, OfflineCacheMiss):
+                rows.append({"drug_idx": d.drug_idx, "stitch_id": d.stitch_id, "match_type": "lookup_failed",
+                             "matched_chembl_id": None, "parent_chembl_id": None, "n_candidates": 0})
+                continue  # chạy lại sau sẽ thử tiếp; phần đã có lấy từ cache
         if not cands:
             rows.append({"drug_idx": d.drug_idx, "stitch_id": d.stitch_id, "match_type": "none",
                          "matched_chembl_id": None, "parent_chembl_id": None, "n_candidates": 0})
@@ -209,6 +215,7 @@ def run(snap: Path | None = None, offline: bool = False) -> dict:
                                     ["stitch_id", "matched_chembl_id", "parent_chembl_id", "pref_name"]]
         .to_dict("records"),
         "unmapped": mapping.loc[mapping["match_type"] == "none", "stitch_id"].tolist(),
+        "lookup_failed": mapping.loc[mapping["match_type"] == "lookup_failed", "stitch_id"].tolist(),
     }
     write_json(snap / "chembl_report.json", report)
     return report

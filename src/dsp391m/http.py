@@ -31,7 +31,13 @@ def request(method: str, url: str, **kwargs) -> requests.Response:
     if host in _BLOCKED_HOSTS:
         raise RateLimited(f"{host} đang chặn; chạy lại sau")
     for attempt in range(4):
-        r = requests.request(method, url, timeout=60, allow_redirects=False, **kwargs)
+        try:
+            r = requests.request(method, url, timeout=90, allow_redirects=False, **kwargs)
+        except (requests.Timeout, requests.ConnectionError):
+            if attempt == 3:
+                raise
+            time.sleep(5 * (attempt + 1))
+            continue
         if r.is_redirect and "misuse" in r.headers.get("location", ""):
             _BLOCKED_HOSTS.add(host)
             raise RateLimited(f"{host} chuyển tới trang chặn lạm dụng: {r.headers['location']}")
