@@ -41,6 +41,7 @@ class DataView:
     pair_labels: pd.DataFrame = field(repr=False)
     drug_targets: pd.DataFrame = field(repr=False)
     ppi: pd.DataFrame = field(repr=False)
+    label_vocab: pd.DataFrame | None = field(default=None, repr=False)  # chỉ có ở prediction view
 
     def cache_key(self, *parts) -> str:
         payload = json.dumps([self.mode, self.split_id, self.split_hash, self.snapshot_hash, *parts], default=str)
@@ -81,7 +82,8 @@ def prediction_view(split_id: str = SPLIT_ID, snap: Path | None = None) -> DataV
     train_drugs = set(labels["drug_a"]) | set(labels["drug_b"])
     drugs = common["drugs"].drop(columns="in_combo")
     common["drugs"] = drugs.assign(in_train=drugs["drug_idx"].isin(train_drugs))
-    return DataView(PREDICTION, split_id, snapshot_hash(snap), split_hash, pair_labels=labels, **common)
+    return DataView(PREDICTION, split_id, snapshot_hash(snap), split_hash, pair_labels=labels,
+                    label_vocab=vocab[["label_idx", "effect_idx", "effect_cui", "effect_name"]], **common)
 
 
 def load_eval_targets(split: str, split_id: str = SPLIT_ID, snap: Path | None = None
