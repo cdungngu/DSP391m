@@ -23,6 +23,8 @@ _Cập nhật lần cuối: 2026-10-17_
 - **Đang chờ dược sĩ:** danh mục demo khoảng 50 thuốc; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `structure_coverage.json`.
 - **Tài liệu cũ:** `docs/submission/*` vẫn mô tả thiết kế cũ. Không cần nộp lại; nếu dùng lại thì sửa theo plan mục 10.
 
+- **Tạm dừng (2026-10-17, theo yêu cầu người dùng):** lượt chạy `python -m dsp391m.chembl` dừng giữa chừng (khoảng 100/155 thuốc cần khớp connectivity đã có trong cache `data/external/chembl/`, chưa commit). Chưa có `chembl_map/chembl_mechanisms/chembl_report`. **Chỉ chạy tiếp khi người dùng báo.** Sau đó: chạy lại `python -m dsp391m.chembl` (đọc cache, tiếp phần còn lại) → `python -m dsp391m.workbench prepare --out data/review/2026-10-17_foundation_v2` → cập nhật số độ phủ → push.
+
 ## Nhật ký quyết định
 
 Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ngược một quyết định thì thêm dòng mới ghi rõ "thay thế quyết định ngày …".
