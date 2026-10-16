@@ -123,7 +123,7 @@ def test_chembl_and_dailymed_evidence_in_pairs(index):
         "drug_idx": [0, 1], "parent_chembl_id": ["CHEMBL1", "CHEMBL2"], "mec_id": [11, 12],
         "action_type": ["INHIBITOR", "SUBSTRATE"], "mechanism_of_action": ["X inhibitor", "X substrate"],
         "direct_interaction": [True, True], "target_chembl_id": ["CHEMBLT", "CHEMBLT"], "target_name": ["Enzyme X"] * 2,
-        "target_type": ["SINGLE PROTEIN"] * 2, "organism": ["Homo sapiens"] * 2,
+        "target_type": ["SINGLE PROTEIN"] * 2, "organism": ["Homo sapiens"] * 2, "is_human": [True, True],
         "gene_symbols": [["GENEX"], ["GENEX"]], "decagon_gene_ids": [[], []], "refs": [["ref1"], []]})
     sections = pd.DataFrame({
         "drug_idx": [0], "stitch_id": [S1], "setid": ["s"], "spl_version": [1], "published_date": ["Jan 01, 2026"],
@@ -134,6 +134,10 @@ def test_chembl_and_dailymed_evidence_in_pairs(index):
     r = idx.review(["alphamycin", "betacol", "gammazole"])
     p12 = next(p for p in r["pairs"] if [d["stitch_id"] for d in p["drugs"]] == [S1, S2])
     assert p12["shared_mechanism_targets"][0]["actions"] == [["INHIBITOR"], ["SUBSTRATE"]]
+    assert p12["shared_mechanism_targets"][0]["kind"] == "pair_hypothesis"
+    nonhuman = lookup.EvidenceIndex(index.view, None, None, mecs.assign(is_human=[True, False],
+                                                                         organism=["Homo sapiens", "Rattus"]), None)
+    assert nonhuman.shared_mechanism_targets(0, 1) == []
     assert p12["label_mentions"][0]["evidence_id"] == "dailymed:s:v1:0" and p12["label_mentions"][0]["matched"] == "betacol"
     missing = [(m["subject"], m["what"]) for m in r["missing_data"] if m["scope"] == "drug"]
     assert any(s == S3 and w.startswith("không có cơ chế ChEMBL") for s, w in missing)

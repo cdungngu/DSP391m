@@ -72,6 +72,13 @@ def _phase(m: dict) -> float:
         return -1.0
 
 
+# Biến đổi đã áp dụng để khớp; chỉ "exact" không cần duyệt. Đổi ký tự proton của InChIKey là thao tác chuỗi,
+# chưa phải xác minh cấu trúc, nên vẫn phải duyệt (plan 04).
+TRANSFORMATIONS = {"exact": "none", "neutralized": "inchikey_protonation_to_neutral",
+                   "connectivity": "inchikey_connectivity_block"}
+SELECTION_RULE = "max(max_phase, has pref_name, lowest CHEMBL number)"
+
+
 def _parent(m: dict) -> str:
     return (m.get("molecule_hierarchy") or {}).get("parent_chembl_id") or m["molecule_chembl_id"]
 
@@ -112,9 +119,17 @@ def map_drugs(structures: pd.DataFrame, offline: bool = False) -> pd.DataFrame:
             continue
         best = max(cands, key=lambda m: (_phase(m), m.get("pref_name") is not None, -int(m["molecule_chembl_id"][6:])))
         rows.append({"drug_idx": d.drug_idx, "stitch_id": d.stitch_id, "match_type": match,
+                     "transformation": TRANSFORMATIONS[match], "query_inchikey": d.inchikey,
                      "matched_chembl_id": best["molecule_chembl_id"], "parent_chembl_id": _parent(best),
-                     "n_candidates": len(cands)})
-    return pd.DataFrame(rows)
+                     "n_candidates": len(cands), "selection_rule": SELECTION_RULE,
+                     # Giữ toàn bộ ứng viên để người duyệt thấy lựa chọn thay thế (plan 04).
+                     "candidates": json.dumps([{"chembl_id": m["molecule_chembl_id"], "pref_name": m.get("pref_name"),
+                                                "max_phase": _phase(m), "parent": _parent(m)} for m in cands]),
+                     "needs_review": match != "exact"})
+    out = pd.DataFrame(rows)
+    # Dòng "none"/"lookup_failed" không có khớp nào để duyệt.
+    out["needs_review"] = [v is True for v in out.get("needs_review", pd.Series([None] * len(out)))]
+    return out
 
 
 def parent_info(parent_ids: list[str], offline: bool = False) -> pd.DataFrame:
@@ -133,9 +148,11 @@ def mechanisms(parent_ids: list[str], gene_names: pd.DataFrame, offline: bool = 
     targets = {t["target_chembl_id"]: t for t in _by_ids(
         "target", "target_chembl_id", target_ids, "targets", offline,
         "target_chembl_id,pref_name,target_type,organism,target_components")}
-    symbol_to_gene = {}
+    symbol_genes: dict[str, set[int]] = {}
     for g in gene_names.dropna(subset=["symbol"]).itertuples(index=False):
-        symbol_to_gene.setdefault(g.symbol.upper(), int(g.gene_id))
+        symbol_genes.setdefault(g.symbol.upper(), set()).add(int(g.gene_id))
+    # Chỉ nối symbol trỏ tới đúng một gene Entrez; symbol mơ hồ không nối (plan 04).
+    symbol_to_gene = {s: next(iter(g)) for s, g in symbol_genes.items() if len(g) == 1}
     rows = []
     for m in mecs:
         t = targets.get(m.get("target_chembl_id"), {})
@@ -147,6 +164,8 @@ def mechanisms(parent_ids: list[str], gene_names: pd.DataFrame, offline: bool = 
             "direct_interaction": m.get("direct_interaction"),
             "target_chembl_id": m.get("target_chembl_id"), "target_name": t.get("pref_name"),
             "target_type": t.get("target_type"), "organism": t.get("organism"),
+            "is_human": t.get("organism") == "Homo sapiens",
+            "accessions": sorted({c["accession"] for c in t.get("target_components") or [] if c.get("accession")}),
             "gene_symbols": symbols,
             "decagon_gene_ids": sorted({symbol_to_gene[s] for s in symbols if s in symbol_to_gene}),
             "refs": [r.get("ref_url") or f"{r.get('ref_type')}:{r.get('ref_id')}" for r in m.get("mechanism_refs") or []],
@@ -163,12 +182,13 @@ def update_names(names: pd.DataFrame, mapping: pd.DataFrame) -> pd.DataFrame:
             continue
         info = m.loc[row["drug_idx"]]
         pref = str(info["pref_name"]).lower()
-        extra = [pref] + [s.lower() for s in info["chembl_synonyms"]]
-        names.at[i, "synonyms"] = list(dict.fromkeys([*row["synonyms"], *extra]))[:names_mod.MAX_SYNONYMS * 2]
+        if info["match_type"] == "exact":  # synonym chỉ thêm khi khớp InChIKey đầy đủ
+            extra = [pref] + [s.lower() for s in info["chembl_synonyms"]]
+            names.at[i, "synonyms"] = list(dict.fromkeys([*row["synonyms"], *extra]))[:names_mod.MAX_SYNONYMS * 2]
         if row["name_source"] in ("pending", "none"):
             names.at[i, "display_name"] = pref
             names.at[i, "name_source"] = "chembl"
-            names.at[i, "needs_review"] = info["match_type"] == "connectivity"
+            names.at[i, "needs_review"] = bool(info["needs_review"])
     return names
 
 
@@ -205,13 +225,23 @@ def run(snap: Path | None = None, offline: bool = False) -> dict:
         "match_type_counts": mapping["match_type"].value_counts().to_dict(),
         "mapped_with_pref_name": int(mapping["pref_name"].notna().sum()),
         "drugs_with_mechanism": len(has_mec),
+        "coverage_tiers": {
+            "molecule_mapped": int(mapping["parent_chembl_id"].notna().sum()),
+            "mapped_exact_no_review_needed": int((mapping["match_type"] == "exact").sum()),
+            "with_any_mechanism": len(has_mec),
+            "with_human_mechanism": int(mec.loc[mec["is_human"], "drug_idx"].nunique()),
+            "with_human_mechanism_with_accession": int(
+                mec.loc[mec["is_human"] & mec["accessions"].map(len).gt(0), "drug_idx"].nunique()),
+            "mapping_reviewed": 0,
+            "note": "Có cơ chế đơn thuốc không đồng nghĩa có bằng chứng cho claim tương tác cặp.",
+        },
         "drugs_with_mechanism_but_no_decagon_targets": len(has_mec - has_dt),
         "drugs_with_neither": len(set(combo["drug_idx"]) - has_mec - has_dt),
         "drugs_with_human_mechanism_overlapping_decagon_targets": int(overlap),
         "mechanism_rows": len(mec),
         "action_type_counts": mec["action_type"].value_counts().to_dict(),
         "target_type_counts": mec["target_type"].value_counts().to_dict(),
-        "needs_review": mapping.loc[mapping["match_type"] == "connectivity",
+        "needs_review": mapping.loc[mapping["needs_review"],
                                     ["stitch_id", "matched_chembl_id", "parent_chembl_id", "pref_name"]]
         .to_dict("records"),
         "unmapped": mapping.loc[mapping["match_type"] == "none", "stitch_id"].tolist(),

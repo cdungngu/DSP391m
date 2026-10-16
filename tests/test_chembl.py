@@ -1,3 +1,5 @@
+import json
+
 import pandas as pd
 
 from dsp391m import chembl
@@ -55,15 +57,22 @@ def test_map_exact_connectivity_and_none(monkeypatch):
         ["connectivity", "CHEMBL1200", "CHEMBL174"]
     assert m.loc["CID000099999", "match_type"] == "none"
     assert m.loc["CID000000009", ["match_type", "parent_chembl_id"]].tolist() == ["neutralized", "CHEMBL9"]
+    # Chỉ khớp exact mới không cần duyệt; mọi khớp có biến đổi đều ghi lại biến đổi và các ứng viên
+    assert m["needs_review"].to_dict() == {"CID000002244": False, "CID000002173": True, "CID000099999": False,
+                                           "CID000000009": True}
+    assert m.loc["CID000000009", "transformation"] == "inchikey_protonation_to_neutral"
+    assert {c["chembl_id"] for c in json.loads(m.loc["CID000002173", "candidates"])} == {"CHEMBL1473908", "CHEMBL1200"}
 
 
 def test_mechanisms_map_gene_symbols_to_decagon(monkeypatch):
     monkeypatch.setattr(chembl, "_get_all", fake_get_all)
-    genes = pd.DataFrame({"gene_id": [5742, 5743], "symbol": ["PTGS1", "PTGS2"], "description": ["", ""]})
+    # PTGS2 trỏ tới hai gene_id (mơ hồ) nên không được nối
+    genes = pd.DataFrame({"gene_id": [5742, 5743, 99], "symbol": ["PTGS1", "PTGS2", "PTGS2"], "description": [""] * 3})
     mec = chembl.mechanisms(["CHEMBL25"], genes)
     row = mec.iloc[0]
     assert row["action_type"] == "INHIBITOR" and row["gene_symbols"] == ["PTGS1", "PTGS2"]
-    assert row["decagon_gene_ids"] == [5742, 5743] and row["refs"] == ["http://europepmc.org/abstract/MED/1"]
+    assert row["decagon_gene_ids"] == [5742] and row["refs"] == ["http://europepmc.org/abstract/MED/1"]
+    assert bool(row["is_human"]) and list(row["accessions"]) == []
 
 
 def test_update_names_fills_pending_only(monkeypatch):
@@ -78,4 +87,5 @@ def test_update_names_fills_pending_only(monkeypatch):
     out = chembl.update_names(names, mapping).set_index("stitch_id")
     assert out.loc["CID000002244", "display_name"] == "aspirin" and "acetylsalicylic acid" in out.loc["CID000002244", "synonyms"]
     assert out.loc["CID000002173", ["display_name", "name_source", "needs_review"]].tolist() == ["ampicillin", "chembl", True]
+    assert out.loc["CID000002173", "synonyms"] == []  # khớp connectivity: không thêm synonym chưa duyệt
     assert out.loc["CID000099999", ["display_name", "name_source"]].tolist() == ["CID000099999", "pending"]

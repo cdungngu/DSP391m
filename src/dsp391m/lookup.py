@@ -165,19 +165,22 @@ class EvidenceIndex:
             return []
         return [{"evidence_id": f"chembl:mechanism:{m.mec_id}", "action_type": m.action_type,
                  "mechanism_of_action": m.mechanism_of_action, "target_chembl_id": m.target_chembl_id,
-                 "target_name": m.target_name, "organism": m.organism, "gene_symbols": list(m.gene_symbols),
+                 "target_name": m.target_name, "organism": m.organism, "is_human": bool(m.is_human),
+                 "gene_symbols": list(m.gene_symbols),
                  "refs": list(m.refs)[:3]}
                 for m in self.mechanisms[d].itertuples(index=False)]
 
     def shared_mechanism_targets(self, x: int, y: int) -> list[dict]:
-        """Target ChEMBL mà cả hai thuốc cùng tác động, kèm chiều tác động của từng thuốc (bối cảnh có chiều)."""
-        mx, my = self.drug_mechanisms(x), self.drug_mechanisms(y)
+        """Target ChEMBL (chỉ của người) mà cả hai thuốc cùng tác động, kèm chiều tác động của từng thuốc.
+        Đây là giả thuyết cặp dựa trên hai fact đơn thuốc, không phải bằng chứng tương tác hay outcome (plan 04)."""
+        mx = [m for m in self.drug_mechanisms(x) if m["is_human"]]
+        my = [m for m in self.drug_mechanisms(y) if m["is_human"]]
         out = []
         for t in sorted({m["target_chembl_id"] for m in mx} & {m["target_chembl_id"] for m in my}):
             ax = sorted({m["action_type"] for m in mx if m["target_chembl_id"] == t})
             ay = sorted({m["action_type"] for m in my if m["target_chembl_id"] == t})
             name = next(m["target_name"] for m in mx if m["target_chembl_id"] == t)
-            out.append({"target_chembl_id": t, "target_name": name, "actions": [ax, ay],
+            out.append({"target_chembl_id": t, "target_name": name, "actions": [ax, ay], "kind": "pair_hypothesis",
                         "evidence_ids": [m["evidence_id"] for m in mx + my if m["target_chembl_id"] == t]})
         return out
 
@@ -309,7 +312,8 @@ def _label(d: dict) -> str:
 def render_text(r: dict, top: int = 15) -> str:
     out = [f"Đơn thuốc ({r['mode']} mode, snapshot {r['snapshot_hash']})"]
     for d in r["drugs"]:
-        mec = "; ".join(sorted({f"{m['action_type']} {m['target_name']}" for m in d.get("mechanisms", [])})[:3])
+        mec = "; ".join(sorted({f"{m['action_type']} {m['target_name']}" for m in d.get("mechanisms", [])
+                                if m["is_human"]})[:3])
         out.append(f"  • {_label(d)}: nhập '{d['input']}' ({d['match']}), {d['n_targets']} target Decagon"
                    + (f"; cơ chế ChEMBL: {mec}" if mec else ""))
     for u in r["unresolved"]:
@@ -341,8 +345,8 @@ def render_text(r: dict, top: int = 15) -> str:
             line += "; bối cảnh cơ chế: thiếu target cho " + ", ".join(ctx["missing_for"])
         out.append(line)
         for t in p.get("shared_mechanism_targets", []):
-            out.append(f"      cùng tác động lên {t['target_name']} (ChEMBL): {a} {'/'.join(t['actions'][0])}, "
-                       f"{b} {'/'.join(t['actions'][1])}")
+            out.append(f"      giả thuyết: cùng tác động lên {t['target_name']} (ChEMBL, chưa phải bằng chứng tương tác): "
+                       f"{a} {'/'.join(t['actions'][0])}, {b} {'/'.join(t['actions'][1])}")
         for m in p.get("label_mentions", []):
             who = a if m["label_of"] == p["drugs"][0]["stitch_id"] else b
             out.append(f"      nhãn DailyMed của {who}, mục \"{m['section_title']}\": …{m['snippet']}… [{m['evidence_id']}]")
