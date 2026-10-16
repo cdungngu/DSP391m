@@ -26,7 +26,13 @@ def index(raw_dir, tmp_path):
     names.to_parquet(snap / "drug_names.parquet", index=False)
     pd.DataFrame({"gene_id": [10, 20], "symbol": ["GENE10", "GENE20"], "description": ["", ""]}) \
         .to_parquet(snap / "gene_names.parquet", index=False)
-    return lookup.load_index(snap)
+    idx = lookup.load_index(snap)
+    idx._snap = snap
+    return idx
+
+
+def index_snapshot(index):
+    return index._snap
 
 
 def test_resolve_by_stitch_cid_name_and_related_cid(index):
@@ -110,3 +116,26 @@ def test_enrichment_ranking_and_base_rate(index):
         {"anaemia": (0.6667, 1.0), "nausea": (0.6667, 1.0)}
     assert r["ranking"]["sort"] == "pairs"
     assert index.review(["alphamycin", "betacol", "gammazole"], sort="enrichment")["ranking"]["sort"] == "enrichment"
+
+
+def test_chembl_and_dailymed_evidence_in_pairs(index):
+    mecs = pd.DataFrame({
+        "drug_idx": [0, 1], "parent_chembl_id": ["CHEMBL1", "CHEMBL2"], "mec_id": [11, 12],
+        "action_type": ["INHIBITOR", "SUBSTRATE"], "mechanism_of_action": ["X inhibitor", "X substrate"],
+        "direct_interaction": [True, True], "target_chembl_id": ["CHEMBLT", "CHEMBLT"], "target_name": ["Enzyme X"] * 2,
+        "target_type": ["SINGLE PROTEIN"] * 2, "organism": ["Homo sapiens"] * 2,
+        "gene_symbols": [["GENEX"], ["GENEX"]], "decagon_gene_ids": [[], []], "refs": [["ref1"], []]})
+    sections = pd.DataFrame({
+        "drug_idx": [0], "stitch_id": [S1], "setid": ["s"], "spl_version": [1], "published_date": ["Jan 01, 2026"],
+        "spl_title": ["ALPHAMYCIN TABLET"], "chunk_id": ["dailymed:s:v1:0"], "section": ["drug_interactions"],
+        "title": ["7.1 Betacol"], "text": ["Coadministration with betacol increases exposure."]})
+    idx = lookup.EvidenceIndex(index.view, pd.read_parquet(index_snapshot(index) / "drug_names.parquet"),
+                               None, mecs, sections)
+    r = idx.review(["alphamycin", "betacol", "gammazole"])
+    p12 = next(p for p in r["pairs"] if [d["stitch_id"] for d in p["drugs"]] == [S1, S2])
+    assert p12["shared_mechanism_targets"][0]["actions"] == [["INHIBITOR"], ["SUBSTRATE"]]
+    assert p12["label_mentions"][0]["evidence_id"] == "dailymed:s:v1:0" and p12["label_mentions"][0]["matched"] == "betacol"
+    missing = [(m["subject"], m["what"]) for m in r["missing_data"] if m["scope"] == "drug"]
+    assert any(s == S3 and w.startswith("không có cơ chế ChEMBL") for s, w in missing)
+    assert any(s == S2 and w.startswith("chưa có nhãn DailyMed") for s, w in missing)
+    assert "nhãn DailyMed của alphamycin" in lookup.render_text(r)

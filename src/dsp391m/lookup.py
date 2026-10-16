@@ -53,7 +53,8 @@ class Resolution:
 class EvidenceIndex:
     """Chỉ mục tra cứu nhanh trên một evidence view. Dựng một lần, truy vấn nhiều lần."""
 
-    def __init__(self, view: DataView, drug_names: pd.DataFrame | None = None, gene_names: pd.DataFrame | None = None):
+    def __init__(self, view: DataView, drug_names: pd.DataFrame | None = None, gene_names: pd.DataFrame | None = None,
+                 mechanisms: pd.DataFrame | None = None, label_sections: pd.DataFrame | None = None):
         if view.mode != EVIDENCE:
             raise ValueError("EvidenceIndex chỉ dùng evidence view; benchmark phải dùng prediction view")
         self.view = view
@@ -95,6 +96,14 @@ class EvidenceIndex:
         self.symbol = {}
         if gene_names is not None:
             self.symbol = dict(zip(gene_names["gene_id"], gene_names["symbol"]))
+        # Nguồn GĐ3 (tùy chọn): cơ chế ChEMBL và đoạn nhãn DailyMed.
+        self.mechanisms = {d: g for d, g in mechanisms.groupby("drug_idx")} if mechanisms is not None else None
+        self.label_sections = label_sections
+        self.labelled_drugs = set(label_sections["drug_idx"]) if label_sections is not None else set()
+        self.drug_name_terms: dict[int, list[str]] = {}
+        if drug_names is not None:
+            for row in drug_names.itertuples(index=False):
+                self.drug_name_terms[row.drug_idx] = [row.display_name, *row.synonyms]
 
     # ---- chuẩn hóa đầu vào ----
     def resolve(self, token: str) -> Resolution:
@@ -146,6 +155,44 @@ class EvidenceIndex:
             "note": CONTEXT_NOTE,
         }
 
+    def drug_mechanisms(self, d: int) -> list[dict]:
+        if self.mechanisms is None or d not in self.mechanisms:
+            return []
+        return [{"evidence_id": f"chembl:mechanism:{m.mec_id}", "action_type": m.action_type,
+                 "mechanism_of_action": m.mechanism_of_action, "target_chembl_id": m.target_chembl_id,
+                 "target_name": m.target_name, "organism": m.organism, "gene_symbols": list(m.gene_symbols),
+                 "refs": list(m.refs)[:3]}
+                for m in self.mechanisms[d].itertuples(index=False)]
+
+    def shared_mechanism_targets(self, x: int, y: int) -> list[dict]:
+        """Target ChEMBL mà cả hai thuốc cùng tác động, kèm chiều tác động của từng thuốc (bối cảnh có chiều)."""
+        mx, my = self.drug_mechanisms(x), self.drug_mechanisms(y)
+        out = []
+        for t in sorted({m["target_chembl_id"] for m in mx} & {m["target_chembl_id"] for m in my}):
+            ax = sorted({m["action_type"] for m in mx if m["target_chembl_id"] == t})
+            ay = sorted({m["action_type"] for m in my if m["target_chembl_id"] == t})
+            name = next(m["target_name"] for m in mx if m["target_chembl_id"] == t)
+            out.append({"target_chembl_id": t, "target_name": name, "actions": [ax, ay],
+                        "evidence_ids": [m["evidence_id"] for m in mx + my if m["target_chembl_id"] == t]})
+        return out
+
+    def label_mentions(self, x: int, y: int, limit: int) -> list[dict]:
+        """Đoạn mục Drug Interactions trong nhãn DailyMed của thuốc này có nhắc tên thuốc kia."""
+        if self.label_sections is None:
+            return []
+        from .dailymed import find_mentions
+
+        out = []
+        for a, b in ((x, y), (y, x)):
+            hits = find_mentions(self.label_sections, a, self.drug_name_terms.get(b, []))
+            for h in hits.head(limit).itertuples(index=False):
+                pos = h.text.lower().find(h.matched)
+                snippet = h.text[max(0, pos - 160): pos + 240]
+                out.append({"evidence_id": h.chunk_id, "label_of": self.stitch[a], "mentions": self.stitch[b],
+                            "section_title": h.title, "matched": h.matched, "snippet": snippet,
+                            "spl_title": h.spl_title, "published_date": h.published_date})
+        return out
+
     def _gene(self, gene_id: int) -> dict:
         return {"gene_id": int(gene_id), "symbol": self.symbol.get(gene_id), "ppi_degree": int(self.degree.get(gene_id, 0))}
 
@@ -171,8 +218,16 @@ class EvidenceIndex:
             else:
                 chosen.append(res.drug_idx)
                 n_t = len(self.targets.get(res.drug_idx, ()))
+                mecs = self.drug_mechanisms(res.drug_idx)
                 result["drugs"].append({"input": res.input, "match": res.match, **self._drug(res.drug_idx),
-                                        "n_targets": n_t})
+                                        "n_targets": n_t, "mechanisms": mecs,
+                                        "has_label": res.drug_idx in self.labelled_drugs})
+                if self.mechanisms is not None and not mecs:
+                    result["missing_data"].append({"scope": "drug", "subject": self.stitch[res.drug_idx],
+                                                   "what": "không có cơ chế ChEMBL"})
+                if self.label_sections is not None and res.drug_idx not in self.labelled_drugs:
+                    result["missing_data"].append({"scope": "drug", "subject": self.stitch[res.drug_idx],
+                                                   "what": "chưa có nhãn DailyMed trong kho (chạy dsp391m.dailymed)"})
                 if n_t == 0:
                     result["missing_data"].append({"scope": "drug", "subject": self.stitch[res.drug_idx],
                                                    "what": "không có target trong snapshot: thiếu bối cảnh cơ chế; "
@@ -188,7 +243,9 @@ class EvidenceIndex:
             pair = {"drugs": [self._drug(x), self._drug(y)],
                     "status": "observed" if len(effects) else "no_data",
                     "n_effects": int(len(effects)),
-                    "mechanism_context": self.mechanism_context(x, y, context_limit)}
+                    "mechanism_context": self.mechanism_context(x, y, context_limit),
+                    "shared_mechanism_targets": self.shared_mechanism_targets(x, y),
+                    "label_mentions": self.label_mentions(x, y, context_limit)}
             result["pairs"].append(pair)
             if not len(effects):
                 result["missing_data"].append({"scope": "pair", "subject": [self.stitch[x], self.stitch[y]],
@@ -234,7 +291,9 @@ def load_index(snap: Path | None = None) -> EvidenceIndex:
     snap = snap or snapshot_dir()
     names = pd.read_parquet(snap / "drug_names.parquet") if (snap / "drug_names.parquet").exists() else None
     genes = pd.read_parquet(snap / "gene_names.parquet") if (snap / "gene_names.parquet").exists() else None
-    return EvidenceIndex(evidence_view(snap), names, genes)
+    mecs = pd.read_parquet(snap / "chembl_mechanisms.parquet") if (snap / "chembl_mechanisms.parquet").exists() else None
+    labels = pd.read_parquet(snap / "dailymed_sections.parquet") if (snap / "dailymed_sections.parquet").exists() else None
+    return EvidenceIndex(evidence_view(snap), names, genes, mecs, labels)
 
 
 def _label(d: dict) -> str:
@@ -245,7 +304,9 @@ def _label(d: dict) -> str:
 def render_text(r: dict, top: int = 15) -> str:
     out = [f"Đơn thuốc ({r['mode']} mode, snapshot {r['snapshot_hash']})"]
     for d in r["drugs"]:
-        out.append(f"  • {_label(d)}: nhập '{d['input']}' ({d['match']}), {d['n_targets']} target")
+        mec = "; ".join(sorted({f"{m['action_type']} {m['target_name']}" for m in d.get("mechanisms", [])})[:3])
+        out.append(f"  • {_label(d)}: nhập '{d['input']}' ({d['match']}), {d['n_targets']} target Decagon"
+                   + (f"; cơ chế ChEMBL: {mec}" if mec else ""))
     for u in r["unresolved"]:
         cands = ", ".join(_label(c) for c in u["candidates"]) or "không có gợi ý"
         reason = "không tìm thấy" if u["reason"] == "not_found" else "mơ hồ"
@@ -271,6 +332,12 @@ def render_text(r: dict, top: int = 15) -> str:
         else:
             line += "; bối cảnh cơ chế: thiếu target cho " + ", ".join(ctx["missing_for"])
         out.append(line)
+        for t in p.get("shared_mechanism_targets", []):
+            out.append(f"      cùng tác động lên {t['target_name']} (ChEMBL): {a} {'/'.join(t['actions'][0])}, "
+                       f"{b} {'/'.join(t['actions'][1])}")
+        for m in p.get("label_mentions", []):
+            who = a if m["label_of"] == p["drugs"][0]["stitch_id"] else b
+            out.append(f"      nhãn DailyMed của {who}, mục \"{m['section_title']}\": …{m['snippet']}… [{m['evidence_id']}]")
 
     if r["effects"]:
         order = "mức trội so với tỷ lệ nền" if r["ranking"]["sort"] == "enrichment" else "số cặp đóng góp"

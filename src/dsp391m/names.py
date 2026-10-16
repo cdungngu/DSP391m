@@ -13,7 +13,6 @@ PubChem gần như không có tên thường gọi cho các CID đó. Cách xử
 Phản hồi API được cache trong data/external/{pubchem,ncbi}/ để chạy lại không cần mạng (--offline).
 """
 import argparse
-import hashlib
 import json
 import re
 import time
@@ -21,8 +20,8 @@ from pathlib import Path
 
 import pandas as pd
 import requests
-from urllib.parse import urlparse
 
+from .http import OfflineCacheMiss, RateLimited, batch_key as _batch_key, cached as _cached, request as _request  # noqa: F401
 from .manifest import utc_now, write_json
 from .paths import EXTERNAL_DIR, snapshot_dir
 
@@ -33,48 +32,6 @@ NCBI_CACHE = EXTERNAL_DIR / "ncbi"
 MAX_SYNONYMS = 30
 MAX_RELATED = 20
 NAME_LIKE = re.compile(r"[A-Za-z][A-Za-z0-9 ,'()+\-]{2,40}")
-
-
-class OfflineCacheMiss(FileNotFoundError):
-    pass
-
-
-class RateLimited(requests.RequestException):
-    pass
-
-
-_BLOCKED_HOSTS: set[str] = set()
-
-
-def _request(method: str, url: str, **kwargs) -> requests.Response:
-    """Gọi API, chờ rồi thử lại khi bị giới hạn tốc độ (429) hoặc server bận (503). Hết lượt thử thì đánh dấu
-    host bị chặn và các request sau tới host đó dừng ngay, tránh treo hàng giờ khi PubChem khóa tạm thời."""
-    host = urlparse(url).netloc
-    if host in _BLOCKED_HOSTS:
-        raise RateLimited(f"{host} đang giới hạn tốc độ; chạy lại sau")
-    for attempt in range(4):
-        r = requests.request(method, url, timeout=60, **kwargs)
-        if r.status_code not in (429, 503):
-            return r
-        time.sleep(5 * (attempt + 1))
-    _BLOCKED_HOSTS.add(host)
-    raise RateLimited(f"{host} trả {r.status_code} sau nhiều lần thử")
-
-
-def _cached(path: Path, fetch, offline: bool):
-    if path.exists():
-        return json.loads(path.read_text())
-    if offline:
-        raise OfflineCacheMiss(f"Thiếu cache {path} ở chế độ --offline")
-    path.parent.mkdir(parents=True, exist_ok=True)
-    data = fetch()
-    path.write_text(json.dumps({"fetched_at": utc_now(), "data": data}))
-    time.sleep(0.3)  # PubChem/NCBI giới hạn khoảng 3–5 request/giây
-    return {"data": data}
-
-
-def _batch_key(ids) -> str:
-    return hashlib.sha256(",".join(map(str, sorted(ids))).encode()).hexdigest()[:16]
 
 
 def _synonym_cache() -> dict[int, list[str]]:
@@ -227,6 +184,11 @@ def run(snap: Path | None = None, offline: bool = False) -> dict:
     gene_names = fetch_gene_names(genes, offline)
     gene_names.to_parquet(snap / "gene_names.parquet", index=False)
 
+    return write_report(snap, names, gene_names)
+
+
+def write_report(snap: Path, names: pd.DataFrame, gene_names: pd.DataFrame) -> dict:
+    genes = gene_names["gene_id"].tolist()
     index: dict[str, set[int]] = {}
     for row in names.itertuples(index=False):
         for s in {row.display_name, *row.synonyms}:
