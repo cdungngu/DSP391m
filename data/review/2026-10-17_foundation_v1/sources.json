@@ -1,0 +1,28 @@
+{
+  "content_hash": "8d58d3b09dc93847430042f401836afcee4c3cef12d7d6d791e6f60bc4904874",
+  "payload": {
+    "files": {
+      "dailymed_sections.parquet": {
+        "path": "/Users/nguyenchidung/Documents/Project/DSP391m/data/processed/decagon_v1/dailymed_sections.parquet",
+        "sha256": "b9b793356268e603dd1a00abc574128b474fb1d1a71bb0bc12a285770c6325e3"
+      },
+      "drug_names.parquet": {
+        "path": "/Users/nguyenchidung/Documents/Project/DSP391m/data/processed/decagon_v1/drug_names.parquet",
+        "sha256": "2f9832a22bfbaacd6dcc827efc8c7d5be39087e5c6f515399de9819734c31702"
+      },
+      "drugs.parquet": {
+        "path": "/Users/nguyenchidung/Documents/Project/DSP391m/data/processed/decagon_v1/drugs.parquet",
+        "sha256": "188b64071bc6a9acf7bdb1587cad7fa86fdb13891f1ab372ab22fab3dee0ebb4"
+      },
+      "manifest.json": {
+        "path": "/Users/nguyenchidung/Documents/Project/DSP391m/data/processed/decagon_v1/manifest.json",
+        "sha256": "5898d4fde9a96789fc7617ff51917e87f712e4517e767d90ce089d5042c37473"
+      }
+    },
+    "metadata": {
+      "purpose": "human_review",
+      "snapshot": "decagon_v1"
+    },
+    "schema_version": 1
+  }
+}

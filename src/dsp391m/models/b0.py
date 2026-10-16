@@ -12,10 +12,13 @@ from ..dataview import PREDICTION, DataView
 
 
 class B0:
-    def __init__(self, variant: str = "per_drug"):
+    def __init__(self, variant: str = "per_drug", alpha: float = 0):
         if variant not in ("per_drug", "popularity"):
             raise ValueError(variant)
         self.variant = variant
+        if not np.isfinite(alpha) or alpha < 0:
+            raise ValueError("Smoothing alpha must be finite and non-negative")
+        self.alpha = float(alpha)
         self.name = f"b0_{variant}"
 
     def fit(self, view: DataView) -> "B0":
@@ -34,13 +37,18 @@ class B0:
         counts = np.zeros((n_drugs, n_labels))
         np.add.at(counts, (a, lab), 1)
         np.add.at(counts, (b, lab), 1)
-        freq = counts / np.maximum(pairs_per_drug, 1)[:, None]
+        freq = (counts + self.alpha * self.popularity) / np.maximum(pairs_per_drug + self.alpha, 1)[:, None]
         freq[pairs_per_drug == 0] = self.popularity
         self.freq = freq
         self.n_train_pairs_per_drug = pairs_per_drug
         return self
 
     def score(self, pairs: pd.DataFrame) -> np.ndarray:
+        if not hasattr(self, "freq"):
+            raise ValueError("Fit B0 before scoring")
+        indices = pairs[["drug_a", "drug_b"]].to_numpy()
+        if indices.dtype.kind not in "iu" or (indices < 0).any() or (indices >= len(self.freq)).any():
+            raise ValueError("Pair contains unknown or non-integer drug indices")
         if self.variant == "popularity":
             return np.tile(self.popularity, (len(pairs), 1))
         return self.freq[pairs["drug_a"].to_numpy()] + self.freq[pairs["drug_b"].to_numpy()]

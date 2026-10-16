@@ -12,6 +12,11 @@ DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đ
 
 _Cập nhật lần cuối: 2026-10-17_
 
+- **Triển khai nền mới:** contracts/releases/catalog/review/workbench và E08 smoothing đã có; [báo cáo thực thi](plan/Bao_cao_trien_khai_2026_10_17.md). 61 test nhanh + 2 test dữ liệu thật đạt. Gói duyệt gồm 645 thuốc/129 đoạn, 0 approved; người dùng xác nhận chưa có catalog dược sĩ duyệt. Chưa chạy LLM/B2/final test hoặc web consumer.
+
+- **Phạm vi bổ sung do người dùng chọn:** người dùng phổ thông, giao diện tiếng Việt; khoảng 50 hoạt chất/tên thương mại được dược sĩ duyệt; B0 chỉ ở chế độ nghiên cứu. Giữ A+D+B0 và cổng M, thử cải tiến bằng đối chứng. Khung sáu tuần chốt ngày 10/10 không tự bắt đầu lại ngày 17/10.
+- **Thiết kế chi tiết:** [15 file plan](plan/chi_tiet/00_Dieu_phoi_va_phu_thuoc.md) đã viết; việc hoàn thành tài liệu không đồng nghĩa các tính năng đã nghiệm thu. Bắt đầu từ contracts 01, catalog 02, versioning 03 và rubric 11; kế thừa collectors hiện có theo 04–05.
+
 - **Bối cảnh (chốt 2026-10-10):** đây là **dự án thật, không phải môn học**: không có cổng duyệt của giảng viên. Còn **6 tuần**; API LLM và GPU thuê ngoài khi cần; **có người bên dược** hỗ trợ (danh mục demo, duyệt mapping, gold set, chấm giải thích).
 - **Hướng đã chốt (plan v2):** lõi là **A** (tra cứu bằng chứng Decagon) + **D** (cơ chế ChEMBL `action_type`, đoạn nhãn DailyMed, dược sĩ kiểm tra) + **B0** (dự đoán bằng đếm tần suất theo từng thuốc, **không huấn luyện**). **B2** (DistMult/SimplE) chỉ làm nếu qua **cổng M** cuối tuần 3 (plan mục 4.4). Không làm B1, GNN, HODDI. Chi tiết và lịch ở `plan/Ke_hoach_trien_khai.md`.
 - **Giai đoạn:** GĐ1, GĐ2 xong. **B0 trên val chính thức xong** (`results/val/`). **GĐ3 đang làm:** module ChEMBL (cơ chế + bổ sung tên) và DailyMed (đoạn nhãn) đã có và tích hợp vào `lookup`; DailyMed mới chạy trên 8 thuốc mẫu, chờ danh mục demo của dược sĩ. **Tiếp theo:** hoàn tất GĐ3 theo danh mục demo, rồi GĐ4 (LLM + verifier).
@@ -24,6 +29,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Triển khai foundation consumer, immutable releases, review workflow và smoothing B0; alpha100 đạt val macro AP 0,288953 so 0,271431 baseline | Thực thi từng bước bộ plan, không tự duyệt dữ liệu | 63 tests đạt; chờ catalog/gold; smoothing mới là val experiment |
+| 2026-10-17 | Thêm 15 plan chi tiết, cập nhật plan tổng v2.1; consumer dùng catalog duyệt, B0 chỉ nghiên cứu; cơ chế đơn thuốc không tự chứng minh claim cặp | Người dùng đã chọn phạm vi; giữ lõi và thử cải tiến có đối chứng | Thiết kế đã viết; chưa nghiệm thu code theo bộ plan mới |
 | 2026-10-17 | GĐ3: `http.py` (gọi API lịch sự, dùng chung), `chembl.py` (khớp InChIKey → dạng trung hòa → connectivity; cơ chế có `action_type`; bổ sung tên), `dailymed.py` (đoạn nhãn theo LOINC, tìm tên thuốc B trong mục Drug Interactions của thuốc A); `lookup` hiển thị cơ chế ChEMBL, target ChEMBL chung có chiều, đoạn nhãn DailyMed, và gắn cờ target Decagon dạng panel rộng (>100 target) | Bù chỗ PPI không có chiều và target Decagon nhiễu; NCBI chặn PubChem nên lấy tên qua ChEMBL | Đã làm |
 | 2026-10-16 | Bộ chấm điểm dùng chung `evaluate.py` + B0 (`models/b0.py`) trên val chính thức; test chỉ chạy với `--final` | Theo D3–D5; giữ test cho GĐ5 | Đã làm |
 | 2026-10-10 | Hoàn thành lõi GĐ2: `names.py` (tên thuốc qua PubChem synonyms + CID liên quan, symbol gene NCBI), `lookup.py` (tra cứu theo cặp, gộp theo tác dụng phụ với cặp đóng góp và evidence ID, bối cảnh target/PPI phạt mềm theo bậc, tách 3 trường hợp thiếu dữ liệu). Xếp hạng mặc định: số cặp đóng góp, hòa thì nhãn hiếm trước; `--sort enrichment` là tùy chọn | Demo cho thấy cả hai cách xếp hạng đều có điểm yếu; nhãn Decagon lẫn chỉ định và bệnh nền (ví dụ hyperlipaemia đi cùng simvastatin) | Đã làm |
@@ -51,6 +58,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
   - `sources/`: nguồn tải thêm (Decagon mono, targets-all, HODDI v1 tại commit `700d0da…`) và bản text của các báo cáo/literature review để đọc nhanh.
   - `qa/`: bản PDF và ảnh trang được render để kiểm tra bố cục tài liệu.
 - `plan/Ke_hoach_trien_khai.md`: kế hoạch triển khai sống (lộ trình, giai đoạn, cổng, lịch, các chỗ cần sửa trong báo cáo nộp).
+- `plan/chi_tiet/`: 00 điều phối và 14 bài toán; contracts chung ở 01, mẫu số đánh giá ở 11, báo cáo bàn giao ở 14.
 - `src/dsp391m/`: package triển khai (xem `src/README.md`). `paths.py` giữ mọi đường dẫn chuẩn và tên snapshot (`decagon_v1`).
 - `data/processed/decagon_v1/`: đầu ra ETL. File `*.parquet` bị gitignore (sinh lại được); `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
 - `data/processed/decagon_v1/splits/pair_70-10-20_s391/`: split **đã đóng băng** (vocab, phân chia cặp, manifest có hash), được commit. Muốn đổi thì tạo `split_id` mới, không ghi đè.
@@ -128,7 +136,7 @@ Các nguyên tắc này dễ bị vi phạm khi viết code mới:
 - **Tách hai chế độ chạy.** *Evidence mode* được dùng cạnh đã biết của chính cặp đang hỏi. *Prediction evaluation mode* phải loại mọi bằng chứng làm lộ nhãn test (cạnh đồ thị, corpus, ví dụ few-shot, cache). Trong code: chỉ đọc nhãn qua `dsp391m.dataview` (`prediction_view` cho benchmark); chỉ bộ chấm điểm gọi `load_eval_targets`; cache qua `dataview.Cache`. Split chỉ được đọc qua `splits.load_verified_split`. Trong prediction view, **mọi metadata suy ra từ nhãn phải tính lại trên train**; khi thêm cột hoặc bảng mới, thêm test vào `tests/test_split_integrity.py`. Nguồn ngoài (DailyMed, ChEMBL) nói trực tiếp về cặp val/test cũng phải bị che trong prediction mode.
 - **Chia tập trước, rồi mới dựng đồ thị huấn luyện, feature hay embedding.** Thiết lập chính là chia theo cặp đã chuẩn hóa: mọi nhãn của một cặp nằm cùng một split.
 - **Không huấn luyện trước cổng M.** B0 (đếm) là phần dự đoán mặc định. Chỉ thêm B2 khi qua cổng M (plan mục 4.4), và chỉ giữ B2 khi vượt B0 ít nhất +0,02 macro AP trên val, qua 3 seed.
-- **Thứ tự độ mạnh của bằng chứng:** đoạn nhãn DailyMed > cơ chế ChEMBL có chiều > nhãn Decagon đã quan sát > bằng chứng mức thuốc của B0 > bối cảnh target/PPI. Phần cơ chế mặc định là "chưa đủ bằng chứng", trừ khi có một trong hai loại nguồn đầu.
+- **Bằng chứng phải phù hợp với claim:** nguồn trực tiếp về cặp, cơ chế đơn thuốc và association là các loại khác nhau, không phải thứ tự sức mạnh tuyệt đối. ChEMBL action_type không tự chứng minh tương tác cặp hoặc outcome. Consumer chỉ xuất claim đã kiểm chứng; B0 và thống kê Decagon ở chế độ nghiên cứu.
 - LLM đóng vai trò **giải thích hoặc tổng hợp**, không phải bộ dự đoán được chấm điểm. Mỗi phát biểu phải trích ID bằng chứng, và được phép trả "insufficient evidence".
 - Điểm tổng hợp cho đơn nhiều thuốc phải ghi là "điểm tổng hợp theo cặp", không phải xác suất lâm sàng. Không dùng noisy-OR như xác suất thật.
 - Không tự dựng target hay cơ chế từ trí nhớ của LLM để lấp chỗ dữ liệu thiếu.

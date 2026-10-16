@@ -1,0 +1,55 @@
+{
+  "content_hash": "14ae2e9738208d77ae32ce18ed0dfa450278186cb1ebc031f1f4832ae66d036c",
+  "payload": {
+    "created_at": "2026-10-16T17:25:13+00:00",
+    "experiment": "E08_smoothing",
+    "git_commit": "99f2031c6127740f48543966e4e47457f67cca8f",
+    "limitations": [
+      "No final test evaluated",
+      "No paired bootstrap yet",
+      "No clinical-risk interpretation",
+      "Candidate selection, not deployment"
+    ],
+    "n_labels": 963,
+    "n_pairs": 6347,
+    "results": [
+      {
+        "alpha": 0,
+        "labels_scored": 963,
+        "macro_ap": 0.27143087161244805,
+        "macro_auroc": 0.8360128227815079,
+        "micro_ap": 0.3507798528881193,
+        "undefined_reason": null
+      },
+      {
+        "alpha": 5,
+        "labels_scored": 963,
+        "macro_ap": 0.2740611005083778,
+        "macro_auroc": 0.8345814104484047,
+        "micro_ap": 0.34787938727488427,
+        "undefined_reason": null
+      },
+      {
+        "alpha": 20,
+        "labels_scored": 963,
+        "macro_ap": 0.27948945903065525,
+        "macro_auroc": 0.8314094676531607,
+        "micro_ap": 0.3401065852782268,
+        "undefined_reason": null
+      },
+      {
+        "alpha": 100,
+        "labels_scored": 963,
+        "macro_ap": 0.28895316946887784,
+        "macro_auroc": 0.8226898566636427,
+        "micro_ap": 0.3131077869486295,
+        "undefined_reason": null
+      }
+    ],
+    "selected_alpha": 100,
+    "selection_rule": "smallest alpha within 0.001 macro AP of best",
+    "snapshot_hash": "ef4ef8a0cb8515d2",
+    "split": "val",
+    "split_hash": "3362fa700fa27f78"
+  }
+}

@@ -1,6 +1,6 @@
 # Kế hoạch triển khai dự án — lộ trình sau phân tích
 
-**DSP391m · Group 8** · _Cập nhật lần cuối: 2026-10-10_ · Trạng thái: **đã chốt (v2)**, thay đổi tiếp theo ghi ở mục 13
+**DSP391m · Group 8** · _Cập nhật lần cuối: 2026-10-17_ · Trạng thái: **v2.1 — phạm vi đã chốt, thiết kế chi tiết đã lập; sản phẩm chưa nghiệm thu**, thay đổi tiếp theo ghi ở mục 13
 
 ## 0 Cách đọc file này
 
@@ -11,6 +11,21 @@ File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tạ
 - **Các quyết định ngày 10/10** (mục 0.1) và thử nghiệm B0 (mục 4).
 
 Đây là **tài liệu sống**. Khi đổi quyết định, sửa file này và ghi vào mục 13. Trạng thái tổng của dự án nằm trong `CLAUDE.md`.
+
+### Bộ kế hoạch chi tiết (2026-10-17)
+
+**Tiến độ triển khai mã:** xem [báo cáo 17/10](Bao_cao_trien_khai_2026_10_17.md). Đã có foundation contracts/catalog/releases/template/verifier, packet 645 thuốc + 129 đoạn pending, 63 tests đạt và E08 smoothing val. Người dùng xác nhận chưa có catalog duyệt; chưa hoàn thành mọi giai đoạn.
+
+Đọc trước [00 — Điều phối và phụ thuộc](chi_tiet/00_Dieu_phoi_va_phu_thuoc.md). Bộ 15 file phân rã từng bài toán, ghi hiện trạng mã, đầu vào/đầu ra, thiết kế, xử lý lỗi, thí nghiệm cải tiến và checklist nghiệm thu. Việc viết xong plan không có nghĩa đã triển khai tính năng.
+
+| Nhóm | Tài liệu |
+|---|---|
+| Sản phẩm và nền dữ liệu | [01 Phạm vi, contracts](chi_tiet/01_Pham_vi_san_pham_va_hop_dong_dau_ra.md) · [02 Danh tính thuốc](chi_tiet/02_Danh_muc_thuoc_va_phan_giai_danh_tinh.md) · [03 Snapshot, DataView](chi_tiet/03_Snapshot_DataView_va_chong_ro_ri.md) |
+| Bằng chứng và truy xuất | [04 ChEMBL](chi_tiet/04_ChEMBL_va_bang_chung_co_che.md) · [05 DailyMed](chi_tiet/05_DailyMed_va_kho_doan_bang_chung.md) · [06 Xếp hạng](chi_tiet/06_Chuan_hoa_nhan_va_xep_hang_ket_qua.md) · [07 Retrieval](chi_tiet/07_Truy_xuat_do_thi_va_van_ban.md) |
+| Dự đoán và giải thích | [08 B0](chi_tiet/08_B0_va_giao_thuc_du_doan.md) · [09 LLM tiếng Việt](chi_tiet/09_LLM_va_giai_thich_tieng_Viet.md) · [10 Verifier](chi_tiet/10_Verifier_va_xu_ly_thieu_bang_chung.md) |
+| Kiểm chứng và sản phẩm | [11 Gold set](chi_tiet/11_Gold_set_va_quy_trinh_duoc_si.md) · [12 Giao diện](chi_tiet/12_Giao_dien_va_van_hanh.md) · [13 Cổng M/B2](chi_tiet/13_Cong_M_va_B2_co_dieu_kien.md) · [14 Đánh giá và bàn giao](chi_tiet/14_Danh_gia_tong_hop_va_ban_giao.md) |
+
+**Quyết định bổ sung của người dùng:** giữ lõi A + D + B0, cho phép thử cải tiến có đối chứng; đối tượng chính là người dùng phổ thông; giao diện tiếng Việt với danh mục khoảng 50 hoạt chất/tên thương mại được dược sĩ duyệt; **B0 chỉ ở chế độ nghiên cứu**. Dược sĩ tiếp tục duyệt mapping, nguồn và gold. Những mô tả v2 về B0 hiển thị cho cặp thiếu dữ liệu được giới hạn lại theo quyết định này. Lịch sáu tuần không tự bắt đầu lại từ 17/10.
 
 ### 0.1 Các quyết định đã chốt (2026-10-10)
 
@@ -28,7 +43,7 @@ File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tạ
 
 **Hướng đi:** xây sản phẩm **tra cứu và giải thích bằng chứng** (A) cộng **nguồn cơ chế có kiểm chứng của dược sĩ** (D) trước, **không huấn luyện mô hình**.
 
-- Phần dự đoán cho cặp chưa có dữ liệu dùng **B0**: đếm tần suất theo từng thuốc. B0 không cần huấn luyện, nhưng đã có tín hiệu thật (AUROC 0,84 trong thử nghiệm).
+- **Chế độ nghiên cứu** dùng B0 để xếp hạng nhãn; validation chính thức đã có macro AP 0,2714, AUROC 0,8360. Giao diện người dùng phổ thông hiển thị bằng chứng đã kiểm chứng và phần thiếu dữ liệu, không hiển thị điểm B0. Validation không chứng minh hiệu quả trên mọi cặp chưa từng có báo cáo.
 - **Cuối tuần 3** có một cổng quyết định: chỉ huấn luyện B2 nếu đạt các tiêu chí ở mục 4.4.
 
 ```
@@ -42,7 +57,7 @@ File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tạ
 
 **Ba lý do chính:**
 
-1. **Giá trị sản phẩm nằm ở bằng chứng, không nằm ở điểm số mô hình.** Nhãn Decagon là liên hệ thống kê từ báo cáo tự phát (FAERS/TWOSIDES) và rất chung chung (buồn nôn, thiếu máu...). Với người dùng là dược sĩ, một cảnh báo có nguồn (nhãn thuốc, cơ chế ChEMBL) đáng tin hơn một điểm dự đoán.
+1. **Giá trị sản phẩm nằm ở bằng chứng, không nằm ở điểm số mô hình.** Nhãn Decagon là liên hệ thống kê từ báo cáo tự phát (FAERS/TWOSIDES), có thể lẫn bệnh nền/chỉ định. Người dùng phổ thông cần câu giải thích có nguồn, đúng phạm vi và dễ hiểu; dược sĩ kiểm chứng nội dung. Cơ chế đơn thuốc ChEMBL chưa tự chứng minh tương tác của một cặp.
 2. **B0 đã cho tín hiệu dự đoán mà không cần huấn luyện.** Huấn luyện B2 tốn khoảng 1 tuần công. Lợi ích có thể có (AP còn xa mức trần) nhưng chưa biết lớn đến đâu. Vì vậy quyết định được hoãn tới khi có dữ liệu thật để cân nhắc (mục 4).
 3. **Có dược sĩ nên nhánh cơ chế (D) khả thi**, bù đúng điểm yếu lớn nhất của ý tưởng ban đầu: PPI không có dấu, 56% thuốc thiếu target, và LLM dễ bịa cơ chế.
 
@@ -112,6 +127,8 @@ File này trả lời ba câu hỏi: **làm gì trước, làm gì sau, và tạ
 
 ### 4.2 Chi phí và lợi ích của từng lựa chọn
 
+**Cập nhật validation chính thức:** artifact `results/val/b0_per_drug.json` có 6.347 cặp × 963 nhãn, macro AP **0,2714309**, micro AP **0,3507799**, macro AUROC **0,8360128**; split `pair_70-10-20_s391`. Đây là số đọc từ artifact, không phải chạy lại trong đợt viết plan. Pilot mục 4.1 được giữ để truy vết lịch sử. Chi tiết kiểm thử và cải tiến smoothing ở file 08.
+
 Công sức là **ước lượng**, chưa đo.
 
 | Lựa chọn | Công sức | Tài nguyên | Lợi ích kỳ vọng | Giá trị cho sản phẩm |
@@ -137,7 +154,7 @@ Quyết định huấn luyện được đặt ở **cổng M** cuối tuần 3,
 Chỉ huấn luyện B2 ở tuần 4 khi **cả ba** điều kiện đều đạt:
 
 1. **Lõi sản phẩm đúng tiến độ:** GĐ2, GĐ3 và GĐ4 đã qua cổng.
-2. **Dự đoán thật sự được dùng:** dược sĩ xem top-10 dự đoán B0 của khoảng 20 cặp chưa có nhãn, và đánh giá rằng dự đoán có ích nhưng xếp hạng chưa tốt. Nếu dược sĩ thấy dự đoán thống kê không hữu ích dù xếp hạng tốt hơn, thì huấn luyện không đáng.
+2. **Dự đoán thật sự được dùng trong chế độ nghiên cứu:** dược sĩ xem top-10 dự đoán B0 của khoảng 20 cặp chưa có nhãn và ghi usefulness/ranking concern. Đây không là nhãn thật để chấm accuracy. Nếu không có giá trị nghiên cứu cụ thể, không huấn luyện B2 chỉ để thêm tính năng cho người dùng phổ thông.
 3. **Có khoảng 5 ngày công rảnh** ở tuần 4 mà không làm trễ GĐ5.
 
 **Nếu làm B2:** chỉ giữ B2 khi nó vượt B0 về macro AP trên **val** ít nhất **+0,02**, nhất quán qua 3 seed. Nếu không, giữ B0. Đây cũng là một kết quả đáng báo cáo.
@@ -208,7 +225,7 @@ Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước
 - **Trạng thái (2026-10-10): lõi đã xong.** `python -m dsp391m.lookup`. Phát hiện cần xử lý ở GĐ3–GĐ5:
   - **Xếp hạng tác dụng phụ chưa có lời giải tốt.** Theo số cặp thì nhãn chung chung lên đầu; theo mức trội so với tỷ lệ nền thì nhãn hiếm, có thể là nhiễu, lên đầu. Dược sĩ cần đánh giá cách xếp hạng trên gold set; nguồn DailyMed giúp ưu tiên các tương tác có ghi trong nhãn thuốc.
   - **Nhãn Decagon lẫn chỉ định và bệnh nền** (ví dụ hyperlipaemia ở cặp có simvastatin). Phần giải thích không được trình bày các nhãn này như tác dụng phụ do tương tác.
-  - **Tên thuốc:** 374/645 có tên trực tiếp; 253 thuốc chờ PubChem hết giới hạn tốc độ; các tên suy ra từ CID liên quan cần dược sĩ duyệt.
+  - **Tên thuốc (đọc báo cáo hiện có ngày 17/10):** 374 self, 253 pending, 18 none; 271 tên hiển thị còn là STITCH ID. Dùng cache và mapping ChEMBL có duyệt; không gọi PubChem/NCBI theo lô để né hạn chế.
 
 ### GĐ3 — Nguồn cơ chế và nhãn thuốc (D), tuần 2, song song GĐ2
 
@@ -226,8 +243,8 @@ Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước
 - **Dự đoán:**
   - Viết bộ chấm điểm dùng chung (D3, D5).
   - Chấm B0 trên **val**; test giữ cho GĐ5.
-  - Với cặp chưa có nhãn, B0 cho top-k ở `status = dự đoán`, kèm bằng chứng mức thuốc.
-- **Loại bằng chứng, xếp theo độ mạnh:**
+  - Chỉ trong chế độ nghiên cứu: với cặp chưa có nhãn, B0 cho top-k dự đoán kèm mẫu số tần suất train; consumer không hiển thị điểm này.
+- **Các loại bằng chứng (không phải thứ tự độ mạnh tuyệt đối cho mọi claim; cần đúng chủ thể, kết luận và điều kiện):**
   1. Đoạn nhãn thuốc DailyMed nói trực tiếp về cặp hoặc nhóm thuốc;
   2. Cơ chế ChEMBL có chiều tác động;
   3. Nhãn Decagon đã quan sát;
@@ -235,14 +252,14 @@ Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước
   5. Bối cảnh target/PPI (gắn nhãn "bối cảnh, không phải cơ chế").
 - **LLM:**
   - Một lần gọi API với schema JSON; mỗi phát biểu trích ID bằng chứng; được phép trả "insufficient evidence".
-  - Phần cơ chế mặc định là "chưa đủ bằng chứng", trừ khi có nguồn loại 1 hoặc 2.
+  - Phần cơ chế mặc định là "chưa đủ bằng chứng"; nguồn loại 1 hoặc 2 chỉ được dùng khi hỗ trợ đúng kết luận. Cơ chế đơn thuốc không tự hỗ trợ tương tác cặp hoặc một outcome cụ thể.
 - **Verifier:** ID có thật; quan hệ và chiều đúng; bằng chứng thuộc đúng chế độ và data view; không có câu khẳng định quá mức.
 - **Gold set v1:** dược sĩ lập khoảng 20 trường hợp dev (tách riêng khỏi bộ đánh giá cuối).
 - **Cổng:** đạt ngưỡng D7 trên bộ dev, sau đó đến **cổng M** (mục 4.4).
 
 ### GĐ4' — Tuần 4, theo kết quả cổng M
 
-- **(a) Nếu qua cổng M:** huấn luyện B2 (lấy mẫu âm theo mục 6.1, tỷ lệ cố định trong config), so với B0 trên val qua 3 seed.
+- **(a) Nếu qua cổng M:** huấn luyện DistMult theo giao thức lấy mẫu âm và budget ở file 13, so với B0 đã khóa trên val qua 3 seed. Mục 6.1 quy định chấm toàn ma trận, không quy định sampler train.
 - **(b) Nếu không qua:** mở rộng bằng chứng ra thêm thuốc, thêm phần nhãn, làm giao diện web đơn giản.
 
 ### GĐ5 — Đánh giá, tuần 5
@@ -333,7 +350,10 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 - [x] GĐ1a: môi trường, ETL, QA, cấu trúc phân tử.
 - [x] Chốt quyết định Q1–Q5 và giao thức D1–D7.
 - [x] **Claude:** GĐ1b, gồm vocabulary, split 70/10/20 seed 391, data view theo chế độ, 4 test rò rỉ. *(Xong 2026-10-10: 44.430/6.347/12.695 cặp; vocab chỉ tính trên train còn 959 nhãn, chênh 4 nhãn, chưa đo ảnh hưởng lên metric.)*
-- [x] Sửa 3 lỗi bảo vệ dữ liệu theo review (metadata trong prediction view, ghi đè split, xác minh khi đọc split). Bước đánh giá tiếp theo: **B0 trên val chính thức**; test giữ cho GĐ5.
+- [x] Sửa 3 lỗi bảo vệ dữ liệu theo review (metadata trong prediction view, ghi đè split, xác minh khi đọc split).
+- [x] B0 trên val chính thức đã có artifact; test giữ cho GĐ5.
+- [x] Viết 15 plan chi tiết 00–14, hợp đồng dùng chung và tiêu chí kiểm chứng (17/10).
+- [ ] Tiếp theo: contract 01, catalog review 02, versioning 03; đồng thời lập rubric 11. ChEMBL/DailyMed đã có mã và test, cần hoàn thiện theo file 04–05, chưa ghi hoàn thành GĐ3.
 - [ ] **Dược sĩ:** chọn khoảng 50 thuốc cho danh mục demo; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `data/processed/decagon_v1/structure_coverage.json`.
 - [x] **Claude:** B0 trên val chính thức (macro AP 0,2714) và bộ chấm điểm dùng chung.
 - [x] **Claude:** module GĐ3 (ChEMBL, DailyMed) và tích hợp vào `lookup`.
@@ -346,6 +366,7 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 | Ngày | Thay đổi |
 |---|---|
 | 2026-10-17 | B0 trên val chính thức: macro AP 0,2714 (khớp thử nghiệm). GĐ3: module ChEMBL/DailyMed tích hợp vào lookup; phát hiện target Decagon dạng panel rộng (83/284 thuốc). |
+| 2026-10-17 | v2.1: thêm 15 plan chi tiết; người dùng phổ thông, catalog duyệt, B0 chỉ nghiên cứu; cập nhật val đã có; phân biệt cơ chế đơn thuốc với claim cặp và chốt mẫu số D7 trong file 11. Không triển khai code hoặc chạy test cuối trong đợt viết plan. |
 | 2026-10-10 | GĐ2 lõi hoàn thành (tra cứu, gộp, bối cảnh target/PPI, 3 trường hợp thiếu dữ liệu, p95 228 ms). Ghi nhận vấn đề xếp hạng và nhãn lẫn chỉ định; tên thuốc còn thiếu 253. |
 | 2026-10-10 | Sửa GĐ1b theo review: metadata của prediction view chỉ tính trên train; split không ghi đè được; xác minh checksum và snapshot khi đọc split; khóa cache gồm split_hash. |
 | 2026-10-10 | GĐ1b hoàn thành; split `pair_70-10-20_s391` đóng băng và commit. |

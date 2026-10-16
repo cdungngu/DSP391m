@@ -30,6 +30,12 @@ RESULTS_DIR = ROOT / "results"
 MODELS = {"b0_per_drug": lambda: B0("per_drug"), "b0_popularity": lambda: B0("popularity")}
 
 
+def finite_mean(values):
+    values = np.asarray(values, dtype=float)
+    values = values[np.isfinite(values)]
+    return float(values.mean()) if len(values) else None
+
+
 def ap_columns(y: np.ndarray, s: np.ndarray) -> np.ndarray:
     """AP từng nhãn bằng sklearn (xử lý điểm bằng nhau giống metric chính). Nhãn không có dương trả NaN."""
     out = np.full(y.shape[1], np.nan)
@@ -43,10 +49,11 @@ def core_metrics(y: np.ndarray, s: np.ndarray) -> dict:
     cols = np.where(pos > 0)[0]
     auc_cols = np.where((pos > 0) & (pos < len(y)))[0]
     return {
-        "macro_ap": float(np.mean([average_precision_score(y[:, j], s[:, j]) for j in cols])),
-        "micro_ap": float(average_precision_score(y.ravel(), s.ravel())),
-        "macro_auroc": float(np.mean([roc_auc_score(y[:, j], s[:, j]) for j in auc_cols])),
+        "macro_ap": finite_mean([average_precision_score(y[:, j], s[:, j]) for j in cols]),
+        "micro_ap": float(average_precision_score(y.ravel(), s.ravel())) if y.size and y.sum() else None,
+        "macro_auroc": finite_mean([roc_auc_score(y[:, j], s[:, j]) for j in auc_cols]),
         "labels_scored": int(len(cols)),
+        "undefined_reason": "no_positive_labels" if not len(cols) else None,
     }
 
 
@@ -56,9 +63,11 @@ def bootstrap(y: np.ndarray, s: np.ndarray, n: int, seed: int = 391) -> dict:
     for _ in range(n):
         idx = rng.integers(0, len(y), len(y))
         yb, sb = y[idx], s[idx]
-        macro.append(np.nanmean(ap_columns(yb, sb)))
-        micro.append(average_precision_score(yb.ravel(), sb.ravel()))
-    q = lambda v: [float(np.percentile(v, 2.5)), float(np.percentile(v, 97.5))]  # noqa: E731
+        macro.append(finite_mean(ap_columns(yb, sb)))
+        micro.append(float(average_precision_score(yb.ravel(), sb.ravel())) if yb.sum() else None)
+    def q(values):
+        values = [v for v in values if v is not None and np.isfinite(v)]
+        return [float(np.percentile(values, 2.5)), float(np.percentile(values, 97.5))] if values else None
     return {"n": n, "unit": "pair", "macro_ap": q(macro), "micro_ap": q(micro)}
 
 
@@ -71,14 +80,14 @@ def grouped(y: np.ndarray, s: np.ndarray, pairs: pd.DataFrame, view) -> dict:
     bucket = np.digitize(freq, edges)
     ap = ap_columns(y, s)
     for b, name in enumerate(["rare", "mid", "common"]):
-        out[f"label_freq_{name}"] = {"labels": int((bucket == b).sum()), "macro_ap": float(np.nanmean(ap[bucket == b]))}
+        out[f"label_freq_{name}"] = {"labels": int((bucket == b).sum()), "macro_ap": finite_mean(ap[bucket == b])}
     # Nhóm theo số thuốc trong cặp có target.
     has_t = view.drugs.set_index("drug_idx")["n_targets"].gt(0)
     n_t = has_t.reindex(pairs["drug_a"]).to_numpy().astype(int) + has_t.reindex(pairs["drug_b"]).to_numpy().astype(int)
     for k, name in enumerate(["no_targets", "one_has_targets", "both_have_targets"]):
         m = n_t == k
         if m.sum():
-            out[f"pairs_{name}"] = {"pairs": int(m.sum()), "macro_ap": float(np.nanmean(ap_columns(y[m], s[m])))}
+            out[f"pairs_{name}"] = {"pairs": int(m.sum()), "macro_ap": finite_mean(ap_columns(y[m], s[m]))}
     return out
 
 
@@ -90,7 +99,8 @@ def run(model_name: str, split: str = "val", n_boot: int = 100, final: bool = Fa
     view = prediction_view(split_id, snap)
     model = MODELS[model_name]().fit(view)
     pairs, y, vocab = load_eval_targets(split, split_id, snap)
-    if not (vocab["label_idx"].to_numpy() == view.label_vocab["label_idx"].to_numpy()).all():
+    if not vocab[["label_idx", "effect_idx", "effect_cui"]].reset_index(drop=True).equals(
+            view.label_vocab[["label_idx", "effect_idx", "effect_cui"]].reset_index(drop=True)):
         raise RuntimeError("Thứ tự nhãn của model và bộ chấm điểm không khớp")
     s = model.score(pairs)
     result = {

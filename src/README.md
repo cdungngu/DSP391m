@@ -1,5 +1,18 @@
 # Mã triển khai
 
+## Luồng consumer và gói duyệt (2026-10-17)
+
+`contracts.py`, `releases.py`, `catalog.py`, `review.py`, `workbench.py` bổ sung luồng template chỉ dùng catalog và câu có nguồn đã được duyệt. Không tự dùng nhãn Decagon/B0 làm cảnh báo consumer.
+
+```bash
+.venv/bin/python -m dsp391m.workbench prepare --out data/review/NEW_PACKET_ID
+.venv/bin/python -m dsp391m.catalog --help
+.venv/bin/python -m dsp391m.review --help
+.venv/bin/python -m dsp391m.b0_experiment --out results/experiments/NEW_RUN_ID.json
+```
+
+Không ghi đè packet/run đã có. Quy trình import review và trạng thái từng plan nằm trong [báo cáo triển khai](../plan/Bao_cao_trien_khai_2026_10_17.md). Catalog thật đang chờ dược sĩ; test fixtures không phải dữ liệu đã duyệt để sử dụng thực tế.
+
 Package `dsp391m` (cài bằng `pip install -e .` từ thư mục gốc). Hiện có GĐ1, GĐ2, B0 và phần lớn GĐ3 của kế hoạch (`plan/Ke_hoach_trien_khai.md`):
 
 | Module | Việc | Đầu ra trong `data/processed/decagon_v1/` |
