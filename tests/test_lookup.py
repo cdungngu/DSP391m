@@ -139,3 +139,9 @@ def test_chembl_and_dailymed_evidence_in_pairs(index):
     assert any(s == S3 and w.startswith("không có cơ chế ChEMBL") for s, w in missing)
     assert any(s == S2 and w.startswith("chưa có nhãn DailyMed") for s, w in missing)
     assert "nhãn DailyMed của alphamycin" in lookup.render_text(r)
+
+
+def test_broad_target_panel_flagged(index, monkeypatch):
+    monkeypatch.setattr(lookup, "BROAD_PANEL_MIN_TARGETS", 1)  # thuốc 1 có 2 target -> coi là panel rộng
+    ctx = index.review([S1, S4])["pairs"][0]["mechanism_context"]
+    assert ctx["status"] == "low_specificity" and ctx["broad_panel_drugs"] == [S1]

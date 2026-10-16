@@ -15,7 +15,12 @@ AMP_JUNK = {"molecule_chembl_id": "CHEMBL1473908", "pref_name": None, "max_phase
 def fake_get_all(endpoint, params, list_key, offline):
     if endpoint == "molecule" and "molecule_structures__standard_inchi_key__in" in params:
         keys = params["molecule_structures__standard_inchi_key__in"].split(",")
-        return [ASPIRIN] if ASPIRIN["molecule_structures"]["standard_inchi_key"] in keys else []
+        out = [ASPIRIN] if ASPIRIN["molecule_structures"]["standard_inchi_key"] in keys else []
+        if "QQQQQQQQQQQQQQ-UHFFFAOYSA-N" in keys:
+            out.append({**ASPIRIN, "molecule_chembl_id": "CHEMBL9", "pref_name": "NEUTRALDRUG",
+                        "molecule_structures": {"standard_inchi_key": "QQQQQQQQQQQQQQ-UHFFFAOYSA-N"},
+                        "molecule_hierarchy": {"parent_chembl_id": "CHEMBL9"}})
+        return out
     if endpoint == "molecule" and "molecule_structures__standard_inchi_key__startswith" in params:
         return [AMP_JUNK, AMP_SALT] if params["molecule_structures__standard_inchi_key__startswith"] == "AVKUERGKIZMTKX" else []
     if endpoint == "molecule":
@@ -36,8 +41,9 @@ def fake_get_all(endpoint, params, list_key, offline):
     raise AssertionError((endpoint, params))
 
 
-STRUCTS = pd.DataFrame({"drug_idx": [0, 1, 2], "stitch_id": ["CID000002244", "CID000002173", "CID000099999"],
-                        "inchikey": ["BSYNRYMUTXBXSQ-UHFFFAOYSA-N", "AVKUERGKIZMTKX-UHFFFAOYSA-M", "ZZZZZZZZZZZZZZ-UHFFFAOYSA-N"]})
+STRUCTS = pd.DataFrame({"drug_idx": [0, 1, 2, 3], "stitch_id": ["CID000002244", "CID000002173", "CID000099999", "CID000000009"],
+                        "inchikey": ["BSYNRYMUTXBXSQ-UHFFFAOYSA-N", "AVKUERGKIZMTKX-UHFFFAOYSA-M", "ZZZZZZZZZZZZZZ-UHFFFAOYSA-N",
+                                     "QQQQQQQQQQQQQQ-UHFFFAOYSA-M"]})
 
 
 def test_map_exact_connectivity_and_none(monkeypatch):
@@ -48,6 +54,7 @@ def test_map_exact_connectivity_and_none(monkeypatch):
     assert m.loc["CID000002173", ["match_type", "matched_chembl_id", "parent_chembl_id"]].tolist() == \
         ["connectivity", "CHEMBL1200", "CHEMBL174"]
     assert m.loc["CID000099999", "match_type"] == "none"
+    assert m.loc["CID000000009", ["match_type", "parent_chembl_id"]].tolist() == ["neutralized", "CHEMBL9"]
 
 
 def test_mechanisms_map_gene_symbols_to_decagon(monkeypatch):
@@ -64,7 +71,7 @@ def test_update_names_fills_pending_only(monkeypatch):
     mapping = chembl.map_drugs(STRUCTS)
     mapping = mapping.merge(chembl.parent_info(mapping["parent_chembl_id"].dropna().tolist()), on="parent_chembl_id", how="left")
     mapping["chembl_synonyms"] = mapping["chembl_synonyms"].apply(lambda v: v if isinstance(v, list) else [])
-    names = pd.DataFrame({"drug_idx": [0, 1, 2], "stitch_id": STRUCTS["stitch_id"], "pubchem_cid": [2244, 2173, 99999],
+    names = pd.DataFrame({"drug_idx": [0, 1, 2], "stitch_id": STRUCTS["stitch_id"][:3], "pubchem_cid": [2244, 2173, 99999],
                           "name_cid": [2244, 2173, 99999], "name_source": ["self", "pending", "pending"],
                           "display_name": ["aspirin", "CID000002173", "CID000099999"],
                           "synonyms": [["aspirin"], [], []], "needs_review": [False, True, True]})

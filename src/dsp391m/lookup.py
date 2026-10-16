@@ -32,6 +32,9 @@ from .names import normalize
 from .paths import snapshot_dir
 
 MIN_DRUGS, MAX_DRUGS = 2, 10
+# Thuốc có hơn ngưỡng này target trong Decagon gần như dùng chung một panel khoảng 158 gene GPCR (83/284 thuốc,
+# Jaccard trung vị 0,88): target của chúng ít đặc hiệu, "target chung" với thuốc khác phần lớn là nhiễu.
+BROAD_PANEL_MIN_TARGETS = 100
 CONTEXT_NOTE = "Bối cảnh cấu trúc (target/PPI không có chiều tác động), không phải bằng chứng cơ chế."
 LABEL_NOTE = ("Nhãn Decagon là liên hệ thống kê từ báo cáo tự phát (TWOSIDES/FAERS), không xác lập nhân quả, "
               "mức độ hay tần suất. Không có nhãn không có nghĩa là an toàn.")
@@ -133,6 +136,7 @@ class EvidenceIndex:
         missing = [self.stitch[d] for d in (x, y) if not self.targets.get(d)]
         if missing:
             return {"status": "missing_targets", "missing_for": missing, "note": CONTEXT_NOTE}
+        broad = [self.stitch[d] for d in (x, y) if len(self.targets[d]) > BROAD_PANEL_MIN_TARGETS]
         tx, ty = self.targets[x], self.targets[y]
         shared = sorted(tx & ty)
         ox, oy = np.array(sorted(tx - ty)), np.array(sorted(ty - tx))
@@ -145,7 +149,8 @@ class EvidenceIndex:
             links.append((score, int(gx), int(gy)))
         links.sort(reverse=True)
         return {
-            "status": "available",
+            "status": "low_specificity" if broad else "available",
+            "broad_panel_drugs": broad,
             "n_targets": [len(tx), len(ty)],
             "shared_targets": [self._gene(g) for g in shared[:limit]],
             "n_shared_targets": len(shared),
@@ -325,7 +330,10 @@ def render_text(r: dict, top: int = 15) -> str:
         line = f"  - {a} + {b}: " + (f"{p['n_effects']} tác dụng phụ đã ghi nhận" if p["status"] == "observed"
                                     else "KHÔNG có dữ liệu (chưa quan sát, không có nghĩa là an toàn)")
         ctx = p["mechanism_context"]
-        if ctx["status"] == "available":
+        if ctx["status"] == "low_specificity":
+            line += (f"; bối cảnh target ít đặc hiệu ({', '.join(ctx['broad_panel_drugs'])} có >{BROAD_PANEL_MIN_TARGETS}"
+                     f" target dạng panel rộng; {ctx['n_shared_targets']} target chung, bỏ qua khi diễn giải)")
+        elif ctx["status"] == "available":
             shared = ", ".join(g["symbol"] or str(g["gene_id"]) for g in ctx["shared_targets"])
             line += f"; bối cảnh: {ctx['n_shared_targets']} target chung" + (f" ({shared})" if shared else "")
             line += f", {ctx['n_ppi_links']} liên kết PPI giữa target"

@@ -2,7 +2,8 @@
 
 Chạy: python -m dsp391m.chembl [--snapshot-dir DIR] [--offline]
 
-1. Khớp InChIKey đầy đủ (theo lô). Thuốc chưa khớp thì khớp theo khối connectivity (14 ký tự đầu của
+1. Khớp InChIKey đầy đủ (theo lô), rồi InChIKey dạng trung hòa (đổi ký tự proton cuối thành N, theo lô; vẫn
+   là cùng một phân tử nên needs_review = False). Thuốc chưa khớp thì khớp theo khối connectivity (14 ký tự đầu của
    InChIKey: bỏ qua lập thể và trạng thái proton), ưu tiên phân tử đã được duyệt (max_phase cao), có tên.
    Mọi khớp theo connectivity có needs_review = True (có thể nhầm đồng phân lập thể hoặc muối).
 2. Quy về phân tử cha (molecule_hierarchy.parent_chembl_id), vì cơ chế thường được ghi ở phân tử cha.
@@ -82,9 +83,19 @@ def map_drugs(structures: pd.DataFrame, offline: bool = False) -> pd.DataFrame:
         k = (m.get("molecule_structures") or {}).get("standard_inchi_key")
         exact.setdefault(k, []).append(m)
 
+    # Dạng ion: ChEMBL lưu dạng trung hòa, chỉ khác ký tự proton cuối của InChIKey (M/O/... -> N). Thử theo lô
+    # trước để giảm số request đơn lẻ theo connectivity.
+    neutral = {k: k[:-1] + "N" for k in keys if k[-1] != "N" and k not in exact}
+    if neutral:
+        for m in _by_ids("molecule", "molecule_structures__standard_inchi_key", list(neutral.values()),
+                         "molecules", offline, only):
+            exact.setdefault((m.get("molecule_structures") or {}).get("standard_inchi_key"), []).append(m)
+
     rows = []
     for d in structures.itertuples(index=False):
         cands, match = exact.get(d.inchikey, []), "exact"
+        if not cands and d.inchikey in neutral:
+            cands, match = exact.get(neutral[d.inchikey], []), "neutralized"
         if not cands and isinstance(d.inchikey, str):
             match = "connectivity"
             cands = _get_all("molecule", {"molecule_structures__standard_inchi_key__startswith": d.inchikey[:14],
@@ -151,7 +162,7 @@ def update_names(names: pd.DataFrame, mapping: pd.DataFrame) -> pd.DataFrame:
         if row["name_source"] in ("pending", "none"):
             names.at[i, "display_name"] = pref
             names.at[i, "name_source"] = "chembl"
-            names.at[i, "needs_review"] = info["match_type"] != "exact"
+            names.at[i, "needs_review"] = info["match_type"] == "connectivity"
     return names
 
 

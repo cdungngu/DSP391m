@@ -10,11 +10,11 @@ DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đ
 
 ## Trạng thái hiện tại
 
-_Cập nhật lần cuối: 2026-10-10_
+_Cập nhật lần cuối: 2026-10-17_
 
 - **Bối cảnh (chốt 2026-10-10):** đây là **dự án thật, không phải môn học**: không có cổng duyệt của giảng viên. Còn **6 tuần**; API LLM và GPU thuê ngoài khi cần; **có người bên dược** hỗ trợ (danh mục demo, duyệt mapping, gold set, chấm giải thích).
 - **Hướng đã chốt (plan v2):** lõi là **A** (tra cứu bằng chứng Decagon) + **D** (cơ chế ChEMBL `action_type`, đoạn nhãn DailyMed, dược sĩ kiểm tra) + **B0** (dự đoán bằng đếm tần suất theo từng thuốc, **không huấn luyện**). **B2** (DistMult/SimplE) chỉ làm nếu qua **cổng M** cuối tuần 3 (plan mục 4.4). Không làm B1, GNN, HODDI. Chi tiết và lịch ở `plan/Ke_hoach_trien_khai.md`.
-- **Giai đoạn:** GĐ1a, GĐ1b xong. **GĐ2 (demo tra cứu) xong phần lõi**: `python -m dsp391m.lookup`. Phần dở: 253/645 thuốc chưa có tên (`name_source = pending`) do PubChem chặn tạm thời; chạy lại `python -m dsp391m.names` để bổ sung từ cache. **Tiếp theo:** B0 trên val chính thức (bộ chấm điểm dùng chung) và GĐ3 (ChEMBL/DailyMed).
+- **Giai đoạn:** GĐ1, GĐ2 xong. **B0 trên val chính thức xong** (`results/val/`). **GĐ3 đang làm:** module ChEMBL (cơ chế + bổ sung tên) và DailyMed (đoạn nhãn) đã có và tích hợp vào `lookup`; DailyMed mới chạy trên 8 thuốc mẫu, chờ danh mục demo của dược sĩ. **Tiếp theo:** hoàn tất GĐ3 theo danh mục demo, rồi GĐ4 (LLM + verifier).
 - **Đang chờ dược sĩ:** danh mục demo khoảng 50 thuốc; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `structure_coverage.json`.
 - **Tài liệu cũ:** `docs/submission/*` vẫn mô tả thiết kế cũ. Không cần nộp lại; nếu dùng lại thì sửa theo plan mục 10.
 
@@ -24,6 +24,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | GĐ3: `http.py` (gọi API lịch sự, dùng chung), `chembl.py` (khớp InChIKey → dạng trung hòa → connectivity; cơ chế có `action_type`; bổ sung tên), `dailymed.py` (đoạn nhãn theo LOINC, tìm tên thuốc B trong mục Drug Interactions của thuốc A); `lookup` hiển thị cơ chế ChEMBL, target ChEMBL chung có chiều, đoạn nhãn DailyMed, và gắn cờ target Decagon dạng panel rộng (>100 target) | Bù chỗ PPI không có chiều và target Decagon nhiễu; NCBI chặn PubChem nên lấy tên qua ChEMBL | Đã làm |
+| 2026-10-16 | Bộ chấm điểm dùng chung `evaluate.py` + B0 (`models/b0.py`) trên val chính thức; test chỉ chạy với `--final` | Theo D3–D5; giữ test cho GĐ5 | Đã làm |
 | 2026-10-10 | Hoàn thành lõi GĐ2: `names.py` (tên thuốc qua PubChem synonyms + CID liên quan, symbol gene NCBI), `lookup.py` (tra cứu theo cặp, gộp theo tác dụng phụ với cặp đóng góp và evidence ID, bối cảnh target/PPI phạt mềm theo bậc, tách 3 trường hợp thiếu dữ liệu). Xếp hạng mặc định: số cặp đóng góp, hòa thì nhãn hiếm trước; `--sort enrichment` là tùy chọn | Demo cho thấy cả hai cách xếp hạng đều có điểm yếu; nhãn Decagon lẫn chỉ định và bệnh nền (ví dụ hyperlipaemia đi cùng simvastatin) | Đã làm |
 | 2026-10-10 | Sửa GĐ1b theo review: prediction view bỏ metadata tính trên toàn snapshot (`effects.n_rows` → `n_rows_train`, `drugs.in_combo` → `in_train`); `splits.run` không ghi đè split đã có (cùng tham số thì chỉ xác minh, khác thì `SplitExistsError`); mọi nơi đọc split qua `load_verified_split` (checksum file và snapshot, nếu sai thì `SplitIntegrityError`); khóa cache gồm `split_hash`; 6 test hồi quy | Review phát hiện metadata val/test lọt vào prediction view, split "đóng băng" vẫn ghi đè được, và loader không xác minh file | Đã làm |
 | 2026-10-10 | Hoàn thành GĐ1b: `splits.py` (vocab 963, split 70/10/20 seed 391, commit file split), `dataview.py` (evidence/prediction view, `load_eval_targets`, `Cache` khóa theo chế độ), `tests/test_leakage.py` | Đóng băng split để B0 được chấm trung thực và B2 có thể làm ngay nếu qua cổng M | Đã làm |
@@ -74,6 +76,11 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/
 .venv/bin/python -m dsp391m.names
 # GĐ2: tra cứu bằng chứng cho đơn thuốc (tên, STITCH ID hoặc PubChem CID; --json để xuất JSON)
 .venv/bin/python -m dsp391m.lookup aspirin simvastatin omeprazole fluoxetine --top 10
+# GĐ3: ChEMBL (cơ chế + tên; chậm, khoảng 10 giây mỗi request, có cache) và DailyMed (chỉ theo danh mục nhỏ)
+.venv/bin/python -m dsp391m.chembl
+.venv/bin/python -m dsp391m.dailymed --file demo_drugs.txt
+# Chấm điểm trên val (test chỉ khi đã khóa cấu hình: --split test --final)
+.venv/bin/python -m dsp391m.evaluate --model b0_per_drug
 # GĐ1b: vocabulary + split (đã đóng băng và commit; chạy lại chỉ để kiểm tra hash, không ghi đè bằng tham số khác)
 .venv/bin/python -m dsp391m.splits
 
@@ -106,6 +113,9 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **Split chính thức `pair_70-10-20_s391`:** 63.472 cặp có nhãn trong vocab, chia 44.430 / 6.347 / 12.695 (1 cặp chỉ có nhãn ngoài vocab bị loại). Prediction view còn 3.198.361 dòng nhãn train. Nếu chỉ tính ngưỡng ≥500 dòng trên train (ngưỡng nhân 0,7) thì vocab còn 959 nhãn: chênh 4 nhãn, **chưa đánh giá ảnh hưởng đến metric** (muốn kết luận thì so sánh hai vocab trên cùng val). Tỷ lệ dương của val: 7,49%.
 - **Tên thuốc** (`names_report.json`): 374/645 thuốc có tên ngay từ CID gốc. CID gốc của Decagon thường là dạng flat hoặc ion (ví dụ CID 2173 là anion của ampicillin) nên không có tên; khi đó lấy tên từ CID cha hoặc CID cùng connectivity có nhiều synonym nhất (ampicillin → CID 6249). Mọi tên lấy theo cách này có `needs_review` (có thể nhầm đồng phân lập thể). PubChem chặn IP (HTTP 429) sau khoảng 1.000 request liên tiếp; đến 2026-10-12 NCBI chuyển hướng mọi request từ IP này tới trang **abuse** (`misuse.ncbi.nlm.nih.gov`). **Không gọi PubChem/NCBI theo lô lớn nữa**; dùng `--offline`. Phần tên còn thiếu dự kiến lấy từ ChEMBL (tra theo InChIKey) ở GĐ3. 3.648/3.648 gene target có symbol NCBI.
 - **Hạn chế của nhãn Decagon thấy qua demo:** nhãn lẫn chỉ định và bệnh nền của nhóm bệnh nhân (hyperlipaemia xuất hiện ở mọi cặp có simvastatin), tên nhãn đôi khi lạ (C0011860 có tên "Mod"). Xếp theo số cặp đẩy nhãn chung chung lên đầu; xếp theo mức trội đẩy nhãn hiếm, có thể là nhiễu. Chưa có cách xếp hạng đã kiểm chứng; cần dược sĩ và nguồn GĐ3.
+- **B0 trên val chính thức** (`results/val/`, 6.347 cặp × 963 nhãn, tỷ lệ dương 7,49%): popularity macro AP 0,0749; **per-drug macro AP 0,2714** (CI bootstrap percentile [0,2703; 0,2797], lệch lên do cặp lặp khi lấy mẫu), micro AP 0,3508, macro AUROC 0,8360. Theo nhóm: nhãn hiếm/trung bình/phổ biến 0,178/0,246/0,391; cặp có 0/1/2 thuốc có target 0,266/0,274/0,305.
+- **Target Decagon dạng panel rộng:** 83/284 thuốc có target có hơn 100 target và gần như dùng chung một panel khoảng 158 gene GPCR (Jaccard trung vị 0,88; 20 thuốc có bộ target giống hệt nhau; gồm cả atenolol, amitriptyline, salbutamol, calcium ion). Target của các thuốc này không đặc hiệu: `lookup` gắn `low_specificity` và không diễn giải "target chung".
+- **DailyMed** (8 thuốc mẫu, 129 đoạn): tìm được tương tác thật mà nhãn Decagon không nói được (nhãn fluoxetine: kéo dài thời gian bán thải của diazepam; nhãn omeprazole: diazepam là cơ chất CYP2C19). Nhãn chọn tự động có thể là nhãn OTC không có mục Drug Interactions (aspirin). Chỉ khớp tên thuốc nguyên từ, chưa bắt được cách nhắc theo nhóm ("strong CYP3A4 inhibitors").
 - **Độ trễ GĐ2** (300 đơn ngẫu nhiên, k = 3/5/10): tải chỉ mục 0,7 giây; truy vấn p50 15 ms, p95 228 ms, tối đa 687 ms. Đạt mục tiêu p95 tra cứu dưới 1 giây.
 - **Cấu trúc phân tử** (PubChem, 2026-10-10): 645/645 thuốc combo có SMILES và RDKit tạo được Morgan fingerprint. 58 thuốc bị gắn cờ (`charged`, `multi_component`, `tiny`): phần lớn là dạng ion hóa hợp lệ của thuốc (penicillin dạng carboxylate, amoni bậc 4), nhưng có nhóm cần xem tay vì không phải hoạt chất đặc hiệu (calcium cation, NaCl, KCl, sulfate ion, nitric oxide, lithium aluminum hydride, CID 6398525). Không có InChIKey trùng. Danh sách đầy đủ trong `data/processed/decagon_v1/structure_coverage.json`.
 - Tên tác dụng phụ có lỗi chính tả (ví dụ "neumonia"). Dùng CUI làm khóa và giữ tên gốc để truy vết.

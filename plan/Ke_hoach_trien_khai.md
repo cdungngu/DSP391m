@@ -218,6 +218,9 @@ Mỗi giai đoạn chỉ bắt đầu khi **cổng** của giai đoạn trước
 - **Dược sĩ kiểm tra:** mapping của danh mục demo, và các trường hợp mơ hồ (salt, ion, chế phẩm phối hợp).
 - **Cổng:** độ phủ ChEMBL và DailyMed được đo; mapping của danh mục demo đã được dược sĩ duyệt.
 
+- **Trạng thái (2026-10-17):** module ChEMBL và DailyMed đã có, tích hợp vào `lookup`. DailyMed mới chạy trên 8 thuốc mẫu và cho thấy giá trị rõ (tương tác fluoxetine–diazepam, omeprazole–diazepam có trong nhãn thuốc nhưng nhãn Decagon không nói được). Phát hiện thêm: **83/284 thuốc có target Decagon dùng chung một panel khoảng 158 gene GPCR**, nên "target chung" của các thuốc này bị gắn cờ ít đặc hiệu. Còn chờ: **danh mục demo của dược sĩ** để chạy DailyMed đầy đủ; dược sĩ duyệt các khớp ChEMBL theo connectivity.
+- **Việc cho GĐ4 rút ra từ GĐ3:** bắt các cách nhắc theo nhóm trong nhãn (ví dụ "CYP2C19 substrates", "strong CYP3A4 inhibitors") bằng cách nối với target/enzyme ChEMBL của thuốc kia; chọn nhãn Rx thay cho OTC khi có.
+
 ### GĐ4 — Giải thích + dự đoán B0, tuần 3
 
 - **Dự đoán:**
@@ -332,6 +335,8 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 - [x] **Claude:** GĐ1b, gồm vocabulary, split 70/10/20 seed 391, data view theo chế độ, 4 test rò rỉ. *(Xong 2026-10-10: 44.430/6.347/12.695 cặp; vocab chỉ tính trên train còn 959 nhãn, chênh 4 nhãn, chưa đo ảnh hưởng lên metric.)*
 - [x] Sửa 3 lỗi bảo vệ dữ liệu theo review (metadata trong prediction view, ghi đè split, xác minh khi đọc split). Bước đánh giá tiếp theo: **B0 trên val chính thức**; test giữ cho GĐ5.
 - [ ] **Dược sĩ:** chọn khoảng 50 thuốc cho danh mục demo; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `data/processed/decagon_v1/structure_coverage.json`.
+- [x] **Claude:** B0 trên val chính thức (macro AP 0,2714) và bộ chấm điểm dùng chung.
+- [x] **Claude:** module GĐ3 (ChEMBL, DailyMed) và tích hợp vào `lookup`.
 - [ ] **Nhóm:** gán người cho 4 vai trò ở mục 8; sửa các link sai trong `docs/literature/literature-review.xlsx`.
 
 ---
@@ -340,6 +345,7 @@ Vì đây là dự án chứ không phải môn học, các báo cáo cũ trong 
 
 | Ngày | Thay đổi |
 |---|---|
+| 2026-10-17 | B0 trên val chính thức: macro AP 0,2714 (khớp thử nghiệm). GĐ3: module ChEMBL/DailyMed tích hợp vào lookup; phát hiện target Decagon dạng panel rộng (83/284 thuốc). |
 | 2026-10-10 | GĐ2 lõi hoàn thành (tra cứu, gộp, bối cảnh target/PPI, 3 trường hợp thiếu dữ liệu, p95 228 ms). Ghi nhận vấn đề xếp hạng và nhãn lẫn chỉ định; tên thuốc còn thiếu 253. |
 | 2026-10-10 | Sửa GĐ1b theo review: metadata của prediction view chỉ tính trên train; split không ghi đè được; xác minh checksum và snapshot khi đọc split; khóa cache gồm split_hash. |
 | 2026-10-10 | GĐ1b hoàn thành; split `pair_70-10-20_s391` đóng băng và commit. |
