@@ -17,7 +17,8 @@ _Cập nhật lần cuối: 2026-10-17 (phiên triển khai v3)_
 - **Đã triển khai v3 bước 1–5 (2026-10-17):** predictor contract, readiness, evaluator top-k/NDCG + paired bootstrap song song + final lock, baseline qua cùng giao thức, DistMult trainer có resume. 88 test nhanh đạt. Chưa chạy search plan 06, chưa lock/test, chưa demo.
 - **Protocol DistMult đã sửa và đăng ký (2026-10-17):** wd 0 (wd 1e-5 của Adam làm embedding sụp về 0), sampler trộn 5 âm thay nhãn + 5 âm thay cặp train cân 0,5/0,5, lr {0,01; 0,03} × dim {64,128}. Mốc macro AP là B0 alpha100, mốc NDCG@10 là B0 alpha0; demo tạm dùng alpha0. Thăm dò trước đã nhìn val, phải công bố. Đăng ký: `results/experiments/2026-10-17_distmult_search_v1_registration.json`; chẩn đoán: [distmult_diagnostics.md](analysis/2026-10-17/distmult_diagnostics.md).
 - **Search v1 xong (2026-10-17):** chọn d128 lr 0,01; ba seed macro AP 0,2852–0,2880, dưới alpha100 0,2890 (CI seed391 [−0,0074; +0,0013]); NDCG@10 0,412 so 0,526 của alpha0; micro AP 0,376 cao hơn mọi B0. **Không promote**; demo giữ B0 alpha0. Kết quả: `results/experiments/2026-10-17_search_v1_model_selection.json`.
-- **Tiếp theo:** lô 20 ca val (plan 06) → quyết định có thử một mở rộng plan 08 (ví dụ residual trên B0) hay không → lock/final → demo CLI với alpha0.
+- **Lô 20 ca val xong (2026-10-17):** B0 alpha0 vs DistMult; [tóm tắt](analysis/2026-10-17/cases20_review_notes.md), bảng từng ca `analysis/2026-10-17/cases20_v1.md`. Chờ người xem đợt 1.
+- **Tiếp theo:** quyết định có thử một mở rộng plan 08 (ví dụ residual trên B0) hay không → lock/final → demo CLI với alpha0.
 - **Duyệt theo đợt:** một gói baseline/pilot và một gói bàn giao. Không chờ catalog 50 thuốc hoặc gold dược sĩ để huấn luyện bằng ID. Consumer safeguards giữ nguyên; không tự đổi pending thành approved.
 - **Mở rộng:** ChEMBL features/residual chỉ có đối chứng sau lõi; DailyMed/RAG/LLM, đơn nhiều thuốc và consumer hoãn. Không tự khởi động lại khung sáu tuần trước; plan mới ước lượng 8–14 ngày công, cần đo runtime.
 - **Tài liệu cũ:** plan/chi_tiet và bản tổng v2.1 lưu trữ hết hiệu lực hướng dẫn; docs/submission vẫn phản ánh thiết kế cũ, chỉ sửa khi tái sử dụng.
@@ -30,6 +31,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Thêm `dsp391m.cases` và xuất lô 20 ca val theo quy tắc plan 06 (B0 alpha0 vs DistMult seed391) | Gói duyệt đợt 1 | Đã xuất; chưa có ghi chú người xem |
 | 2026-10-17 | Search DistMult v1 theo đăng ký: chọn d128 lr 0,01; không đạt promotion (0/4 điều kiện metric); backend demo B0 alpha0 | Quy tắc plan 06 đã khóa trước khi chạy | Đã chạy; chưa chấm test |
 | 2026-10-17 | Sửa protocol DistMult trước search (thay dòng "Chờ quyết" cùng ngày): wd 0, sampler trộn cân loss, lr {0,01; 0,03}; guardrail NDCG so alpha0 (≥ 0,5208), macro AP so alpha100; demo tạm alpha0; numpy 2.5.3 được pin sau khi venv sạch tái lập giống hệt | Chẩn đoán wd (norm embedding → 0), đối chứng sampler cân loss (+0,054 macro AP, −0,074 NDCG); review người dùng | Đã đăng ký và chạy |
 | 2026-10-17 | Triển khai v3 bước 1–5; review thêm: compare chỉ val, tách config_id/model_release_id, lock cần worktree sạch, last/best checkpoint, bootstrap song song (kết quả không phụ thuộc số worker) | Theo plan đã duyệt và review 5 điểm | Đã làm; 88 test |
@@ -106,6 +108,8 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/
 .venv/bin/python -m dsp391m.compare --base b0_alpha0-db2b9c960215 --cand b0_alpha100-60eb89cd5f55 --bootstrap 1000
 # DistMult (cần .venv/bin/pip install -r requirements-train.txt); thư mục --out phải mới, hoặc --resume
 .venv/bin/python -m dsp391m.training.trainer --dim 64 --lr 0.01 --seed 391 --negatives mixed --weight-decay 0 --out results/runs/NEW_RUN_ID
+# Lô ca val để xem thủ công (không ghi đè)
+.venv/bin/python -m dsp391m.cases --base b0_alpha0-db2b9c960215 --cand distmult_d128-dbd218398318 --out results/val/error_analysis/NEW.json --markdown analysis/NGAY/NEW.md
 # Search đã đăng ký (4 cấu hình + 2 seed + compare), không chấm test
 .venv/bin/python analysis/2026-10-17/run_distmult_search_v1.py
 # Test cuối: chỉ sau khi chọn model trên val và commit sạch (lock từ chối worktree bẩn)
@@ -151,6 +155,8 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **DailyMed** (8 thuốc mẫu, 129 đoạn): tìm được tương tác thật mà nhãn Decagon không nói được (nhãn fluoxetine: kéo dài thời gian bán thải của diazepam; nhãn omeprazole: diazepam là cơ chất CYP2C19). Nhãn chọn tự động có thể là nhãn OTC không có mục Drug Interactions (aspirin). Chỉ khớp tên thuốc nguyên từ, chưa bắt được cách nhắc theo nhóm ("strong CYP3A4 inhibitors").
 - **Độ trễ GĐ2** (300 đơn ngẫu nhiên, k = 3/5/10): tải chỉ mục 0,7 giây; truy vấn p50 15 ms, p95 228 ms, tối đa 687 ms. Đạt mục tiêu p95 tra cứu dưới 1 giây.
 - **Cấu trúc phân tử** (PubChem, 2026-10-10): 645/645 thuốc combo có SMILES và RDKit tạo được Morgan fingerprint. 58 thuốc bị gắn cờ (`charged`, `multi_component`, `tiny`): phần lớn là dạng ion hóa hợp lệ của thuốc (penicillin dạng carboxylate, amoni bậc 4), nhưng có nhóm cần xem tay vì không phải hoạt chất đặc hiệu (calcium cation, NaCl, KCl, sulfate ion, nitric oxide, lithium aluminum hydride, CID 6398525). Không có InChIKey trùng. Danh sách đầy đủ trong `data/processed/decagon_v1/structure_coverage.json`.
+- **Tên thuốc `needs_review=False` chưa chắc hiển thị được** (`cases20_global_checks.py`, 2026-10-17): 19/420 có dạng không phù hợp, ít nhất 8 sai rõ (đồng vị `Rapamycin-d3`, `Tacrolimus-13C,D2`; bốn tên "Impurity"; `loperamide(1+)`, `dantrolene(1-)`). Demo luôn hiện ID kèm tên.
+- **Top-10 trên val:** B0 alpha0 chỉ dùng 220 nhãn khác nhau ("arterial pressure NOS decreased" ở 81% cặp); DistMult dùng 961 nhãn, nhãn hiếm hơn, NDCG@10 = 0 ở 11,6% cặp so 3,4%.
 - Tên tác dụng phụ có lỗi chính tả (ví dụ "neumonia"). Dùng CUI làm khóa và giữ tên gốc để truy vết.
 - Nạp combo bằng `dtype='category'` để tiết kiệm RAM. Không dựng toàn bộ 4,6 triệu cạnh thành object NetworkX; dùng bảng tra cứu hoặc ma trận thưa.
 

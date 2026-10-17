@@ -34,6 +34,7 @@ Package `dsp391m` (cài bằng `pip install -e .` từ thư mục gốc). Hiện
 | `dsp391m.metrics` | Metric thuần: macro/micro AP, AP theo cặp, P/R@5/10, NDCG@10, paired bootstrap có trọng số | — |
 | `dsp391m.compare` | So sánh hai model trên **val** (không có tùy chọn split), CI95 ghép cặp | `results/val/comparisons/` |
 | `dsp391m.final` | `lock` (yêu cầu worktree sạch) và `run` (xác minh lock rồi mới nạp test) | `results/final/` |
+| `dsp391m.cases` | Chọn lô ca val theo quy tắc cố định (plan 06), top-10 hai model cạnh nhau, cờ tên/độ phủ | `results/val/error_analysis/` |
 | `dsp391m.models.distmult`, `dsp391m.training` | DistMult, sampler âm train-only, trainer có early stopping, `last.pt`/`best.pt`, resume | `results/runs/<run_id>/` |
 | `dsp391m.dataview` | Điểm truy cập nhãn duy nhất: `evidence_view`, `prediction_view` (chỉ train), `load_eval_targets` (chỉ bộ chấm điểm), `Cache` có khóa theo chế độ | — |
 
