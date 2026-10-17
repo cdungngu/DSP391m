@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 00 — Điều phối bộ kế hoạch chi tiết
 
 Ngày thiết kế: **2026-10-17**. Trạng thái: **tài liệu thiết kế; chưa nghiệm thu sản phẩm**.

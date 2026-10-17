@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 14 — Đánh giá tổng hợp và bàn giao
 
 Ngày: 2026-10-17 · Chủ trì: đánh giá · Phụ thuộc [11](11_Gold_set_va_quy_trinh_duoc_si.md), [12](12_Giao_dien_va_van_hanh.md), [13](13_Cong_M_va_B2_co_dieu_kien.md) nếu chọn B2.
@@ -57,4 +59,3 @@ Bước thực thi sản phẩm đầu tiên: contract01 + catalog review02 + so
 ## 7. Phương án thu gọn
 
 Nếu thiếu thời gian/dược sĩ: giảm danh mục công khai xuống tập đã duyệt, giữ template cho case chưa có LLM đủ chuẩn, bỏ các thí nghiệm tùy chọn. Không bỏ provenance, kiểm soát mapping, tách research/consumer hay giao thức test để kịp demo.
-

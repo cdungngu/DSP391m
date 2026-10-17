@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 10 — Verifier và xử lý thiếu bằng chứng
 
 Ngày: 2026-10-17 · Chủ trì: giải thích · Phụ thuộc [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md), [09](09_LLM_va_giai_thich_tieng_Viet.md).
@@ -46,4 +48,3 @@ Metric: false-accept unsupported, false-reject supported, coverage và latency. 
 - [ ] Đánh giá cả rejected outputs để không che giấu lỗi sinh.
 
 Cổng: 0 citation không tồn tại/claim sai chủ thể được publish trong challenge suite; D7 đo trên bộ dev thật. Không diễn giải “0 lỗi trong bộ thử” thành đảm bảo đúng mọi trường hợp.
-

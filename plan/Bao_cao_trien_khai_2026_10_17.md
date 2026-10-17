@@ -1,5 +1,7 @@
 # Báo cáo triển khai — 17/10/2026
 
+> **Lịch sử.** Báo cáo này ghi đợt thực thi theo 15 plan v2.1. Mục 6 (trạng thái theo plan cũ) và mục 7 (bước tiếp theo theo hướng consumer/catalog) đã được thay bởi [kế hoạch v3](Ke_hoach_trien_khai.md) và [plan/du_doan_cap](du_doan_cap/00_Dieu_phoi_va_ra_soat.md). Sau báo cáo, ChEMBL đã chạy xong và gói duyệt mới là `data/review/2026-10-17_foundation_v2`; gói v1 nêu ở mục 5 chỉ còn để truy vết. Số liệu B0 và kết quả test vẫn đúng.
+
 ## 1. Kết quả thực hiện
 
 Đã bắt đầu **triển khai mã**, không chỉ viết thêm plan. Hoàn thành luồng nền có thể kiểm thử: chuẩn bị dữ liệu chờ duyệt → nhập quyết định duyệt → phát hành catalog/corpus có checksum → nhận diện đầy đủ đơn → trả câu template từ bằng chứng đã duyệt → chặn claim không được hỗ trợ.

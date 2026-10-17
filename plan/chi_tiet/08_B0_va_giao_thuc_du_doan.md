@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 08 — B0 và giao thức dự đoán
 
 Ngày: 2026-10-17 · Chủ trì: dự đoán · Phụ thuộc [03](03_Snapshot_DataView_va_chong_ro_ri.md).
@@ -48,4 +50,3 @@ B0 có tham số được chọn trên val vẫn là estimator thống kê có m
 Bổ sung contracts/tests → val-only sensitivity → chọn baseline cấu hình → khóa config → chuyển [13](13_Cong_M_va_B2_co_dieu_kien.md). Không chạy test trong bước này. Chất lượng điểm chưa đủ để hiển thị B0 trong consumer; lựa chọn người dùng đã giữ nó ở chế độ nghiên cứu.
 
 Ước lượng 1–2 ngày công; không cần GPU. Không cần chạy lại val đã có chỉ để cập nhật ngày.
-

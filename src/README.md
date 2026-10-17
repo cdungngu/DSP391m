@@ -1,8 +1,10 @@
 # Mã triển khai
 
-## Luồng consumer và gói duyệt (2026-10-17)
+Phạm vi hiện hành là v3 ([kế hoạch tổng](../plan/Ke_hoach_trien_khai.md), [10 plan](../plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md)): dự đoán 963 nhãn cho một cặp ID. Đường lõi dùng `etl`, `splits`, `dataview`, `evaluate`, `models.b0`, `releases`; predictor/DistMult/final lock **chưa có**. Các nhãn GĐ trong bảng dưới là tên giai đoạn của plan cũ, giữ để truy vết.
 
-`contracts.py`, `releases.py`, `catalog.py`, `review.py`, `workbench.py` bổ sung luồng template chỉ dùng catalog và câu có nguồn đã được duyệt. Không tự dùng nhãn Decagon/B0 làm cảnh báo consumer.
+## Luồng consumer và gói duyệt (2026-10-17, nhánh riêng, hoãn trong v3)
+
+`contracts.py`, `releases.py`, `catalog.py`, `review.py`, `workbench.py` bổ sung luồng template chỉ dùng catalog và câu có nguồn đã được duyệt. Không tự dùng nhãn Decagon/B0 làm cảnh báo consumer. Benchmark v3 không phụ thuộc luồng này; gói duyệt mới nhất là `data/review/2026-10-17_foundation_v2`.
 
 ```bash
 .venv/bin/python -m dsp391m.workbench prepare --out data/review/NEW_PACKET_ID

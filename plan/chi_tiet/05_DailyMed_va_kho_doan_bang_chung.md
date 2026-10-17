@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 05 — DailyMed và kho đoạn bằng chứng
 
 Ngày: 2026-10-17 · Chủ trì: dữ liệu + dược sĩ · Phụ thuộc [02](02_Danh_muc_thuoc_va_phan_giai_danh_tinh.md), [03](03_Snapshot_DataView_va_chong_ro_ri.md).

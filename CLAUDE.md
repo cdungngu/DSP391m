@@ -6,22 +6,18 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Dự án
 
-DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đề tài: dự đoán và giải thích tác dụng phụ khi dùng nhiều thuốc (polypharmacy side effects) bằng Graph RAG + LLM trên dữ liệu Decagon (BioSNAP, Stanford). Báo cáo nộp bằng tiếng Anh; ghi chú nội bộ và phân tích bằng tiếng Việt.
+DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đề tài hiện hành: dự đoán đa nhãn tác dụng phụ theo cặp thuốc trên dữ liệu Decagon (BioSNAP, Stanford). Lõi v3 là baseline + DistMult + đánh giá và demo nghiên cứu; Graph RAG/LLM là mở rộng. Báo cáo nộp bằng tiếng Anh; ghi chú nội bộ và phân tích bằng tiếng Việt.
 
 ## Trạng thái hiện tại
 
 _Cập nhật lần cuối: 2026-10-17_
 
-- **Triển khai nền mới:** contracts/releases/catalog/review/workbench và E08 smoothing đã có; [báo cáo thực thi](plan/Bao_cao_trien_khai_2026_10_17.md). 61 test nhanh + 2 test dữ liệu thật đạt. Gói duyệt gồm 645 thuốc/129 đoạn, 0 approved; người dùng xác nhận chưa có catalog dược sĩ duyệt. Chưa chạy LLM/B2/final test hoặc web consumer.
-
-- **Phạm vi bổ sung do người dùng chọn:** người dùng phổ thông, giao diện tiếng Việt; khoảng 50 hoạt chất/tên thương mại được dược sĩ duyệt; B0 chỉ ở chế độ nghiên cứu. Giữ A+D+B0 và cổng M, thử cải tiến bằng đối chứng. Khung sáu tuần chốt ngày 10/10 không tự bắt đầu lại ngày 17/10.
-- **Thiết kế chi tiết:** [15 file plan](plan/chi_tiet/00_Dieu_phoi_va_phu_thuoc.md) đã viết; việc hoàn thành tài liệu không đồng nghĩa các tính năng đã nghiệm thu. Bắt đầu từ contracts 01, catalog 02, versioning 03 và rubric 11; kế thừa collectors hiện có theo 04–05.
-
-- **Bối cảnh (chốt 2026-10-10):** đây là **dự án thật, không phải môn học**: không có cổng duyệt của giảng viên. Còn **6 tuần**; API LLM và GPU thuê ngoài khi cần; **có người bên dược** hỗ trợ (danh mục demo, duyệt mapping, gold set, chấm giải thích).
-- **Hướng đã chốt (plan v2):** lõi là **A** (tra cứu bằng chứng Decagon) + **D** (cơ chế ChEMBL `action_type`, đoạn nhãn DailyMed, dược sĩ kiểm tra) + **B0** (dự đoán bằng đếm tần suất theo từng thuốc, **không huấn luyện**). **B2** (DistMult/SimplE) chỉ làm nếu qua **cổng M** cuối tuần 3 (plan mục 4.4). Không làm B1, GNN, HODDI. Chi tiết và lịch ở `plan/Ke_hoach_trien_khai.md`.
-- **Giai đoạn:** GĐ1, GĐ2 xong. **B0 trên val chính thức xong** (`results/val/`). **GĐ3 đang làm:** module ChEMBL (cơ chế + bổ sung tên) và DailyMed (đoạn nhãn) đã có và tích hợp vào `lookup`; DailyMed mới chạy trên 8 thuốc mẫu, chờ danh mục demo của dược sĩ. **Tiếp theo:** hoàn tất GĐ3 theo danh mục demo, rồi GĐ4 (LLM + verifier).
-- **Đang chờ dược sĩ:** danh mục demo khoảng 50 thuốc; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `structure_coverage.json`.
-- **Tài liệu cũ:** `docs/submission/*` vẫn mô tả thiết kế cũ. Không cần nộp lại; nếu dùng lại thì sửa theo plan mục 10.
+- **Phạm vi hiện hành v3:** người dùng xác nhận mục tiêu dự đoán cặp và ít thời gian/nhân lực duyệt. [Kế hoạch tổng](plan/Ke_hoach_trien_khai.md) và [10 plan dự đoán cặp](plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md) thay hướng consumer A+D+B0/cổng M. Hai ID → xếp hạng 963 nhãn, không chuyển thành nhị phân có/không tương tác.
+- **Đã có:** ETL, split/DataView, B0, smoothing alpha100, ChEMBL/DailyMed collectors và foundation contracts/releases/catalog/review/workbench. Kết quả trước phiên thiết kế: 61 test nhanh + 2 test thật đạt; xem [báo cáo thực thi](plan/Bao_cao_trien_khai_2026_10_17.md).
+- **Tiếp theo:** data readiness → evaluator top-k/paired CI/final lock → baseline adapter → DistMult (4 cấu hình, cấu hình chọn 3 seed) → demo nghiên cứu và báo cáo. Chưa có DistMult/final lock/demo predictor; viết xong plan không đồng nghĩa code hoàn tất.
+- **Duyệt theo đợt:** một gói baseline/pilot và một gói bàn giao. Không chờ catalog 50 thuốc hoặc gold dược sĩ để huấn luyện bằng ID. Consumer safeguards giữ nguyên; không tự đổi pending thành approved.
+- **Mở rộng:** ChEMBL features/residual chỉ có đối chứng sau lõi; DailyMed/RAG/LLM, đơn nhiều thuốc và consumer hoãn. Không tự khởi động lại khung sáu tuần trước; plan mới ước lượng 8–14 ngày công, cần đo runtime.
+- **Tài liệu cũ:** plan/chi_tiet và bản tổng v2.1 lưu trữ hết hiệu lực hướng dẫn; docs/submission vẫn phản ánh thiết kế cũ, chỉ sửa khi tái sử dụng.
 
 - **ChEMBL đã chạy xong (2026-10-17):** khớp 599/645 thuốc (470 chính xác, 20 dạng trung hòa, 109 theo connectivity cần duyệt, 46 không khớp); 271 thuốc có cơ chế, 218 có cơ chế trên người (212 có accession), 0 mapping đã duyệt. Tên thuốc: 374 từ CID gốc + 129 từ ChEMBL, còn 129 pending và 13 không có. Gói duyệt `data/review/2026-10-17_foundation_v2` (645 ứng viên catalog, 129 đoạn, 0 approved). `http.request` thử lại 5xx; ChEMBL `BATCH=20`.
 
@@ -31,6 +27,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Đồng bộ README, src/README và báo cáo thực thi 17/10 với v3 (báo cáo thành lịch sử); đo train support cho plan 02 | Các file này còn mô tả Graph RAG/consumer là hướng chính | Đã làm; chưa có data_readiness.json chính thức |
+| 2026-10-17 | **v3 thay thế phạm vi A+D+B0/cổng M ngày 10/10 và v2.1 ngày 17/10:** lõi dự đoán cặp đa nhãn, baseline + DistMult + evaluator; 10 plan mới, hai đợt xem kết quả | Người dùng thiếu thời gian/nhân lực duyệt và muốn trở lại bài toán gốc; giữ consumer safeguards ở nhánh riêng | Đã thiết kế, chưa triển khai các phần mới; 15 plan cũ được đánh dấu lịch sử |
 | 2026-10-17 | Chạy xong ChEMBL: 599/645 khớp, 271 có cơ chế (218 người); tên thêm 129 thuốc; gói duyệt foundation_v2 | Lượt trước dừng vì HTTP 500; thêm retry 5xx, giảm lô xuống 20 | Đã làm; mapping và cơ chế chờ dược sĩ duyệt |
 | 2026-10-17 | Triển khai foundation consumer, immutable releases, review workflow và smoothing B0; alpha100 đạt val macro AP 0,288953 so 0,271431 baseline | Thực thi từng bước bộ plan, không tự duyệt dữ liệu | 63 tests đạt; chờ catalog/gold; smoothing mới là val experiment |
 | 2026-10-17 | Thêm 15 plan chi tiết, cập nhật plan tổng v2.1; consumer dùng catalog duyệt, B0 chỉ nghiên cứu; cơ chế đơn thuốc không tự chứng minh claim cặp | Người dùng đã chọn phạm vi; giữ lõi và thử cải tiến có đối chứng | Thiết kế đã viết; chưa nghiệm thu code theo bộ plan mới |
@@ -61,7 +59,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
   - `sources/`: nguồn tải thêm (Decagon mono, targets-all, HODDI v1 tại commit `700d0da…`) và bản text của các báo cáo/literature review để đọc nhanh.
   - `qa/`: bản PDF và ảnh trang được render để kiểm tra bố cục tài liệu.
 - `plan/Ke_hoach_trien_khai.md`: kế hoạch triển khai sống (lộ trình, giai đoạn, cổng, lịch, các chỗ cần sửa trong báo cáo nộp).
-- `plan/chi_tiet/`: 00 điều phối và 14 bài toán; contracts chung ở 01, mẫu số đánh giá ở 11, báo cáo bàn giao ở 14.
+- `plan/du_doan_cap/`: 10 plan hiện hành v3; điều phối 00, evaluator 03, DistMult 05, bàn giao 09.
+- `plan/chi_tiet/`: 15 plan v2.1 lịch sử, đã có banner hết hiệu lực; bản tổng cũ ở `plan/Ke_hoach_trien_khai_v2_1_lich_su.md`.
 - `src/dsp391m/`: package triển khai (xem `src/README.md`). `paths.py` giữ mọi đường dẫn chuẩn và tên snapshot (`decagon_v1`).
 - `data/processed/decagon_v1/`: đầu ra ETL. File `*.parquet` bị gitignore (sinh lại được); `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
 - `data/processed/decagon_v1/splits/pair_70-10-20_s391/`: split **đã đóng băng** (vocab, phân chia cặp, manifest có hash), được commit. Muốn đổi thì tạo `split_id` mới, không ghi đè.
@@ -121,8 +120,9 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **ppi:** 715.612 cạnh không hướng, 19.081 gene; bậc trung vị 33, lớn nhất 2.519. Cạnh không có dấu (kích hoạt/ức chế) và gồm cả liên hệ chức năng, nên không gọi chung là "tương tác vật lý trực tiếp".
 - Bộ 3 thuốc ngẫu nhiên: khoảng 8,6% có đủ target cho cả 3 thuốc. Về nhãn theo cặp: 57% có ít nhất một cặp có nhãn, 43% không cặp nào có nhãn, khoảng 10% có nhãn cho cả 3 cặp. Với đơn 5 thuốc: 86% có ít nhất một cặp có nhãn. (Đo ngày 2026-10-10, 5.000 mẫu, seed 391.) Tra cứu theo cặp chỉ phủ một phần; nhánh cơ chế thiếu dữ liệu ở đa số truy vấn.
 - **B0 (thử nghiệm, split tạm 80/20 seed 0):** chấm toàn ma trận 12.694 cặp × 963 nhãn (tỷ lệ dương 7,45%): độ phổ biến của nhãn đạt macro AP 0,074; B0 `f(A,e)+f(B,e)` đạt macro AP 0,270, macro AUROC 0,837, micro AP 0,351.
+- **Train support (đo 2026-10-17, `prediction_view`):** cả 645 thuốc có cặp train (bậc trung vị 117, 31 thuốc dưới 10 cặp); 0 cặp val/test chứa thuốc chưa học; 963/963 nhãn có dương trong train; trung vị 52 nhãn mỗi cặp train, tối đa 505. DistMult không cần fallback thuốc lạnh trên split này.
 - **Split chính thức `pair_70-10-20_s391`:** 63.472 cặp có nhãn trong vocab, chia 44.430 / 6.347 / 12.695 (1 cặp chỉ có nhãn ngoài vocab bị loại). Prediction view còn 3.198.361 dòng nhãn train. Nếu chỉ tính ngưỡng ≥500 dòng trên train (ngưỡng nhân 0,7) thì vocab còn 959 nhãn: chênh 4 nhãn, **chưa đánh giá ảnh hưởng đến metric** (muốn kết luận thì so sánh hai vocab trên cùng val). Tỷ lệ dương của val: 7,49%.
-- **Tên thuốc** (`names_report.json`): 374/645 thuốc có tên ngay từ CID gốc. CID gốc của Decagon thường là dạng flat hoặc ion (ví dụ CID 2173 là anion của ampicillin) nên không có tên; khi đó lấy tên từ CID cha hoặc CID cùng connectivity có nhiều synonym nhất (ampicillin → CID 6249). Mọi tên lấy theo cách này có `needs_review` (có thể nhầm đồng phân lập thể). PubChem chặn IP (HTTP 429) sau khoảng 1.000 request liên tiếp; đến 2026-10-12 NCBI chuyển hướng mọi request từ IP này tới trang **abuse** (`misuse.ncbi.nlm.nih.gov`). **Không gọi PubChem/NCBI theo lô lớn nữa**; dùng `--offline`. Phần tên còn thiếu dự kiến lấy từ ChEMBL (tra theo InChIKey) ở GĐ3. 3.648/3.648 gene target có symbol NCBI.
+- **Tên thuốc** (`names_report.json`): 374/645 thuốc có tên ngay từ CID gốc. CID gốc của Decagon thường là dạng flat hoặc ion (ví dụ CID 2173 là anion của ampicillin) nên không có tên; khi đó lấy tên từ CID cha hoặc CID cùng connectivity có nhiều synonym nhất (ampicillin → CID 6249). Mọi tên lấy theo cách này có `needs_review` (có thể nhầm đồng phân lập thể). PubChem chặn IP (HTTP 429) sau khoảng 1.000 request liên tiếp; đến 2026-10-12 NCBI chuyển hướng mọi request từ IP này tới trang **abuse** (`misuse.ncbi.nlm.nih.gov`). **Không gọi PubChem/NCBI theo lô lớn nữa**; dùng `--offline`. ChEMBL đã bổ sung 129 tên ngày 17/10; tổng 503 có tên, 129 pending và 13 không có tên. Các số PubChem ở đầu đoạn là lịch sử trước bổ sung. 3.648/3.648 gene target có symbol NCBI.
 - **Hạn chế của nhãn Decagon thấy qua demo:** nhãn lẫn chỉ định và bệnh nền của nhóm bệnh nhân (hyperlipaemia xuất hiện ở mọi cặp có simvastatin), tên nhãn đôi khi lạ (C0011860 có tên "Mod"). Xếp theo số cặp đẩy nhãn chung chung lên đầu; xếp theo mức trội đẩy nhãn hiếm, có thể là nhiễu. Chưa có cách xếp hạng đã kiểm chứng; cần dược sĩ và nguồn GĐ3.
 - **B0 trên val chính thức** (`results/val/`, 6.347 cặp × 963 nhãn, tỷ lệ dương 7,49%): popularity macro AP 0,0749; **per-drug macro AP 0,2714** (CI bootstrap percentile [0,2703; 0,2797], lệch lên do cặp lặp khi lấy mẫu), micro AP 0,3508, macro AUROC 0,8360. Theo nhóm: nhãn hiếm/trung bình/phổ biến 0,178/0,246/0,391; cặp có 0/1/2 thuốc có target 0,266/0,274/0,305.
 - **Target Decagon dạng panel rộng:** 83/284 thuốc có target có hơn 100 target và gần như dùng chung một panel khoảng 158 gene GPCR (Jaccard trung vị 0,88; 20 thuốc có bộ target giống hệt nhau; gồm cả atenolol, amitriptyline, salbutamol, calcium ion). Target của các thuốc này không đặc hiệu: `lookup` gắn `low_specificity` và không diễn giải "target chung".
@@ -138,7 +138,7 @@ Các nguyên tắc này dễ bị vi phạm khi viết code mới:
 
 - **Tách hai chế độ chạy.** *Evidence mode* được dùng cạnh đã biết của chính cặp đang hỏi. *Prediction evaluation mode* phải loại mọi bằng chứng làm lộ nhãn test (cạnh đồ thị, corpus, ví dụ few-shot, cache). Trong code: chỉ đọc nhãn qua `dsp391m.dataview` (`prediction_view` cho benchmark); chỉ bộ chấm điểm gọi `load_eval_targets`; cache qua `dataview.Cache`. Split chỉ được đọc qua `splits.load_verified_split`. Trong prediction view, **mọi metadata suy ra từ nhãn phải tính lại trên train**; khi thêm cột hoặc bảng mới, thêm test vào `tests/test_split_integrity.py`. Nguồn ngoài (DailyMed, ChEMBL) nói trực tiếp về cặp val/test cũng phải bị che trong prediction mode.
 - **Chia tập trước, rồi mới dựng đồ thị huấn luyện, feature hay embedding.** Thiết lập chính là chia theo cặp đã chuẩn hóa: mọi nhãn của một cặp nằm cùng một split.
-- **Không huấn luyện trước cổng M.** B0 (đếm) là phần dự đoán mặc định. Chỉ thêm B2 khi qua cổng M (plan mục 4.4), và chỉ giữ B2 khi vượt B0 ít nhất +0,02 macro AP trên val, qua 3 seed.
+- **DistMult là thí nghiệm lõi v3 sau kiểm tra dữ liệu/evaluator.** Không chờ catalog hay duyệt chuyên môn. Đối chứng B0 alpha100; quy tắc promotion, ngân sách và ba seed ở plan/du_doan_cap/06_Thuc_nghiem_va_chon_model.md. Chọn bằng val, khóa checkpoint trước test; không đạt thì giữ B0 demo.
 - **Bằng chứng phải phù hợp với claim:** nguồn trực tiếp về cặp, cơ chế đơn thuốc và association là các loại khác nhau, không phải thứ tự sức mạnh tuyệt đối. ChEMBL action_type không tự chứng minh tương tác cặp hoặc outcome. Consumer chỉ xuất claim đã kiểm chứng; B0 và thống kê Decagon ở chế độ nghiên cứu.
 - LLM đóng vai trò **giải thích hoặc tổng hợp**, không phải bộ dự đoán được chấm điểm. Mỗi phát biểu phải trích ID bằng chứng, và được phép trả "insufficient evidence".
 - Điểm tổng hợp cho đơn nhiều thuốc phải ghi là "điểm tổng hợp theo cặp", không phải xác suất lâm sàng. Không dùng noisy-OR như xác suất thật.

@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 02 — Danh mục thuốc và phân giải danh tính
 
 Ngày: 2026-10-17 · Chủ trì: dữ liệu + dược sĩ · Phụ thuộc: [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md), [03](03_Snapshot_DataView_va_chong_ro_ri.md).
@@ -56,4 +58,3 @@ Nếu dược sĩ chưa có thời gian: chỉ demo bằng ID/hoạt chất đã
 ## 7. Nguồn và giới hạn
 
 [ChEMBL web services](https://github.com/chembl/GLaDOS-docs/blob/master/web-services/chembl-data-web-services.md) mô tả molecule, molecule_form và parent. Dữ liệu này hỗ trợ ứng viên danh tính, không thay thế nguồn đăng ký chế phẩm tại Việt Nam. V1 không hứa phủ tên thương mại Việt Nam ngoài danh mục.
-

@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 11 — Gold set và quy trình dược sĩ
 
 Ngày: 2026-10-17 · Chủ trì: đánh giá + dược sĩ · Phụ thuộc [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md)–[03](03_Snapshot_DataView_va_chong_ro_ri.md). Bắt đầu cùng collectors, không đợi giao diện.
@@ -62,4 +64,3 @@ Ghi tỷ lệ trả lời đúng và lỗi diễn giải; mẫu nhỏ là usabil
 - [ ] Không ghi claim support khi không có claim.
 
 Artifact dự kiến: gold_cases, expected_facts, annotations và gold_manifest; theo version, không sửa bản cuối sau khi chấm mà không ghi correction log.
-

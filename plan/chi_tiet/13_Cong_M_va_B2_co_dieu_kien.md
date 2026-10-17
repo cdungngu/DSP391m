@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 13 — Cổng M và B2 có điều kiện
 
 Ngày: 2026-10-17 · Chủ trì: nhóm + dược sĩ · Phụ thuộc [08](08_B0_va_giao_thuc_du_doan.md) và cổng dev của [11](11_Gold_set_va_quy_trinh_duoc_si.md), [12](12_Giao_dien_va_van_hanh.md).
@@ -45,4 +47,3 @@ So cả B0 gốc và B0 được chọn trong E08. Điều kiện giữ: **cả 
 [Fast Polypharmacy Side Effect Prediction Using Tensor Factorisation](https://arxiv.org/html/2404.11374v2) là lý do cân nhắc factorization, không là cam kết số đo trên split này. Không so trực tiếp kết quả random edge/sampled negatives của bài với pair split/full-matrix hiện tại.
 
 Bàn giao: gate decision, val comparison, checkpoint nếu đạt, model card và quyết định giữ/bỏ. Nếu no_go, biên bản cũng là đầu ra hoàn chỉnh của bài toán.
-

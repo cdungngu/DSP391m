@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 01 — Phạm vi sản phẩm và hợp đồng đầu ra
 
 Ngày: 2026-10-17 · Chủ trì: sản phẩm · Trạng thái: thiết kế v1.
@@ -74,4 +76,3 @@ Thay đổi contract phải tăng version khi phá tương thích. Những trư�
 ## 7. Phương án thay thế và quyết định
 
 Không mở chat tự do trong v1: danh mục chọn giúp kiểm chứng đúng danh tính. Sau pilot, chỉ mở text entry dưới dạng tìm trong catalog; không gọi LLM để tự quyết định thuốc. Cổng mở rộng là không có mapping sai ở bộ kiểm tra danh mục và không bỏ sót input.
-

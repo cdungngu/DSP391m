@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 06 — Chuẩn hóa nhãn và xếp hạng kết quả
 
 Ngày: 2026-10-17 · Chủ trì: retrieval + dược sĩ · Phụ thuộc [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md), [04](04_ChEMBL_va_bang_chung_co_che.md), [05](05_DailyMed_va_kho_doan_bang_chung.md).
@@ -51,4 +53,3 @@ Không có thông tin được hỗ trợ: hiện missing-data card, không lấ
 - [ ] Report lưu candidates, ranking config và per-query metrics.
 
 Bước triển khai: annotation schema → card grouping → stable baseline → E06 → khóa config. Ước lượng 1–2 ngày công, không gồm gán nhãn.
-

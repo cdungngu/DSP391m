@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 03 — Snapshot, DataView và chống rò rỉ
 
 Ngày: 2026-10-17 · Chủ trì: dữ liệu · Phụ thuộc contract [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md).
@@ -56,4 +58,3 @@ Dùng file manifest + Parquet/JSON ở v1; chưa cần hệ quản trị version
 4. Chạy fixtures leakage; publish manifest nguồn đầu tiên.
 
 Cổng đạt khi một query có thể tái tạo offline từ run manifest và thử hoán đổi nguồn bị phát hiện. Ước lượng 1–2 ngày công, không bao gồm tải/duyệt nguồn.
-

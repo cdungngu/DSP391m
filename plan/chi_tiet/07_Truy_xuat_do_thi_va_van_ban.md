@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 07 — Truy xuất đồ thị và văn bản
 
 Ngày: 2026-10-17 · Chủ trì: retrieval · Phụ thuộc [03](03_Snapshot_DataView_va_chong_ro_ri.md)–[06](06_Chuan_hoa_nhan_va_xep_hang_ket_qua.md).
@@ -49,4 +51,3 @@ Dùng lookup/sparse adjacency hiện có; chưa cần Neo4j. PPI degree penalty 
 - [ ] Benchmark warm/cold index riêng, không dùng cache LLM để đo retrieval.
 
 Cổng: trace giải thích được mọi lựa chọn; baseline tái lập offline; không source sai danh tính. Ước lượng 2–3 ngày công.
-

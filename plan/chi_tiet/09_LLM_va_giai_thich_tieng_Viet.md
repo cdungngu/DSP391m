@@ -1,3 +1,5 @@
+> **HẾT HIỆU LỰC HƯỚNG DẪN (v2.1).** Giữ để truy vết lịch sử. Dùng [bộ dự đoán cặp v3](../du_doan_cap/00_Dieu_phoi_va_ra_soat.md) và [kế hoạch tổng](../Ke_hoach_trien_khai.md). Các cổng duyệt và thứ tự bên dưới không áp dụng cho lõi v3.
+
 # 09 — LLM và giải thích tiếng Việt
 
 Ngày: 2026-10-17 · Chủ trì: giải thích · Phụ thuộc [01](01_Pham_vi_san_pham_va_hop_dong_dau_ra.md), [07](07_Truy_xuat_do_thi_va_van_ban.md); đầu ra sang [10](10_Verifier_va_xu_ly_thieu_bang_chung.md).
@@ -50,4 +52,3 @@ Metric: claim support, overclaim, mất điều kiện, citation precision, read
 - [ ] Không xuất URL tự sinh; mỗi evidence ID phải được store giải được.
 
 Cổng đạt trên dev đã khóa rubric; không lấy chỉ số model tự chấm làm kết quả cuối. Ước lượng 2–3 ngày công cộng pilot.
-
