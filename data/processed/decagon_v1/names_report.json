@@ -1,16 +1,34 @@
 {
-  "created_at": "2026-10-16T16:59:56+00:00",
+  "created_at": "2026-10-17T03:22:24+00:00",
   "drugs": 645,
   "name_source_counts": {
     "self": 374,
-    "pending": 253,
-    "none": 18
+    "pending": 129,
+    "chembl": 129,
+    "none": 13
   },
-  "needs_review": 271,
-  "pending_related_lookup": 253,
-  "display_name_is_stitch_id": 271,
-  "ambiguous_name_keys": 0,
-  "ambiguous_examples": {},
+  "needs_review": 225,
+  "pending_related_lookup": 129,
+  "display_name_is_stitch_id": 142,
+  "ambiguous_name_keys": 4,
+  "ambiguous_examples": {
+    "theophylline anhydrous": [
+      49,
+      477
+    ],
+    "diuresal": [
+      118,
+      209
+    ],
+    "innovar": [
+      169,
+      186
+    ],
+    "betadren": [
+      364,
+      383
+    ]
+  },
   "target_genes": 3648,
   "target_genes_with_symbol": 3648,
   "review_list": [
@@ -29,14 +47,14 @@
     {
       "stitch_id": "CID000000158",
       "name_cid": 158,
-      "name_source": "pending",
-      "display_name": "CID000000158"
+      "name_source": "chembl",
+      "display_name": "dinoprostone"
     },
     {
       "stitch_id": "CID000000159",
       "name_cid": 159,
-      "name_source": "pending",
-      "display_name": "CID000000159"
+      "name_source": "chembl",
+      "display_name": "epoprostenol"
     },
     {
       "stitch_id": "CID000000191",
@@ -47,8 +65,8 @@
     {
       "stitch_id": "CID000000214",
       "name_cid": 214,
-      "name_source": "pending",
-      "display_name": "CID000000214"
+      "name_source": "chembl",
+      "display_name": "alprostadil"
     },
     {
       "stitch_id": "CID000000298",
@@ -63,22 +81,10 @@
       "display_name": "CID000000450"
     },
     {
-      "stitch_id": "CID000000564",
-      "name_cid": 564,
-      "name_source": "pending",
-      "display_name": "CID000000564"
-    },
-    {
       "stitch_id": "CID000000596",
       "name_cid": 596,
       "name_source": "pending",
       "display_name": "CID000000596"
-    },
-    {
-      "stitch_id": "CID000000598",
-      "name_cid": 598,
-      "name_source": "pending",
-      "display_name": "CID000000598"
     },
     {
       "stitch_id": "CID000000772",
@@ -93,18 +99,6 @@
       "display_name": "CID000000815"
     },
     {
-      "stitch_id": "CID000000838",
-      "name_cid": 838,
-      "name_source": "pending",
-      "display_name": "CID000000838"
-    },
-    {
-      "stitch_id": "CID000000942",
-      "name_cid": 942,
-      "name_source": "pending",
-      "display_name": "CID000000942"
-    },
-    {
       "stitch_id": "CID000001065",
       "name_cid": 1065,
       "name_source": "pending",
@@ -113,8 +107,8 @@
     {
       "stitch_id": "CID000001071",
       "name_cid": 1071,
-      "name_source": "pending",
-      "display_name": "CID000001071"
+      "name_source": "chembl",
+      "display_name": "retinol"
     },
     {
       "stitch_id": "CID000001134",
@@ -137,8 +131,8 @@
     {
       "stitch_id": "CID000001971",
       "name_cid": 1971,
-      "name_source": "pending",
-      "display_name": "CID000001971"
+      "name_source": "chembl",
+      "display_name": "abacavir"
     },
     {
       "stitch_id": "CID000001972",
@@ -147,28 +141,22 @@
       "display_name": "CID000001972"
     },
     {
-      "stitch_id": "CID000002022",
-      "name_cid": 2022,
-      "name_source": "none",
-      "display_name": "CID000002022"
-    },
-    {
       "stitch_id": "CID000002142",
       "name_cid": 2142,
-      "name_source": "pending",
-      "display_name": "CID000002142"
+      "name_source": "chembl",
+      "display_name": "amikacin"
     },
     {
       "stitch_id": "CID000002156",
       "name_cid": 2156,
-      "name_source": "pending",
-      "display_name": "CID000002156"
+      "name_source": "chembl",
+      "display_name": "amiodarone"
     },
     {
       "stitch_id": "CID000002171",
       "name_cid": 2171,
-      "name_source": "pending",
-      "display_name": "CID000002171"
+      "name_source": "chembl",
+      "display_name": "amoxicillin"
     },
     {
       "stitch_id": "CID000002173",
@@ -183,12 +171,6 @@
       "display_name": "CID000002177"
     },
     {
-      "stitch_id": "CID000002182",
-      "name_cid": 2182,
-      "name_source": "none",
-      "display_name": "CID000002182"
-    },
-    {
       "stitch_id": "CID000002215",
       "name_cid": 2215,
       "name_source": "pending",
@@ -197,20 +179,20 @@
     {
       "stitch_id": "CID000002232",
       "name_cid": 2232,
-      "name_source": "pending",
-      "display_name": "CID000002232"
+      "name_source": "chembl",
+      "display_name": "argatroban"
     },
     {
       "stitch_id": "CID000002269",
       "name_cid": 2269,
-      "name_source": "pending",
-      "display_name": "CID000002269"
+      "name_source": "chembl",
+      "display_name": "azithromycin"
     },
     {
       "stitch_id": "CID000002274",
       "name_cid": 2274,
-      "name_source": "pending",
-      "display_name": "CID000002274"
+      "name_source": "chembl",
+      "display_name": "aztreonam"
     },
     {
       "stitch_id": "CID000002283",
@@ -221,8 +203,8 @@
     {
       "stitch_id": "CID000002308",
       "name_cid": 2308,
-      "name_source": "pending",
-      "display_name": "CID000002308"
+      "name_source": "chembl",
+      "display_name": "beclomethasone"
     },
     {
       "stitch_id": "CID000002311",
@@ -237,18 +219,6 @@
       "display_name": "CID000002349"
     },
     {
-      "stitch_id": "CID000002405",
-      "name_cid": 2405,
-      "name_source": "pending",
-      "display_name": "CID000002405"
-    },
-    {
-      "stitch_id": "CID000002474",
-      "name_cid": 2474,
-      "name_source": "pending",
-      "display_name": "CID000002474"
-    },
-    {
       "stitch_id": "CID000002476",
       "name_cid": 2476,
       "name_source": "pending",
@@ -257,8 +227,8 @@
     {
       "stitch_id": "CID000002487",
       "name_cid": 2487,
-      "name_source": "pending",
-      "display_name": "CID000002487"
+      "name_source": "chembl",
+      "display_name": "butorphanol"
     },
     {
       "stitch_id": "CID000002512",
@@ -267,22 +237,16 @@
       "display_name": "CID000002512"
     },
     {
-      "stitch_id": "CID000002520",
-      "name_cid": 2520,
-      "name_source": "pending",
-      "display_name": "CID000002520"
-    },
-    {
       "stitch_id": "CID000002522",
       "name_cid": 2522,
-      "name_source": "pending",
-      "display_name": "CID000002522"
+      "name_source": "chembl",
+      "display_name": "calcipotriene"
     },
     {
       "stitch_id": "CID000002524",
       "name_cid": 2524,
-      "name_source": "pending",
-      "display_name": "CID000002524"
+      "name_source": "chembl",
+      "display_name": "calcitriol"
     },
     {
       "stitch_id": "CID000002550",
@@ -311,8 +275,8 @@
     {
       "stitch_id": "CID000002622",
       "name_cid": 2622,
-      "name_source": "pending",
-      "display_name": "CID000002622"
+      "name_source": "chembl",
+      "display_name": "cefepime"
     },
     {
       "stitch_id": "CID000002631",
@@ -323,8 +287,8 @@
     {
       "stitch_id": "CID000002637",
       "name_cid": 2637,
-      "name_source": "pending",
-      "display_name": "CID000002637"
+      "name_source": "chembl",
+      "display_name": "cefoxitin"
     },
     {
       "stitch_id": "CID000002646",
@@ -335,8 +299,8 @@
     {
       "stitch_id": "CID000002650",
       "name_cid": 2650,
-      "name_source": "pending",
-      "display_name": "CID000002650"
+      "name_source": "chembl",
+      "display_name": "ceftazidime"
     },
     {
       "stitch_id": "CID000002656",
@@ -347,8 +311,8 @@
     {
       "stitch_id": "CID000002658",
       "name_cid": 2658,
-      "name_source": "pending",
-      "display_name": "CID000002658"
+      "name_source": "chembl",
+      "display_name": "cefuroxime"
     },
     {
       "stitch_id": "CID000002666",
@@ -359,26 +323,20 @@
     {
       "stitch_id": "CID000002675",
       "name_cid": 2675,
-      "name_source": "pending",
-      "display_name": "CID000002675"
+      "name_source": "chembl",
+      "display_name": "cefixime"
     },
     {
       "stitch_id": "CID000002676",
       "name_cid": 2676,
-      "name_source": "pending",
-      "display_name": "CID000002676"
+      "name_source": "chembl",
+      "display_name": "cerivastatin"
     },
     {
       "stitch_id": "CID000002712",
       "name_cid": 2712,
       "name_source": "pending",
       "display_name": "CID000002712"
-    },
-    {
-      "stitch_id": "CID000002749",
-      "name_cid": 2749,
-      "name_source": "pending",
-      "display_name": "CID000002749"
     },
     {
       "stitch_id": "CID000002786",
@@ -407,32 +365,20 @@
     {
       "stitch_id": "CID000002909",
       "name_cid": 2909,
-      "name_source": "pending",
-      "display_name": "CID000002909"
+      "name_source": "chembl",
+      "display_name": "cyclosporine"
     },
     {
       "stitch_id": "CID000002949",
       "name_cid": 2949,
-      "name_source": "pending",
-      "display_name": "CID000002949"
+      "name_source": "chembl",
+      "display_name": "danazol"
     },
     {
       "stitch_id": "CID000002978",
       "name_cid": 2978,
-      "name_source": "pending",
-      "display_name": "CID000002978"
-    },
-    {
-      "stitch_id": "CID000003007",
-      "name_cid": 3007,
-      "name_source": "pending",
-      "display_name": "CID000003007"
-    },
-    {
-      "stitch_id": "CID000003008",
-      "name_cid": 3008,
-      "name_source": "pending",
-      "display_name": "CID000003008"
+      "name_source": "chembl",
+      "display_name": "dronabinol"
     },
     {
       "stitch_id": "CID000003040",
@@ -473,8 +419,8 @@
     {
       "stitch_id": "CID000003249",
       "name_cid": 3249,
-      "name_source": "pending",
-      "display_name": "CID000003249"
+      "name_source": "chembl",
+      "display_name": "ergocalciferol"
     },
     {
       "stitch_id": "CID000003255",
@@ -497,38 +443,26 @@
     {
       "stitch_id": "CID000003350",
       "name_cid": 3350,
-      "name_source": "pending",
-      "display_name": "CID000003350"
+      "name_source": "chembl",
+      "display_name": "finasteride"
     },
     {
       "stitch_id": "CID000003355",
       "name_cid": 3355,
-      "name_source": "pending",
-      "display_name": "CID000003355"
-    },
-    {
-      "stitch_id": "CID000003372",
-      "name_cid": 3372,
-      "name_source": "pending",
-      "display_name": "CID000003372"
+      "name_source": "chembl",
+      "display_name": "flecainide"
     },
     {
       "stitch_id": "CID000003379",
       "name_cid": 3379,
-      "name_source": "pending",
-      "display_name": "CID000003379"
+      "name_source": "chembl",
+      "display_name": "flunisolide"
     },
     {
       "stitch_id": "CID000003384",
       "name_cid": 3384,
       "name_source": "pending",
       "display_name": "CID000003384"
-    },
-    {
-      "stitch_id": "CID000003385",
-      "name_cid": 3385,
-      "name_source": "pending",
-      "display_name": "CID000003385"
     },
     {
       "stitch_id": "CID000003403",
@@ -539,8 +473,8 @@
     {
       "stitch_id": "CID000003404",
       "name_cid": 3404,
-      "name_source": "pending",
-      "display_name": "CID000003404"
+      "name_source": "chembl",
+      "display_name": "fluvoxamine"
     },
     {
       "stitch_id": "CID000003405",
@@ -555,12 +489,6 @@
       "display_name": "CID000003419"
     },
     {
-      "stitch_id": "CID000003454",
-      "name_cid": 3454,
-      "name_source": "none",
-      "display_name": "CID000003454"
-    },
-    {
       "stitch_id": "CID000003461",
       "name_cid": 3461,
       "name_source": "pending",
@@ -571,12 +499,6 @@
       "name_cid": 3476,
       "name_source": "pending",
       "display_name": "CID000003476"
-    },
-    {
-      "stitch_id": "CID000003510",
-      "name_cid": 3510,
-      "name_source": "pending",
-      "display_name": "CID000003510"
     },
     {
       "stitch_id": "CID000003640",
@@ -593,8 +515,8 @@
     {
       "stitch_id": "CID000003648",
       "name_cid": 3648,
-      "name_source": "pending",
-      "display_name": "CID000003648"
+      "name_source": "chembl",
+      "display_name": "hydromorphone"
     },
     {
       "stitch_id": "CID000003661",
@@ -603,16 +525,10 @@
       "display_name": "CID000003661"
     },
     {
-      "stitch_id": "CID000003672",
-      "name_cid": 3672,
-      "name_source": "pending",
-      "display_name": "CID000003672"
-    },
-    {
       "stitch_id": "CID000003706",
       "name_cid": 3706,
-      "name_source": "pending",
-      "display_name": "CID000003706"
+      "name_source": "chembl",
+      "display_name": "indinavir anhydrous"
     },
     {
       "stitch_id": "CID000003734",
@@ -633,22 +549,16 @@
       "display_name": "CID000003780"
     },
     {
-      "stitch_id": "CID000003823",
-      "name_cid": 3823,
-      "name_source": "pending",
-      "display_name": "CID000003823"
-    },
-    {
       "stitch_id": "CID000003877",
       "name_cid": 3877,
-      "name_source": "pending",
-      "display_name": "CID000003877"
+      "name_source": "chembl",
+      "display_name": "lamivudine"
     },
     {
       "stitch_id": "CID000003890",
       "name_cid": 3890,
-      "name_source": "pending",
-      "display_name": "CID000003890"
+      "name_source": "chembl",
+      "display_name": "latanoprost"
     },
     {
       "stitch_id": "CID000003929",
@@ -665,20 +575,14 @@
     {
       "stitch_id": "CID000003962",
       "name_cid": 3962,
-      "name_source": "pending",
-      "display_name": "CID000003962"
+      "name_source": "chembl",
+      "display_name": "lovastatin"
     },
     {
       "stitch_id": "CID000004052",
       "name_cid": 4052,
       "name_source": "none",
       "display_name": "CID000004052"
-    },
-    {
-      "stitch_id": "CID000004075",
-      "name_cid": 4075,
-      "name_source": "pending",
-      "display_name": "CID000004075"
     },
     {
       "stitch_id": "CID000004159",
@@ -695,26 +599,20 @@
     {
       "stitch_id": "CID000004253",
       "name_cid": 4253,
-      "name_source": "pending",
-      "display_name": "CID000004253"
+      "name_source": "chembl",
+      "display_name": "morphine"
     },
     {
       "stitch_id": "CID000004259",
       "name_cid": 4259,
-      "name_source": "pending",
-      "display_name": "CID000004259"
+      "name_source": "chembl",
+      "display_name": "moxifloxacin"
     },
     {
       "stitch_id": "CID000004264",
       "name_cid": 4264,
-      "name_source": "pending",
-      "display_name": "CID000004264"
-    },
-    {
-      "stitch_id": "CID000004411",
-      "name_cid": 4411,
-      "name_source": "pending",
-      "display_name": "CID000004411"
+      "name_source": "chembl",
+      "display_name": "mupirocin"
     },
     {
       "stitch_id": "CID000004419",
@@ -725,8 +623,8 @@
     {
       "stitch_id": "CID000004425",
       "name_cid": 4425,
-      "name_source": "pending",
-      "display_name": "CID000004425"
+      "name_source": "chembl",
+      "display_name": "naloxone"
     },
     {
       "stitch_id": "CID000004428",
@@ -743,8 +641,8 @@
     {
       "stitch_id": "CID000004473",
       "name_cid": 4473,
-      "name_source": "pending",
-      "display_name": "CID000004473"
+      "name_source": "chembl",
+      "display_name": "nicardipine"
     },
     {
       "stitch_id": "CID000004536",
@@ -755,8 +653,8 @@
     {
       "stitch_id": "CID000004547",
       "name_cid": 4547,
-      "name_source": "pending",
-      "display_name": "CID000004547"
+      "name_source": "chembl",
+      "display_name": "repaglinide"
     },
     {
       "stitch_id": "CID000004585",
@@ -791,8 +689,8 @@
     {
       "stitch_id": "CID000004635",
       "name_cid": 4635,
-      "name_source": "pending",
-      "display_name": "CID000004635"
+      "name_source": "chembl",
+      "display_name": "oxycodone"
     },
     {
       "stitch_id": "CID000004645",
@@ -803,14 +701,14 @@
     {
       "stitch_id": "CID000004666",
       "name_cid": 4666,
-      "name_source": "pending",
-      "display_name": "CID000004666"
+      "name_source": "chembl",
+      "display_name": "paclitaxel"
     },
     {
       "stitch_id": "CID000004675",
       "name_cid": 4675,
-      "name_source": "pending",
-      "display_name": "CID000004675"
+      "name_source": "chembl",
+      "display_name": "pancuronium"
     },
     {
       "stitch_id": "CID000004691",
@@ -827,14 +725,14 @@
     {
       "stitch_id": "CID000004739",
       "name_cid": 4739,
-      "name_source": "pending",
-      "display_name": "CID000004739"
+      "name_source": "chembl",
+      "display_name": "pentostatin"
     },
     {
       "stitch_id": "CID000004745",
       "name_cid": 4745,
-      "name_source": "pending",
-      "display_name": "CID000004745"
+      "name_source": "chembl",
+      "display_name": "pergolide"
     },
     {
       "stitch_id": "CID000004812",
@@ -853,12 +751,6 @@
       "name_cid": 4834,
       "name_source": "pending",
       "display_name": "CID000004834"
-    },
-    {
-      "stitch_id": "CID000004845",
-      "name_cid": 4845,
-      "name_source": "pending",
-      "display_name": "CID000004845"
     },
     {
       "stitch_id": "CID000004856",
@@ -887,14 +779,8 @@
     {
       "stitch_id": "CID000004900",
       "name_cid": 4900,
-      "name_source": "pending",
-      "display_name": "CID000004900"
-    },
-    {
-      "stitch_id": "CID000004913",
-      "name_cid": 4913,
-      "name_source": "pending",
-      "display_name": "CID000004913"
+      "name_source": "chembl",
+      "display_name": "prednisone"
     },
     {
       "stitch_id": "CID000004920",
@@ -911,8 +797,8 @@
     {
       "stitch_id": "CID000005038",
       "name_cid": 5038,
-      "name_source": "pending",
-      "display_name": "CID000005038"
+      "name_source": "chembl",
+      "display_name": "ramipril"
     },
     {
       "stitch_id": "CID000005064",
@@ -923,14 +809,14 @@
     {
       "stitch_id": "CID000005076",
       "name_cid": 5076,
-      "name_source": "pending",
-      "display_name": "CID000005076"
+      "name_source": "chembl",
+      "display_name": "ritonavir"
     },
     {
       "stitch_id": "CID000005077",
       "name_cid": 5077,
-      "name_source": "pending",
-      "display_name": "CID000005077"
+      "name_source": "chembl",
+      "display_name": "rivastigmine"
     },
     {
       "stitch_id": "CID000005155",
@@ -951,12 +837,6 @@
       "display_name": "CID000005203"
     },
     {
-      "stitch_id": "CID000005212",
-      "name_cid": 5212,
-      "name_source": "none",
-      "display_name": "CID000005212"
-    },
-    {
       "stitch_id": "CID000005267",
       "name_cid": 5267,
       "name_source": "pending",
@@ -971,8 +851,8 @@
     {
       "stitch_id": "CID000005352",
       "name_cid": 5352,
-      "name_source": "pending",
-      "display_name": "CID000005352"
+      "name_source": "chembl",
+      "display_name": "sulindac"
     },
     {
       "stitch_id": "CID000005376",
@@ -983,8 +863,8 @@
     {
       "stitch_id": "CID000005402",
       "name_cid": 5402,
-      "name_source": "pending",
-      "display_name": "CID000005402"
+      "name_source": "chembl",
+      "display_name": "terbinafine"
     },
     {
       "stitch_id": "CID000005408",
@@ -1001,8 +881,8 @@
     {
       "stitch_id": "CID000005454",
       "name_cid": 5454,
-      "name_source": "pending",
-      "display_name": "CID000005454"
+      "name_source": "chembl",
+      "display_name": "thiothixene"
     },
     {
       "stitch_id": "CID000005466",
@@ -1019,8 +899,8 @@
     {
       "stitch_id": "CID000005486",
       "name_cid": 5486,
-      "name_source": "pending",
-      "display_name": "CID000005486"
+      "name_source": "chembl",
+      "display_name": "tirofiban"
     },
     {
       "stitch_id": "CID000005512",
@@ -1031,26 +911,20 @@
     {
       "stitch_id": "CID000005514",
       "name_cid": 5514,
-      "name_source": "pending",
-      "display_name": "CID000005514"
+      "name_source": "chembl",
+      "display_name": "topiramate"
     },
     {
       "stitch_id": "CID000005515",
       "name_cid": 5515,
-      "name_source": "pending",
-      "display_name": "CID000005515"
-    },
-    {
-      "stitch_id": "CID000005523",
-      "name_cid": 5523,
-      "name_source": "pending",
-      "display_name": "CID000005523"
+      "name_source": "chembl",
+      "display_name": "topotecan"
     },
     {
       "stitch_id": "CID000005525",
       "name_cid": 5525,
-      "name_source": "pending",
-      "display_name": "CID000005525"
+      "name_source": "chembl",
+      "display_name": "trandolapril"
     },
     {
       "stitch_id": "CID000005538",
@@ -1067,8 +941,8 @@
     {
       "stitch_id": "CID000005650",
       "name_cid": 5650,
-      "name_source": "pending",
-      "display_name": "CID000005650"
+      "name_source": "chembl",
+      "display_name": "valsartan"
     },
     {
       "stitch_id": "CID000005651",
@@ -1079,14 +953,14 @@
     {
       "stitch_id": "CID000005672",
       "name_cid": 5672,
-      "name_source": "pending",
-      "display_name": "CID000005672"
+      "name_source": "chembl",
+      "display_name": "vinorelbine"
     },
     {
       "stitch_id": "CID000005721",
       "name_cid": 5721,
-      "name_source": "pending",
-      "display_name": "CID000005721"
+      "name_source": "chembl",
+      "display_name": "zanamivir"
     },
     {
       "stitch_id": "CID000005731",
@@ -1101,22 +975,10 @@
       "display_name": "CID000005771"
     },
     {
-      "stitch_id": "CID000005878",
-      "name_cid": 5878,
-      "name_source": "pending",
-      "display_name": "CID000005878"
-    },
-    {
       "stitch_id": "CID000006691",
       "name_cid": 6691,
       "name_source": "none",
       "display_name": "CID000006691"
-    },
-    {
-      "stitch_id": "CID000008953",
-      "name_cid": 8953,
-      "name_source": "none",
-      "display_name": "CID000008953"
     },
     {
       "stitch_id": "CID000009052",
@@ -1127,20 +989,8 @@
     {
       "stitch_id": "CID000012536",
       "name_cid": 12536,
-      "name_source": "pending",
-      "display_name": "CID000012536"
-    },
-    {
-      "stitch_id": "CID000012620",
-      "name_cid": 12620,
-      "name_source": "pending",
-      "display_name": "CID000012620"
-    },
-    {
-      "stitch_id": "CID000016231",
-      "name_cid": 16231,
-      "name_source": "pending",
-      "display_name": "CID000016231"
+      "name_source": "chembl",
+      "display_name": "desonide"
     },
     {
       "stitch_id": "CID000024011",
@@ -1163,26 +1013,14 @@
     {
       "stitch_id": "CID000032797",
       "name_cid": 32797,
-      "name_source": "pending",
-      "display_name": "CID000032797"
-    },
-    {
-      "stitch_id": "CID000034312",
-      "name_cid": 34312,
-      "name_source": "pending",
-      "display_name": "CID000034312"
+      "name_source": "chembl",
+      "display_name": "clobetasol"
     },
     {
       "stitch_id": "CID000038904",
       "name_cid": 38904,
       "name_source": "pending",
       "display_name": "CID000038904"
-    },
-    {
-      "stitch_id": "CID000039860",
-      "name_cid": 39860,
-      "name_source": "pending",
-      "display_name": "CID000039860"
     },
     {
       "stitch_id": "CID000040976",
@@ -1197,24 +1035,6 @@
       "display_name": "CID000041317"
     },
     {
-      "stitch_id": "CID000041693",
-      "name_cid": 41693,
-      "name_source": "pending",
-      "display_name": "CID000041693"
-    },
-    {
-      "stitch_id": "CID000041774",
-      "name_cid": 41774,
-      "name_source": "pending",
-      "display_name": "CID000041774"
-    },
-    {
-      "stitch_id": "CID000042113",
-      "name_cid": 42113,
-      "name_source": "pending",
-      "display_name": "CID000042113"
-    },
-    {
       "stitch_id": "CID000047725",
       "name_cid": 47725,
       "name_source": "pending",
@@ -1227,46 +1047,28 @@
       "display_name": "CID000048175"
     },
     {
-      "stitch_id": "CID000051263",
-      "name_cid": 51263,
-      "name_source": "pending",
-      "display_name": "CID000051263"
-    },
-    {
       "stitch_id": "CID000054374",
       "name_cid": 54374,
-      "name_source": "pending",
-      "display_name": "CID000054374"
+      "name_source": "chembl",
+      "display_name": "octreotide"
     },
     {
       "stitch_id": "CID000054547",
       "name_cid": 54547,
-      "name_source": "pending",
-      "display_name": "CID000054547"
+      "name_source": "chembl",
+      "display_name": "cefpodoxime"
     },
     {
       "stitch_id": "CID000054688",
       "name_cid": 54688,
-      "name_source": "pending",
-      "display_name": "CID000054688"
+      "name_source": "chembl",
+      "display_name": "clarithromycin"
     },
     {
       "stitch_id": "CID000054808",
       "name_cid": 54808,
-      "name_source": "pending",
-      "display_name": "CID000054808"
-    },
-    {
-      "stitch_id": "CID000056959",
-      "name_cid": 56959,
-      "name_source": "pending",
-      "display_name": "CID000056959"
-    },
-    {
-      "stitch_id": "CID000057469",
-      "name_cid": 57469,
-      "name_source": "pending",
-      "display_name": "CID000057469"
+      "name_source": "chembl",
+      "display_name": "loteprednol etabonate"
     },
     {
       "stitch_id": "CID000057537",
@@ -1277,32 +1079,20 @@
     {
       "stitch_id": "CID000060147",
       "name_cid": 60147,
-      "name_source": "pending",
-      "display_name": "CID000060147"
-    },
-    {
-      "stitch_id": "CID000060164",
-      "name_cid": 60164,
-      "name_source": "pending",
-      "display_name": "CID000060164"
+      "name_source": "chembl",
+      "display_name": "tamsulosin"
     },
     {
       "stitch_id": "CID000060184",
       "name_cid": 60184,
-      "name_source": "pending",
-      "display_name": "CID000060184"
-    },
-    {
-      "stitch_id": "CID000060198",
-      "name_cid": 60198,
-      "name_source": "pending",
-      "display_name": "CID000060198"
+      "name_source": "chembl",
+      "display_name": "perindopril"
     },
     {
       "stitch_id": "CID000060696",
       "name_cid": 60696,
-      "name_source": "pending",
-      "display_name": "CID000060696"
+      "name_source": "chembl",
+      "display_name": "rocuronium"
     },
     {
       "stitch_id": "CID000060754",
@@ -1317,40 +1107,22 @@
       "display_name": "CID000060787"
     },
     {
-      "stitch_id": "CID000060815",
-      "name_cid": 60815,
-      "name_source": "pending",
-      "display_name": "CID000060815"
-    },
-    {
       "stitch_id": "CID000060831",
       "name_cid": 60831,
-      "name_source": "pending",
-      "display_name": "CID000060831"
+      "name_source": "chembl",
+      "display_name": "tiotropium"
     },
     {
       "stitch_id": "CID000060843",
       "name_cid": 60843,
-      "name_source": "pending",
-      "display_name": "CID000060843"
+      "name_source": "chembl",
+      "display_name": "pemetrexed"
     },
     {
       "stitch_id": "CID000060865",
       "name_cid": 60865,
       "name_source": "pending",
       "display_name": "CID000060865"
-    },
-    {
-      "stitch_id": "CID000060953",
-      "name_cid": 60953,
-      "name_source": "pending",
-      "display_name": "CID000060953"
-    },
-    {
-      "stitch_id": "CID000064147",
-      "name_cid": 64147,
-      "name_source": "pending",
-      "display_name": "CID000064147"
     },
     {
       "stitch_id": "CID000065027",
@@ -1361,14 +1133,14 @@
     {
       "stitch_id": "CID000071273",
       "name_cid": 71273,
-      "name_source": "pending",
-      "display_name": "CID000071273"
+      "name_source": "chembl",
+      "display_name": "ropivacaine"
     },
     {
       "stitch_id": "CID000072054",
       "name_cid": 72054,
-      "name_source": "pending",
-      "display_name": "CID000072054"
+      "name_source": "chembl",
+      "display_name": "darifenacin"
     },
     {
       "stitch_id": "CID000072467",
@@ -1389,22 +1161,10 @@
       "display_name": "CID000083786"
     },
     {
-      "stitch_id": "CID000091270",
-      "name_cid": 91270,
-      "name_source": "pending",
-      "display_name": "CID000091270"
-    },
-    {
       "stitch_id": "CID000093860",
       "name_cid": 93860,
       "name_source": "pending",
       "display_name": "CID000093860"
-    },
-    {
-      "stitch_id": "CID000110634",
-      "name_cid": 110634,
-      "name_source": "pending",
-      "display_name": "CID000110634"
     },
     {
       "stitch_id": "CID000122316",
@@ -1415,8 +1175,8 @@
     {
       "stitch_id": "CID000123620",
       "name_cid": 123620,
-      "name_source": "pending",
-      "display_name": "CID000123620"
+      "name_source": "chembl",
+      "display_name": "mometasone"
     },
     {
       "stitch_id": "CID000125889",
@@ -1433,26 +1193,20 @@
     {
       "stitch_id": "CID000150310",
       "name_cid": 150310,
-      "name_source": "pending",
-      "display_name": "CID000150310"
+      "name_source": "chembl",
+      "display_name": "eplerenone"
     },
     {
       "stitch_id": "CID000151165",
       "name_cid": 151165,
-      "name_source": "pending",
-      "display_name": "CID000151165"
+      "name_source": "chembl",
+      "display_name": "aprepitant"
     },
     {
       "stitch_id": "CID000152945",
       "name_cid": 152945,
-      "name_source": "pending",
-      "display_name": "CID000152945"
-    },
-    {
-      "stitch_id": "CID000153941",
-      "name_cid": 153941,
-      "name_source": "pending",
-      "display_name": "CID000153941"
+      "name_source": "chembl",
+      "display_name": "dutasteride"
     },
     {
       "stitch_id": "CID000160051",
@@ -1463,14 +1217,14 @@
     {
       "stitch_id": "CID000163742",
       "name_cid": 163742,
-      "name_source": "pending",
-      "display_name": "CID000163742"
+      "name_source": "chembl",
+      "display_name": "fondaparinux"
     },
     {
       "stitch_id": "CID000170361",
       "name_cid": 170361,
-      "name_source": "pending",
-      "display_name": "CID000170361"
+      "name_source": "chembl",
+      "display_name": "varenicline"
     },
     {
       "stitch_id": "CID000176168",
@@ -1499,20 +1253,14 @@
     {
       "stitch_id": "CID000444033",
       "name_cid": 444033,
-      "name_source": "pending",
-      "display_name": "CID000444033"
+      "name_source": "chembl",
+      "display_name": "ciclesonide"
     },
     {
       "stitch_id": "CID000504578",
       "name_cid": 504578,
       "name_source": "pending",
       "display_name": "CID000504578"
-    },
-    {
-      "stitch_id": "CID000667490",
-      "name_cid": 667490,
-      "name_source": "pending",
-      "display_name": "CID000667490"
     },
     {
       "stitch_id": "CID003085017",
@@ -1535,8 +1283,8 @@
     {
       "stitch_id": "CID004183806",
       "name_cid": 4183806,
-      "name_source": "pending",
-      "display_name": "CID004183806"
+      "name_source": "chembl",
+      "display_name": "misoprostol"
     },
     {
       "stitch_id": "CID004479097",
@@ -1547,8 +1295,8 @@
     {
       "stitch_id": "CID004659568",
       "name_cid": 4659568,
-      "name_source": "pending",
-      "display_name": "CID004659568"
+      "name_source": "chembl",
+      "display_name": "entacapone"
     },
     {
       "stitch_id": "CID005281007",
@@ -1573,12 +1321,6 @@
       "name_cid": 5311082,
       "name_source": "pending",
       "display_name": "CID005311082"
-    },
-    {
-      "stitch_id": "CID005311181",
-      "name_cid": 5311181,
-      "name_source": "pending",
-      "display_name": "CID005311181"
     },
     {
       "stitch_id": "CID005311297",
@@ -1631,14 +1373,14 @@
     {
       "stitch_id": "CID006447131",
       "name_cid": 6447131,
-      "name_source": "pending",
-      "display_name": "CID006447131"
+      "name_source": "chembl",
+      "display_name": "pimecrolimus"
     },
     {
       "stitch_id": "CID009571074",
       "name_cid": 9571074,
-      "name_source": "pending",
-      "display_name": "CID009571074"
+      "name_source": "chembl",
+      "display_name": "cefditoren"
     }
   ]
 }

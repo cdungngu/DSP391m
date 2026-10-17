@@ -1,0 +1,881 @@
+{
+  "created_at": "2026-10-17T03:22:24+00:00",
+  "source": "https://www.ebi.ac.uk/chembl/api/data",
+  "license": "CC BY-SA 3.0",
+  "combo_drugs": 645,
+  "match_type_counts": {
+    "exact": 470,
+    "connectivity": 109,
+    "none": 46,
+    "neutralized": 20
+  },
+  "mapped_with_pref_name": 466,
+  "drugs_with_mechanism": 271,
+  "coverage_tiers": {
+    "molecule_mapped": 599,
+    "mapped_exact_no_review_needed": 470,
+    "with_any_mechanism": 271,
+    "with_human_mechanism": 218,
+    "with_human_mechanism_with_accession": 212,
+    "mapping_reviewed": 0,
+    "note": "Có cơ chế đơn thuốc không đồng nghĩa có bằng chứng cho claim tương tác cặp."
+  },
+  "drugs_with_mechanism_but_no_decagon_targets": 125,
+  "drugs_with_neither": 236,
+  "drugs_with_human_mechanism_overlapping_decagon_targets": 94,
+  "mechanism_rows": 383,
+  "action_type_counts": {
+    "INHIBITOR": 182,
+    "ANTAGONIST": 57,
+    "AGONIST": 45,
+    "BLOCKER": 24,
+    "OPENER": 22,
+    "POSITIVE ALLOSTERIC MODULATOR": 18,
+    "POSITIVE MODULATOR": 5,
+    "PARTIAL AGONIST": 5,
+    "MODULATOR": 3,
+    "RELEASING AGENT": 3,
+    "ACTIVATOR": 3,
+    "CHELATING AGENT": 2,
+    "STABILISER": 1,
+    "ALLOSTERIC ANTAGONIST": 1,
+    "INVERSE AGONIST": 1,
+    "DEGRADER": 1
+  },
+  "target_type_counts": {
+    "SINGLE PROTEIN": 235,
+    "PROTEIN FAMILY": 56,
+    "PROTEIN COMPLEX GROUP": 31,
+    "PROTEIN COMPLEX": 24,
+    "NUCLEIC-ACID": 18,
+    "PROTEIN NUCLEIC-ACID COMPLEX": 5,
+    "METAL": 2,
+    "SELECTIVITY GROUP": 1,
+    "CHIMERIC PROTEIN": 1
+  },
+  "needs_review": [
+    {
+      "stitch_id": "CID000000158",
+      "matched_chembl_id": "CHEMBL548",
+      "parent_chembl_id": "CHEMBL548",
+      "pref_name": "DINOPROSTONE"
+    },
+    {
+      "stitch_id": "CID000000159",
+      "matched_chembl_id": "CHEMBL1139",
+      "parent_chembl_id": "CHEMBL1139",
+      "pref_name": "EPOPROSTENOL"
+    },
+    {
+      "stitch_id": "CID000000206",
+      "matched_chembl_id": "CHEMBL1222250",
+      "parent_chembl_id": "CHEMBL1222250",
+      "pref_name": "DEXTROSE"
+    },
+    {
+      "stitch_id": "CID000000214",
+      "matched_chembl_id": "CHEMBL495",
+      "parent_chembl_id": "CHEMBL495",
+      "pref_name": "ALPROSTADIL"
+    },
+    {
+      "stitch_id": "CID000000453",
+      "matched_chembl_id": "CHEMBL689",
+      "parent_chembl_id": "CHEMBL689",
+      "pref_name": "MANNITOL"
+    },
+    {
+      "stitch_id": "CID000000937",
+      "matched_chembl_id": "CHEMBL573",
+      "parent_chembl_id": "CHEMBL573",
+      "pref_name": "NIACIN"
+    },
+    {
+      "stitch_id": "CID000001071",
+      "matched_chembl_id": "CHEMBL986",
+      "parent_chembl_id": "CHEMBL986",
+      "pref_name": "RETINOL"
+    },
+    {
+      "stitch_id": "CID000001117",
+      "matched_chembl_id": "CHEMBL572964",
+      "parent_chembl_id": "CHEMBL572964",
+      "pref_name": "SULFURIC ACID"
+    },
+    {
+      "stitch_id": "CID000001690",
+      "matched_chembl_id": "CHEMBL263733",
+      "parent_chembl_id": "CHEMBL263733",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000001971",
+      "matched_chembl_id": "CHEMBL1380",
+      "parent_chembl_id": "CHEMBL1380",
+      "pref_name": "ABACAVIR"
+    },
+    {
+      "stitch_id": "CID000002142",
+      "matched_chembl_id": "CHEMBL177",
+      "parent_chembl_id": "CHEMBL177",
+      "pref_name": "AMIKACIN"
+    },
+    {
+      "stitch_id": "CID000002156",
+      "matched_chembl_id": "CHEMBL633",
+      "parent_chembl_id": "CHEMBL633",
+      "pref_name": "AMIODARONE"
+    },
+    {
+      "stitch_id": "CID000002171",
+      "matched_chembl_id": "CHEMBL1082",
+      "parent_chembl_id": "CHEMBL1082",
+      "pref_name": "AMOXICILLIN"
+    },
+    {
+      "stitch_id": "CID000002173",
+      "matched_chembl_id": "CHEMBL1617921",
+      "parent_chembl_id": "CHEMBL1617921",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002232",
+      "matched_chembl_id": "CHEMBL1166",
+      "parent_chembl_id": "CHEMBL1166",
+      "pref_name": "ARGATROBAN"
+    },
+    {
+      "stitch_id": "CID000002250",
+      "matched_chembl_id": "CHEMBL1487",
+      "parent_chembl_id": "CHEMBL1487",
+      "pref_name": "ATORVASTATIN"
+    },
+    {
+      "stitch_id": "CID000002269",
+      "matched_chembl_id": "CHEMBL529",
+      "parent_chembl_id": "CHEMBL529",
+      "pref_name": "AZITHROMYCIN"
+    },
+    {
+      "stitch_id": "CID000002274",
+      "matched_chembl_id": "CHEMBL158",
+      "parent_chembl_id": "CHEMBL158",
+      "pref_name": "AZTREONAM"
+    },
+    {
+      "stitch_id": "CID000002283",
+      "matched_chembl_id": "CHEMBL4303306",
+      "parent_chembl_id": "CHEMBL4303306",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002308",
+      "matched_chembl_id": "CHEMBL1586",
+      "parent_chembl_id": "CHEMBL1586",
+      "pref_name": "BECLOMETHASONE"
+    },
+    {
+      "stitch_id": "CID000002462",
+      "matched_chembl_id": "CHEMBL1370",
+      "parent_chembl_id": "CHEMBL1370",
+      "pref_name": "BUDESONIDE"
+    },
+    {
+      "stitch_id": "CID000002487",
+      "matched_chembl_id": "CHEMBL33986",
+      "parent_chembl_id": "CHEMBL33986",
+      "pref_name": "BUTORPHANOL"
+    },
+    {
+      "stitch_id": "CID000002522",
+      "matched_chembl_id": "CHEMBL1200666",
+      "parent_chembl_id": "CHEMBL1200666",
+      "pref_name": "CALCIPOTRIENE"
+    },
+    {
+      "stitch_id": "CID000002524",
+      "matched_chembl_id": "CHEMBL846",
+      "parent_chembl_id": "CHEMBL846",
+      "pref_name": "CALCITRIOL"
+    },
+    {
+      "stitch_id": "CID000002617",
+      "matched_chembl_id": "CHEMBL172840",
+      "parent_chembl_id": "CHEMBL172840",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002622",
+      "matched_chembl_id": "CHEMBL186",
+      "parent_chembl_id": "CHEMBL186",
+      "pref_name": "CEFEPIME"
+    },
+    {
+      "stitch_id": "CID000002631",
+      "matched_chembl_id": "CHEMBL4595304",
+      "parent_chembl_id": "CHEMBL4595304",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002637",
+      "matched_chembl_id": "CHEMBL996",
+      "parent_chembl_id": "CHEMBL996",
+      "pref_name": "CEFOXITIN"
+    },
+    {
+      "stitch_id": "CID000002650",
+      "matched_chembl_id": "CHEMBL44354",
+      "parent_chembl_id": "CHEMBL44354",
+      "pref_name": "CEFTAZIDIME"
+    },
+    {
+      "stitch_id": "CID000002656",
+      "matched_chembl_id": "CHEMBL1741130",
+      "parent_chembl_id": "CHEMBL1741130",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002658",
+      "matched_chembl_id": "CHEMBL1436",
+      "parent_chembl_id": "CHEMBL1436",
+      "pref_name": "CEFUROXIME"
+    },
+    {
+      "stitch_id": "CID000002675",
+      "matched_chembl_id": "CHEMBL1541",
+      "parent_chembl_id": "CHEMBL1541",
+      "pref_name": "CEFIXIME"
+    },
+    {
+      "stitch_id": "CID000002676",
+      "matched_chembl_id": "CHEMBL1477",
+      "parent_chembl_id": "CHEMBL1477",
+      "pref_name": "CERIVASTATIN"
+    },
+    {
+      "stitch_id": "CID000002909",
+      "matched_chembl_id": "CHEMBL160",
+      "parent_chembl_id": "CHEMBL160",
+      "pref_name": "CYCLOSPORINE"
+    },
+    {
+      "stitch_id": "CID000002949",
+      "matched_chembl_id": "CHEMBL1479",
+      "parent_chembl_id": "CHEMBL1479",
+      "pref_name": "DANAZOL"
+    },
+    {
+      "stitch_id": "CID000002951",
+      "matched_chembl_id": "CHEMBL1741132",
+      "parent_chembl_id": "CHEMBL1741132",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000002978",
+      "matched_chembl_id": "CHEMBL465",
+      "parent_chembl_id": "CHEMBL465",
+      "pref_name": "DRONABINOL"
+    },
+    {
+      "stitch_id": "CID000003003",
+      "matched_chembl_id": "CHEMBL632",
+      "parent_chembl_id": "CHEMBL632",
+      "pref_name": "BETAMETHASONE"
+    },
+    {
+      "stitch_id": "CID000003032",
+      "matched_chembl_id": "CHEMBL139",
+      "parent_chembl_id": "CHEMBL139",
+      "pref_name": "DICLOFENAC"
+    },
+    {
+      "stitch_id": "CID000003040",
+      "matched_chembl_id": "CHEMBL1616891",
+      "parent_chembl_id": "CHEMBL1616891",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000003062",
+      "matched_chembl_id": "CHEMBL1751",
+      "parent_chembl_id": "CHEMBL1751",
+      "pref_name": "DIGOXIN"
+    },
+    {
+      "stitch_id": "CID000003066",
+      "matched_chembl_id": "CHEMBL1732",
+      "parent_chembl_id": "CHEMBL1732",
+      "pref_name": "DIHYDROERGOTAMINE"
+    },
+    {
+      "stitch_id": "CID000003075",
+      "matched_chembl_id": "CHEMBL603584",
+      "parent_chembl_id": "CHEMBL603584",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000003143",
+      "matched_chembl_id": "CHEMBL92",
+      "parent_chembl_id": "CHEMBL92",
+      "pref_name": "DOCETAXEL ANHYDROUS"
+    },
+    {
+      "stitch_id": "CID000003161",
+      "matched_chembl_id": "CHEMBL436921",
+      "parent_chembl_id": "CHEMBL436921",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000003249",
+      "matched_chembl_id": "CHEMBL1536",
+      "parent_chembl_id": "CHEMBL1536",
+      "pref_name": "ERGOCALCIFEROL"
+    },
+    {
+      "stitch_id": "CID000003350",
+      "matched_chembl_id": "CHEMBL710",
+      "parent_chembl_id": "CHEMBL710",
+      "pref_name": "FINASTERIDE"
+    },
+    {
+      "stitch_id": "CID000003355",
+      "matched_chembl_id": "CHEMBL652",
+      "parent_chembl_id": "CHEMBL652",
+      "pref_name": "FLECAINIDE"
+    },
+    {
+      "stitch_id": "CID000003379",
+      "matched_chembl_id": "CHEMBL1512",
+      "parent_chembl_id": "CHEMBL1512",
+      "pref_name": "FLUNISOLIDE"
+    },
+    {
+      "stitch_id": "CID000003382",
+      "matched_chembl_id": "CHEMBL1501",
+      "parent_chembl_id": "CHEMBL1501",
+      "pref_name": "FLUOCINONIDE"
+    },
+    {
+      "stitch_id": "CID000003404",
+      "matched_chembl_id": "CHEMBL814",
+      "parent_chembl_id": "CHEMBL814",
+      "pref_name": "FLUVOXAMINE"
+    },
+    {
+      "stitch_id": "CID000003414",
+      "matched_chembl_id": "CHEMBL666",
+      "parent_chembl_id": "CHEMBL666",
+      "pref_name": "FOSCARNET"
+    },
+    {
+      "stitch_id": "CID000003419",
+      "matched_chembl_id": "CHEMBL4078476",
+      "parent_chembl_id": "CHEMBL4078476",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000003648",
+      "matched_chembl_id": "CHEMBL398707",
+      "parent_chembl_id": "CHEMBL398707",
+      "pref_name": "HYDROMORPHONE"
+    },
+    {
+      "stitch_id": "CID000003706",
+      "matched_chembl_id": "CHEMBL115",
+      "parent_chembl_id": "CHEMBL115",
+      "pref_name": "INDINAVIR ANHYDROUS"
+    },
+    {
+      "stitch_id": "CID000003877",
+      "matched_chembl_id": "CHEMBL141",
+      "parent_chembl_id": "CHEMBL141",
+      "pref_name": "LAMIVUDINE"
+    },
+    {
+      "stitch_id": "CID000003890",
+      "matched_chembl_id": "CHEMBL1051",
+      "parent_chembl_id": "CHEMBL1051",
+      "pref_name": "LATANOPROST"
+    },
+    {
+      "stitch_id": "CID000003911",
+      "matched_chembl_id": "CHEMBL1201199",
+      "parent_chembl_id": "CHEMBL1201199",
+      "pref_name": "LEUPROLIDE"
+    },
+    {
+      "stitch_id": "CID000003928",
+      "matched_chembl_id": "CHEMBL1447",
+      "parent_chembl_id": "CHEMBL1447",
+      "pref_name": "LINCOMYCIN"
+    },
+    {
+      "stitch_id": "CID000003954",
+      "matched_chembl_id": "CHEMBL841",
+      "parent_chembl_id": "CHEMBL841",
+      "pref_name": "LOPERAMIDE"
+    },
+    {
+      "stitch_id": "CID000003962",
+      "matched_chembl_id": "CHEMBL503",
+      "parent_chembl_id": "CHEMBL503",
+      "pref_name": "LOVASTATIN"
+    },
+    {
+      "stitch_id": "CID000004253",
+      "matched_chembl_id": "CHEMBL70",
+      "parent_chembl_id": "CHEMBL70",
+      "pref_name": "MORPHINE"
+    },
+    {
+      "stitch_id": "CID000004259",
+      "matched_chembl_id": "CHEMBL32",
+      "parent_chembl_id": "CHEMBL32",
+      "pref_name": "MOXIFLOXACIN"
+    },
+    {
+      "stitch_id": "CID000004264",
+      "matched_chembl_id": "CHEMBL719",
+      "parent_chembl_id": "CHEMBL719",
+      "pref_name": "MUPIROCIN"
+    },
+    {
+      "stitch_id": "CID000004425",
+      "matched_chembl_id": "CHEMBL80",
+      "parent_chembl_id": "CHEMBL80",
+      "pref_name": "NALOXONE"
+    },
+    {
+      "stitch_id": "CID000004473",
+      "matched_chembl_id": "CHEMBL1484",
+      "parent_chembl_id": "CHEMBL1484",
+      "pref_name": "NICARDIPINE"
+    },
+    {
+      "stitch_id": "CID000004542",
+      "matched_chembl_id": "CHEMBL1389",
+      "parent_chembl_id": "CHEMBL1389",
+      "pref_name": "LEVONORGESTREL"
+    },
+    {
+      "stitch_id": "CID000004547",
+      "matched_chembl_id": "CHEMBL1272",
+      "parent_chembl_id": "CHEMBL1272",
+      "pref_name": "REPAGLINIDE"
+    },
+    {
+      "stitch_id": "CID000004607",
+      "matched_chembl_id": "CHEMBL3305959",
+      "parent_chembl_id": "CHEMBL3305959",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000004635",
+      "matched_chembl_id": "CHEMBL656",
+      "parent_chembl_id": "CHEMBL656",
+      "pref_name": "OXYCODONE"
+    },
+    {
+      "stitch_id": "CID000004666",
+      "matched_chembl_id": "CHEMBL428647",
+      "parent_chembl_id": "CHEMBL428647",
+      "pref_name": "PACLITAXEL"
+    },
+    {
+      "stitch_id": "CID000004675",
+      "matched_chembl_id": "CHEMBL185073",
+      "parent_chembl_id": "CHEMBL185073",
+      "pref_name": "PANCURONIUM"
+    },
+    {
+      "stitch_id": "CID000004730",
+      "matched_chembl_id": "CHEMBL1711169",
+      "parent_chembl_id": "CHEMBL1711169",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000004739",
+      "matched_chembl_id": "CHEMBL1580",
+      "parent_chembl_id": "CHEMBL1580",
+      "pref_name": "PENTOSTATIN"
+    },
+    {
+      "stitch_id": "CID000004745",
+      "matched_chembl_id": "CHEMBL531",
+      "parent_chembl_id": "CHEMBL531",
+      "pref_name": "PERGOLIDE"
+    },
+    {
+      "stitch_id": "CID000004834",
+      "matched_chembl_id": "CHEMBL1616926",
+      "parent_chembl_id": "CHEMBL1616926",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000004900",
+      "matched_chembl_id": "CHEMBL635",
+      "parent_chembl_id": "CHEMBL635",
+      "pref_name": "PREDNISONE"
+    },
+    {
+      "stitch_id": "CID000005038",
+      "matched_chembl_id": "CHEMBL1168",
+      "parent_chembl_id": "CHEMBL1168",
+      "pref_name": "RAMIPRIL"
+    },
+    {
+      "stitch_id": "CID000005052",
+      "matched_chembl_id": "CHEMBL772",
+      "parent_chembl_id": "CHEMBL772",
+      "pref_name": "RESERPINE"
+    },
+    {
+      "stitch_id": "CID000005076",
+      "matched_chembl_id": "CHEMBL163",
+      "parent_chembl_id": "CHEMBL163",
+      "pref_name": "RITONAVIR"
+    },
+    {
+      "stitch_id": "CID000005077",
+      "matched_chembl_id": "CHEMBL636",
+      "parent_chembl_id": "CHEMBL636",
+      "pref_name": "RIVASTIGMINE"
+    },
+    {
+      "stitch_id": "CID000005352",
+      "matched_chembl_id": "CHEMBL15770",
+      "parent_chembl_id": "CHEMBL15770",
+      "pref_name": "SULINDAC"
+    },
+    {
+      "stitch_id": "CID000005372",
+      "matched_chembl_id": "CHEMBL269732",
+      "parent_chembl_id": "CHEMBL269732",
+      "pref_name": "TACROLIMUS ANHYDROUS"
+    },
+    {
+      "stitch_id": "CID000005402",
+      "matched_chembl_id": "CHEMBL822",
+      "parent_chembl_id": "CHEMBL822",
+      "pref_name": "TERBINAFINE"
+    },
+    {
+      "stitch_id": "CID000005454",
+      "matched_chembl_id": "CHEMBL1201",
+      "parent_chembl_id": "CHEMBL1201",
+      "pref_name": "THIOTHIXENE"
+    },
+    {
+      "stitch_id": "CID000005486",
+      "matched_chembl_id": "CHEMBL916",
+      "parent_chembl_id": "CHEMBL916",
+      "pref_name": "TIROFIBAN"
+    },
+    {
+      "stitch_id": "CID000005514",
+      "matched_chembl_id": "CHEMBL220492",
+      "parent_chembl_id": "CHEMBL220492",
+      "pref_name": "TOPIRAMATE"
+    },
+    {
+      "stitch_id": "CID000005515",
+      "matched_chembl_id": "CHEMBL84",
+      "parent_chembl_id": "CHEMBL84",
+      "pref_name": "TOPOTECAN"
+    },
+    {
+      "stitch_id": "CID000005525",
+      "matched_chembl_id": "CHEMBL1519",
+      "parent_chembl_id": "CHEMBL1519",
+      "pref_name": "TRANDOLAPRIL"
+    },
+    {
+      "stitch_id": "CID000005544",
+      "matched_chembl_id": "CHEMBL1451",
+      "parent_chembl_id": "CHEMBL1451",
+      "pref_name": "TRIAMCINOLONE"
+    },
+    {
+      "stitch_id": "CID000005596",
+      "matched_chembl_id": "CHEMBL1888176",
+      "parent_chembl_id": "CHEMBL1888176",
+      "pref_name": "TROSPIUM"
+    },
+    {
+      "stitch_id": "CID000005645",
+      "matched_chembl_id": "CHEMBL1551",
+      "parent_chembl_id": "CHEMBL1551",
+      "pref_name": "URSODIOL"
+    },
+    {
+      "stitch_id": "CID000005650",
+      "matched_chembl_id": "CHEMBL1069",
+      "parent_chembl_id": "CHEMBL1069",
+      "pref_name": "VALSARTAN"
+    },
+    {
+      "stitch_id": "CID000005672",
+      "matched_chembl_id": "CHEMBL553025",
+      "parent_chembl_id": "CHEMBL553025",
+      "pref_name": "VINORELBINE"
+    },
+    {
+      "stitch_id": "CID000005721",
+      "matched_chembl_id": "CHEMBL222813",
+      "parent_chembl_id": "CHEMBL222813",
+      "pref_name": "ZANAMIVIR"
+    },
+    {
+      "stitch_id": "CID000005726",
+      "matched_chembl_id": "CHEMBL129",
+      "parent_chembl_id": "CHEMBL129",
+      "pref_name": "ZIDOVUDINE"
+    },
+    {
+      "stitch_id": "CID000012536",
+      "matched_chembl_id": "CHEMBL1201109",
+      "parent_chembl_id": "CHEMBL1201109",
+      "pref_name": "DESONIDE"
+    },
+    {
+      "stitch_id": "CID000032797",
+      "matched_chembl_id": "CHEMBL1201362",
+      "parent_chembl_id": "CHEMBL1201362",
+      "pref_name": "CLOBETASOL"
+    },
+    {
+      "stitch_id": "CID000054374",
+      "matched_chembl_id": "CHEMBL1680",
+      "parent_chembl_id": "CHEMBL1680",
+      "pref_name": "OCTREOTIDE"
+    },
+    {
+      "stitch_id": "CID000054547",
+      "matched_chembl_id": "CHEMBL1672",
+      "parent_chembl_id": "CHEMBL1672",
+      "pref_name": "CEFPODOXIME"
+    },
+    {
+      "stitch_id": "CID000054688",
+      "matched_chembl_id": "CHEMBL1741",
+      "parent_chembl_id": "CHEMBL1741",
+      "pref_name": "CLARITHROMYCIN"
+    },
+    {
+      "stitch_id": "CID000054786",
+      "matched_chembl_id": "CHEMBL1237119",
+      "parent_chembl_id": "CHEMBL1237119",
+      "pref_name": "TREPROSTINIL"
+    },
+    {
+      "stitch_id": "CID000054808",
+      "matched_chembl_id": "CHEMBL1200865",
+      "parent_chembl_id": "CHEMBL1200865",
+      "pref_name": "LOTEPREDNOL ETABONATE"
+    },
+    {
+      "stitch_id": "CID000060147",
+      "matched_chembl_id": "CHEMBL836",
+      "parent_chembl_id": "CHEMBL836",
+      "pref_name": "TAMSULOSIN"
+    },
+    {
+      "stitch_id": "CID000060184",
+      "matched_chembl_id": "CHEMBL1581",
+      "parent_chembl_id": "CHEMBL1581",
+      "pref_name": "PERINDOPRIL"
+    },
+    {
+      "stitch_id": "CID000060612",
+      "matched_chembl_id": "CHEMBL778",
+      "parent_chembl_id": "CHEMBL778",
+      "pref_name": "DEXMEDETOMIDINE"
+    },
+    {
+      "stitch_id": "CID000060696",
+      "matched_chembl_id": "CHEMBL1201244",
+      "parent_chembl_id": "CHEMBL1201244",
+      "pref_name": "ROCURONIUM"
+    },
+    {
+      "stitch_id": "CID000060831",
+      "matched_chembl_id": "CHEMBL1900528",
+      "parent_chembl_id": "CHEMBL1900528",
+      "pref_name": "TIOTROPIUM"
+    },
+    {
+      "stitch_id": "CID000060843",
+      "matched_chembl_id": "CHEMBL225072",
+      "parent_chembl_id": "CHEMBL225072",
+      "pref_name": "PEMETREXED"
+    },
+    {
+      "stitch_id": "CID000062924",
+      "matched_chembl_id": "CHEMBL1201396",
+      "parent_chembl_id": "CHEMBL1201396",
+      "pref_name": "FLUTICASONE"
+    },
+    {
+      "stitch_id": "CID000065027",
+      "matched_chembl_id": "CHEMBL332684",
+      "parent_chembl_id": "CHEMBL332684",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000071273",
+      "matched_chembl_id": "CHEMBL1077896",
+      "parent_chembl_id": "CHEMBL1077896",
+      "pref_name": "ROPIVACAINE"
+    },
+    {
+      "stitch_id": "CID000072054",
+      "matched_chembl_id": "CHEMBL1346",
+      "parent_chembl_id": "CHEMBL1346",
+      "pref_name": "DARIFENACIN"
+    },
+    {
+      "stitch_id": "CID000072467",
+      "matched_chembl_id": "CHEMBL403664",
+      "parent_chembl_id": "CHEMBL403664",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID000072938",
+      "matched_chembl_id": "CHEMBL430",
+      "parent_chembl_id": "CHEMBL430",
+      "pref_name": "GEMIFLOXACIN"
+    },
+    {
+      "stitch_id": "CID000123620",
+      "matched_chembl_id": "CHEMBL1201404",
+      "parent_chembl_id": "CHEMBL1201404",
+      "pref_name": "MOMETASONE"
+    },
+    {
+      "stitch_id": "CID000150310",
+      "matched_chembl_id": "CHEMBL1095097",
+      "parent_chembl_id": "CHEMBL1095097",
+      "pref_name": "EPLERENONE"
+    },
+    {
+      "stitch_id": "CID000151165",
+      "matched_chembl_id": "CHEMBL1471",
+      "parent_chembl_id": "CHEMBL1471",
+      "pref_name": "APREPITANT"
+    },
+    {
+      "stitch_id": "CID000152945",
+      "matched_chembl_id": "CHEMBL1200969",
+      "parent_chembl_id": "CHEMBL1200969",
+      "pref_name": "DUTASTERIDE"
+    },
+    {
+      "stitch_id": "CID000163742",
+      "matched_chembl_id": "CHEMBL1201202",
+      "parent_chembl_id": "CHEMBL1201202",
+      "pref_name": "FONDAPARINUX"
+    },
+    {
+      "stitch_id": "CID000170361",
+      "matched_chembl_id": "CHEMBL1076903",
+      "parent_chembl_id": "CHEMBL1076903",
+      "pref_name": "VARENICLINE"
+    },
+    {
+      "stitch_id": "CID000444033",
+      "matched_chembl_id": "CHEMBL2040682",
+      "parent_chembl_id": "CHEMBL2040682",
+      "pref_name": "CICLESONIDE"
+    },
+    {
+      "stitch_id": "CID003468412",
+      "matched_chembl_id": "CHEMBL4303481",
+      "parent_chembl_id": "CHEMBL4303481",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID004183806",
+      "matched_chembl_id": "CHEMBL606",
+      "parent_chembl_id": "CHEMBL606",
+      "pref_name": "MISOPROSTOL"
+    },
+    {
+      "stitch_id": "CID004659568",
+      "matched_chembl_id": "CHEMBL953",
+      "parent_chembl_id": "CHEMBL953",
+      "pref_name": "ENTACAPONE"
+    },
+    {
+      "stitch_id": "CID005353980",
+      "matched_chembl_id": "CHEMBL242373",
+      "parent_chembl_id": "CHEMBL242373",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID005362420",
+      "matched_chembl_id": "CHEMBL3831301",
+      "parent_chembl_id": "CHEMBL3831301",
+      "pref_name": null
+    },
+    {
+      "stitch_id": "CID006447131",
+      "matched_chembl_id": "CHEMBL1200686",
+      "parent_chembl_id": "CHEMBL1200686",
+      "pref_name": "PIMECROLIMUS"
+    },
+    {
+      "stitch_id": "CID009571074",
+      "matched_chembl_id": "CHEMBL1743",
+      "parent_chembl_id": "CHEMBL1743",
+      "pref_name": "CEFDITOREN"
+    }
+  ],
+  "unmapped": [
+    "CID000000271",
+    "CID000000772",
+    "CID000002712",
+    "CID000002891",
+    "CID000004052",
+    "CID000004200",
+    "CID000004585",
+    "CID000004609",
+    "CID000004645",
+    "CID000004856",
+    "CID000005412",
+    "CID000006691",
+    "CID000009052",
+    "CID000014888",
+    "CID000024011",
+    "CID000024486",
+    "CID000028112",
+    "CID000038904",
+    "CID000060754",
+    "CID000074989",
+    "CID000083786",
+    "CID000087177",
+    "CID000160051",
+    "CID000176168",
+    "CID000443871",
+    "CID000444013",
+    "CID000504578",
+    "CID000508230",
+    "CID003081884",
+    "CID003085017",
+    "CID003086258",
+    "CID004475485",
+    "CID004479097",
+    "CID005281007",
+    "CID005282044",
+    "CID005311039",
+    "CID005311048",
+    "CID005311082",
+    "CID005311297",
+    "CID005362070",
+    "CID005381226",
+    "CID005473385",
+    "CID005493381",
+    "CID006398525",
+    "CID006435110",
+    "CID006918453"
+  ],
+  "lookup_failed": []
+}

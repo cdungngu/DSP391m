@@ -30,7 +30,7 @@ from .paths import EXTERNAL_DIR, snapshot_dir
 
 BASE = "https://www.ebi.ac.uk/chembl/api/data"
 CACHE = EXTERNAL_DIR / "chembl"
-BATCH = 40
+BATCH = 20
 PAUSE = 0.5
 
 

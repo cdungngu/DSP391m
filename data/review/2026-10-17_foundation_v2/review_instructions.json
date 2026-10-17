@@ -1,0 +1,32 @@
+{
+  "content_hash": "6c937a30da1f7eef2cb3f39f4ef9b189c808c02e3d90f369e1a5ee5c533cffcc",
+  "payload": {
+    "annotation_fields": [
+      "case_id",
+      "claim_id",
+      "annotator",
+      "supported",
+      "contradicted",
+      "insufficient",
+      "citation_correct",
+      "overclaim",
+      "rationale"
+    ],
+    "catalog_instructions": "Select ingredients; explicitly review aliases/products; use catalog import-decisions.",
+    "counts": {
+      "approved": 0,
+      "catalog_candidates": 645,
+      "evidence_candidates": 129
+    },
+    "evidence_instructions": "Review original source/version and applicability; provide subjects, Vietnamese statement and all conditions.",
+    "gold_case_fields": [
+      "case_id",
+      "ingredient_ids",
+      "canonical_pairs",
+      "split",
+      "source_snapshot"
+    ],
+    "schema_version": 1,
+    "status": "pending_human_review"
+  }
+}

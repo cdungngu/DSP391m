@@ -23,7 +23,7 @@ _Cập nhật lần cuối: 2026-10-17_
 - **Đang chờ dược sĩ:** danh mục demo khoảng 50 thuốc; xem khoảng 10 chất vô cơ/ion và 2 ánh xạ nghi sai trong `structure_coverage.json`.
 - **Tài liệu cũ:** `docs/submission/*` vẫn mô tả thiết kế cũ. Không cần nộp lại; nếu dùng lại thì sửa theo plan mục 10.
 
-- **Tạm dừng (2026-10-17, theo yêu cầu người dùng):** lượt chạy `python -m dsp391m.chembl` đã khớp xong mọi thuốc (cache `data/external/chembl/`, chưa commit) nhưng dừng ở bước tải phân tử cha theo lô 40 ID vì ChEMBL trả HTTP 500. Trước khi chạy tiếp: cho `http.request` thử lại cả lỗi 5xx và giảm `BATCH` (ví dụ 20) trong `chembl.py`. Chưa có `chembl_map/chembl_mechanisms/chembl_report`. **Chỉ chạy tiếp khi người dùng báo.** Sau đó: chạy lại `python -m dsp391m.chembl` (đọc cache, tiếp phần còn lại) → `python -m dsp391m.workbench prepare --out data/review/2026-10-17_foundation_v2` → cập nhật số độ phủ → push.
+- **ChEMBL đã chạy xong (2026-10-17):** khớp 599/645 thuốc (470 chính xác, 20 dạng trung hòa, 109 theo connectivity cần duyệt, 46 không khớp); 271 thuốc có cơ chế, 218 có cơ chế trên người (212 có accession), 0 mapping đã duyệt. Tên thuốc: 374 từ CID gốc + 129 từ ChEMBL, còn 129 pending và 13 không có. Gói duyệt `data/review/2026-10-17_foundation_v2` (645 ứng viên catalog, 129 đoạn, 0 approved). `http.request` thử lại 5xx; ChEMBL `BATCH=20`.
 
 ## Nhật ký quyết định
 
@@ -31,6 +31,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Chạy xong ChEMBL: 599/645 khớp, 271 có cơ chế (218 người); tên thêm 129 thuốc; gói duyệt foundation_v2 | Lượt trước dừng vì HTTP 500; thêm retry 5xx, giảm lô xuống 20 | Đã làm; mapping và cơ chế chờ dược sĩ duyệt |
 | 2026-10-17 | Triển khai foundation consumer, immutable releases, review workflow và smoothing B0; alpha100 đạt val macro AP 0,288953 so 0,271431 baseline | Thực thi từng bước bộ plan, không tự duyệt dữ liệu | 63 tests đạt; chờ catalog/gold; smoothing mới là val experiment |
 | 2026-10-17 | Thêm 15 plan chi tiết, cập nhật plan tổng v2.1; consumer dùng catalog duyệt, B0 chỉ nghiên cứu; cơ chế đơn thuốc không tự chứng minh claim cặp | Người dùng đã chọn phạm vi; giữ lõi và thử cải tiến có đối chứng | Thiết kế đã viết; chưa nghiệm thu code theo bộ plan mới |
 | 2026-10-17 | GĐ3: `http.py` (gọi API lịch sự, dùng chung), `chembl.py` (khớp InChIKey → dạng trung hòa → connectivity; cơ chế có `action_type`; bổ sung tên), `dailymed.py` (đoạn nhãn theo LOINC, tìm tên thuốc B trong mục Drug Interactions của thuốc A); `lookup` hiển thị cơ chế ChEMBL, target ChEMBL chung có chiều, đoạn nhãn DailyMed, và gắn cờ target Decagon dạng panel rộng (>100 target) | Bù chỗ PPI không có chiều và target Decagon nhiễu; NCBI chặn PubChem nên lấy tên qua ChEMBL | Đã làm |

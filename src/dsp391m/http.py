@@ -26,7 +26,8 @@ _BLOCKED_HOSTS: set[str] = set()
 
 
 def request(method: str, url: str, **kwargs) -> requests.Response:
-    """429/503: chờ rồi thử lại; hết lượt hoặc bị chuyển tới trang chặn lạm dụng thì đánh dấu host bị chặn."""
+    """429/503: chờ rồi thử lại; hết lượt hoặc bị chuyển tới trang chặn lạm dụng thì đánh dấu host bị chặn.
+    500/502/504 (lỗi server tạm thời): chờ rồi thử lại; hết lượt thì trả response để caller raise_for_status."""
     host = urlparse(url).netloc
     if host in _BLOCKED_HOSTS:
         raise RateLimited(f"{host} đang chặn; chạy lại sau")
@@ -41,7 +42,9 @@ def request(method: str, url: str, **kwargs) -> requests.Response:
         if r.is_redirect and "misuse" in r.headers.get("location", ""):
             _BLOCKED_HOSTS.add(host)
             raise RateLimited(f"{host} chuyển tới trang chặn lạm dụng: {r.headers['location']}")
-        if r.status_code not in (429, 503):
+        if r.status_code not in (429, 500, 502, 503, 504):
+            return r
+        if r.status_code in (500, 502, 504) and attempt == 3:
             return r
         time.sleep(5 * (attempt + 1))
     _BLOCKED_HOSTS.add(host)
