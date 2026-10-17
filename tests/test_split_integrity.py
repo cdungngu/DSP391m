@@ -6,8 +6,6 @@ import pytest
 from dsp391m import dataview, splits
 from dsp391m.manifest import read_json
 
-from test_leakage import snap  # noqa: F401  (dùng lại fixture snapshot tổng hợp)
-
 
 def test_prediction_view_metadata_derived_from_train_only(snap):
     view = dataview.prediction_view(snap=snap)

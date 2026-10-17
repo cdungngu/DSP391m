@@ -4,8 +4,6 @@ import pytest
 from dsp391m import dataview, evaluate
 from dsp391m.models.b0 import B0
 
-from test_leakage import snap  # noqa: F401
-
 
 def test_undefined_metrics_are_json_null_not_nan():
     import json
