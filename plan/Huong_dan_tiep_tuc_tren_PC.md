@@ -65,6 +65,8 @@ git lfs pull
 git status            # phải sạch
 ```
 
+Combo CSV (LFS) chỉ cần cho `pytest -m slow` (chạy lại ETL vào thư mục tạm). Phần 2 và 3 không cần nó. Nếu tải LFS quá chậm (clone thử trên Mac bị kẹt hơn 15 phút), clone bằng `$env:GIT_LFS_SKIP_SMUDGE=1; git clone ...` (bash: `GIT_LFS_SKIP_SMUDGE=1 git clone ...`), bỏ `git lfs pull` và bỏ `pytest -m slow`. File combo khi đó chỉ là con trỏ LFS; không sửa và không commit nó.
+
 Nếu đã clone từ trước: `git fetch` → `git checkout gd1a-data-foundation` → `git pull` → `git lfs pull`.
 
 Kiểm tra xuống dòng: `.gitattributes` có `* -text` nên Git không đổi LF sang CRLF. Nếu clone trước commit này với `core.autocrlf=true`, chạy `git rm --cached -r -q .` rồi `git reset --hard` để checkout lại. Nếu file text bị đổi CRLF, hash trong manifest/lock sẽ lệch và loader sẽ từ chối (fail closed).
