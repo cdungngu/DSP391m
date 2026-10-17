@@ -1,0 +1,7 @@
+2026-10-17_search_v1_d64_lr0.01_s391: macro AP 0.263803 NDCG@10 0.410178 best epoch 10 (16 epoch, 408.0 s)
+2026-10-17_search_v1_d64_lr0.03_s391: macro AP 0.236595 NDCG@10 0.373067 best epoch 13 (19 epoch, 521.1 s)
+2026-10-17_search_v1_d128_lr0.01_s391: macro AP 0.286290 NDCG@10 0.412773 best epoch 20 (26 epoch, 894.9 s)
+2026-10-17_search_v1_d128_lr0.03_s391: macro AP 0.244638 NDCG@10 0.370623 best epoch 13 (19 epoch, 670.1 s)
+2026-10-17_search_v1_d128_lr0.01_s392: macro AP 0.285209 NDCG@10 0.411512 best epoch 16 (22 epoch, 790.4 s)
+2026-10-17_search_v1_d128_lr0.01_s393: macro AP 0.287964 NDCG@10 0.412278 best epoch 21 (27 epoch, 833.5 s)
+Chọn dim 128 lr 0.01; promotion False; checks {'three_seeds_completed': True, 'all_seeds_macro_ap_delta_gt_0': False, 'mean_macro_ap_delta_ge_0.005': False, 'seed391_ci95_macro_ap_lower_gt_0': False, 'mean_ndcg10_ge_alpha0_minus_0.005': False}

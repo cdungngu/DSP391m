@@ -1,0 +1,18 @@
+epoch  0 loss 1.1758 val macro AP 0.255010 (sampler 10.79 s, train 12.79 s, val 1.17 s)
+epoch  1 loss 1.1086 val macro AP 0.260135 (sampler 10.33 s, train 11.91 s, val 1.1 s)
+epoch  2 loss 1.0983 val macro AP 0.261771 (sampler 10.41 s, train 12.07 s, val 1.11 s)
+epoch  3 loss 1.0941 val macro AP 0.261866 (sampler 10.36 s, train 11.98 s, val 1.11 s)
+epoch  4 loss 1.0917 val macro AP 0.262389 (sampler 10.42 s, train 12.09 s, val 1.09 s)
+epoch  5 loss 1.0906 val macro AP 0.261851 (sampler 10.51 s, train 12.16 s, val 1.12 s)
+epoch  6 loss 1.0896 val macro AP 0.262049 (sampler 10.54 s, train 12.24 s, val 1.09 s)
+epoch  7 loss 1.0888 val macro AP 0.261834 (sampler 10.51 s, train 12.17 s, val 1.08 s)
+epoch  8 loss 1.0885 val macro AP 0.262511 (sampler 10.61 s, train 12.26 s, val 1.11 s)
+epoch  9 loss 1.0878 val macro AP 0.262696 (sampler 10.65 s, train 12.4 s, val 1.11 s)
+epoch 10 loss 1.0875 val macro AP 0.263803 (sampler 10.7 s, train 12.41 s, val 1.11 s)
+epoch 11 loss 1.0872 val macro AP 0.262502 (sampler 10.69 s, train 12.44 s, val 1.08 s)
+epoch 12 loss 1.0869 val macro AP 0.261180 (sampler 10.63 s, train 12.38 s, val 1.11 s)
+epoch 13 loss 1.0867 val macro AP 0.263851 (sampler 10.71 s, train 12.46 s, val 1.09 s)
+epoch 14 loss 1.0864 val macro AP 0.262541 (sampler 10.64 s, train 12.35 s, val 1.12 s)
+epoch 15 loss 1.0863 val macro AP 0.263883 (sampler 11.08 s, train 13.77 s, val 1.14 s)
+{"model_release_id": "distmult_d64-5f8f829ce880", "runtime": {"data_load_s": 1.2, "total_s": 408.0, "peak_rss_mb": 1901.0, "device": "cpu", "torch": "2.5.1", "threads": 4, "numpy": "2.5.3"}}
+best epoch 10 val macro AP 0.263803; dừng: early_stopping

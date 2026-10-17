@@ -15,8 +15,9 @@ _Cập nhật lần cuối: 2026-10-17 (phiên triển khai v3)_
 - **Phạm vi hiện hành v3:** người dùng xác nhận mục tiêu dự đoán cặp và ít thời gian/nhân lực duyệt. [Kế hoạch tổng](plan/Ke_hoach_trien_khai.md) và [10 plan dự đoán cặp](plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md) thay hướng consumer A+D+B0/cổng M. Hai ID → xếp hạng 963 nhãn, không chuyển thành nhị phân có/không tương tác.
 - **Đã có:** ETL, split/DataView, B0, smoothing alpha100, ChEMBL/DailyMed collectors và foundation contracts/releases/catalog/review/workbench. Kết quả trước phiên thiết kế: 61 test nhanh + 2 test thật đạt; xem [báo cáo thực thi](plan/Bao_cao_trien_khai_2026_10_17.md).
 - **Đã triển khai v3 bước 1–5 (2026-10-17):** predictor contract, readiness, evaluator top-k/NDCG + paired bootstrap song song + final lock, baseline qua cùng giao thức, DistMult trainer có resume. 88 test nhanh đạt. Chưa chạy search plan 06, chưa lock/test, chưa demo.
-- **Chặn trước plan 06:** DistMult theo đúng plan 05 (lr 0,001/0,003, chỉ âm thay nhãn) không học (macro AP = popularity). Thăm dò cho thấy cần lr lớn hơn và âm thay cặp train; chờ người dùng quyết thiết kế. Xem [chẩn đoán](analysis/2026-10-17/distmult_diagnostics.md).
-- **Tiếp theo:** chốt sampler/lr DistMult → đăng ký và chạy plan 06 → lô 20 ca → lock/final → demo.
+- **Protocol DistMult đã sửa và đăng ký (2026-10-17):** wd 0 (wd 1e-5 của Adam làm embedding sụp về 0), sampler trộn 5 âm thay nhãn + 5 âm thay cặp train cân 0,5/0,5, lr {0,01; 0,03} × dim {64,128}. Mốc macro AP là B0 alpha100, mốc NDCG@10 là B0 alpha0; demo tạm dùng alpha0. Thăm dò trước đã nhìn val, phải công bố. Đăng ký: `results/experiments/2026-10-17_distmult_search_v1_registration.json`; chẩn đoán: [distmult_diagnostics.md](analysis/2026-10-17/distmult_diagnostics.md).
+- **Search v1 xong (2026-10-17):** chọn d128 lr 0,01; ba seed macro AP 0,2852–0,2880, dưới alpha100 0,2890 (CI seed391 [−0,0074; +0,0013]); NDCG@10 0,412 so 0,526 của alpha0; micro AP 0,376 cao hơn mọi B0. **Không promote**; demo giữ B0 alpha0. Kết quả: `results/experiments/2026-10-17_search_v1_model_selection.json`.
+- **Tiếp theo:** lô 20 ca val (plan 06) → quyết định có thử một mở rộng plan 08 (ví dụ residual trên B0) hay không → lock/final → demo CLI với alpha0.
 - **Duyệt theo đợt:** một gói baseline/pilot và một gói bàn giao. Không chờ catalog 50 thuốc hoặc gold dược sĩ để huấn luyện bằng ID. Consumer safeguards giữ nguyên; không tự đổi pending thành approved.
 - **Mở rộng:** ChEMBL features/residual chỉ có đối chứng sau lõi; DailyMed/RAG/LLM, đơn nhiều thuốc và consumer hoãn. Không tự khởi động lại khung sáu tuần trước; plan mới ước lượng 8–14 ngày công, cần đo runtime.
 - **Tài liệu cũ:** plan/chi_tiet và bản tổng v2.1 lưu trữ hết hiệu lực hướng dẫn; docs/submission vẫn phản ánh thiết kế cũ, chỉ sửa khi tái sử dụng.
@@ -29,6 +30,8 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Search DistMult v1 theo đăng ký: chọn d128 lr 0,01; không đạt promotion (0/4 điều kiện metric); backend demo B0 alpha0 | Quy tắc plan 06 đã khóa trước khi chạy | Đã chạy; chưa chấm test |
+| 2026-10-17 | Sửa protocol DistMult trước search (thay dòng "Chờ quyết" cùng ngày): wd 0, sampler trộn cân loss, lr {0,01; 0,03}; guardrail NDCG so alpha0 (≥ 0,5208), macro AP so alpha100; demo tạm alpha0; numpy 2.5.3 được pin sau khi venv sạch tái lập giống hệt | Chẩn đoán wd (norm embedding → 0), đối chứng sampler cân loss (+0,054 macro AP, −0,074 NDCG); review người dùng | Đã đăng ký và chạy |
 | 2026-10-17 | Triển khai v3 bước 1–5; review thêm: compare chỉ val, tách config_id/model_release_id, lock cần worktree sạch, last/best checkpoint, bootstrap song song (kết quả không phụ thuộc số worker) | Theo plan đã duyệt và review 5 điểm | Đã làm; 88 test |
 | 2026-10-17 | Phát hiện: alpha100 thắng macro AP (+0,0175) nhưng thua NDCG@10 (−0,039) và mọi metric theo cặp; DistMult theo plan 05 kẹt ở saddle; âm chỉ thay nhãn không dạy macro AP | Paired bootstrap 1.000 resample; thăm dò val | Chờ quyết: baseline tham chiếu cho guardrail NDCG, lưới lr, sampler |
 | 2026-10-17 | Đồng bộ README, src/README và báo cáo thực thi 17/10 với v3 (báo cáo thành lịch sử); đo train support cho plan 02 | Các file này còn mô tả Graph RAG/consumer là hướng chính | Đã làm; chưa có data_readiness.json chính thức |
@@ -78,7 +81,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 ## Lệnh
 
-Môi trường: Python 3.12 trong `.venv` của dự án, phiên bản khóa trong `requirements.txt` (có RDKit). `build_report.py` cần thêm `python-docx`.
+Môi trường: Python 3.12 trong `.venv` của dự án, phiên bản khóa trong `requirements.txt` (có RDKit, numpy 2.5.3); huấn luyện cần thêm `requirements-train.txt` (torch 2.5.1). `build_report.py` cần thêm `python-docx`.
 
 ```bash
 # Cài đặt lần đầu
@@ -102,7 +105,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/
 # So sánh ghép cặp trên val (ID lấy từ results/models/); 1.000 resample khoảng 19 phút
 .venv/bin/python -m dsp391m.compare --base b0_alpha0-db2b9c960215 --cand b0_alpha100-60eb89cd5f55 --bootstrap 1000
 # DistMult (cần .venv/bin/pip install -r requirements-train.txt); thư mục --out phải mới, hoặc --resume
-.venv/bin/python -m dsp391m.training.trainer --dim 64 --lr 0.001 --seed 391 --out results/runs/NEW_RUN_ID
+.venv/bin/python -m dsp391m.training.trainer --dim 64 --lr 0.01 --seed 391 --negatives mixed --weight-decay 0 --out results/runs/NEW_RUN_ID
+# Search đã đăng ký (4 cấu hình + 2 seed + compare), không chấm test
+.venv/bin/python analysis/2026-10-17/run_distmult_search_v1.py
 # Test cuối: chỉ sau khi chọn model trên val và commit sạch (lock từ chối worktree bẩn)
 .venv/bin/python -m dsp391m.final lock --models ID ... --reference ID --selection "..." --out results/final/locks/NEW.json
 .venv/bin/python -m dsp391m.final run --lock results/final/locks/NEW.json --run-id NEW_RUN
@@ -141,7 +146,7 @@ Khi viết báo cáo, phân biệt **"thống kê bài gốc Decagon"** (645 thu
 - **Hạn chế của nhãn Decagon thấy qua demo:** nhãn lẫn chỉ định và bệnh nền của nhóm bệnh nhân (hyperlipaemia xuất hiện ở mọi cặp có simvastatin), tên nhãn đôi khi lạ (C0011860 có tên "Mod"). Xếp theo số cặp đẩy nhãn chung chung lên đầu; xếp theo mức trội đẩy nhãn hiếm, có thể là nhiễu. Chưa có cách xếp hạng đã kiểm chứng; cần dược sĩ và nguồn GĐ3.
 - **B0 trên val chính thức** (`results/val/`, 6.347 cặp × 963 nhãn, tỷ lệ dương 7,49%): popularity macro AP 0,0749; **per-drug macro AP 0,2714** (CI bootstrap percentile [0,2703; 0,2797], lệch lên do cặp lặp khi lấy mẫu), micro AP 0,3508, macro AUROC 0,8360. Theo nhóm: nhãn hiếm/trung bình/phổ biến 0,178/0,246/0,391; cặp có 0/1/2 thuốc có target 0,266/0,274/0,305.
 - **Baseline v3 trên val** (evaluator schema 2, `results/releases/baselines/2026-10-17_v1.json`): popularity / B0 alpha0 / alpha100: macro AP 0,0749 / 0,2714 / 0,2890; NDCG@10 0,405 / 0,526 / 0,487; pair AP 0,270 / 0,355 / 0,324. Score float32 lệch macro AP dưới 1e-7 so float64.
-- **Runtime trên Apple M4:** chấm một model val khoảng 20 giây; compare 1.000 resample: 1 worker khoảng 24 phút, 6 worker khoảng 8,4 phút; DistMult khoảng 11 giây/epoch (dim 64), 16 giây/epoch (dim 128), peak RSS khoảng 1,9 GB. `.venv` có numpy 2.5.3, lệch `requirements.txt` (1.26.4) từ trước phiên này; mọi số v3 đo với 2.5.3.
+- **Runtime trên Apple M4:** chấm một model val khoảng 20 giây; compare 1.000 resample: 1 worker khoảng 24 phút, 6 worker khoảng 8,4 phút; DistMult khoảng 11 giây/epoch (dim 64), 16 giây/epoch (dim 128), peak RSS khoảng 1,9 GB. Môi trường: numpy 2.5.3 (đã pin; venv sạch tái lập giống hệt baseline và trainer, xem `results/env/2026-10-17_verification.md`). DistMult trộn âm khoảng 25–35 giây/epoch; một run d128 khoảng 13–15 phút (22–27 epoch), peak RSS khoảng 2,1 GB.
 - **Target Decagon dạng panel rộng:** 83/284 thuốc có target có hơn 100 target và gần như dùng chung một panel khoảng 158 gene GPCR (Jaccard trung vị 0,88; 20 thuốc có bộ target giống hệt nhau; gồm cả atenolol, amitriptyline, salbutamol, calcium ion). Target của các thuốc này không đặc hiệu: `lookup` gắn `low_specificity` và không diễn giải "target chung".
 - **DailyMed** (8 thuốc mẫu, 129 đoạn): tìm được tương tác thật mà nhãn Decagon không nói được (nhãn fluoxetine: kéo dài thời gian bán thải của diazepam; nhãn omeprazole: diazepam là cơ chất CYP2C19). Nhãn chọn tự động có thể là nhãn OTC không có mục Drug Interactions (aspirin). Chỉ khớp tên thuốc nguyên từ, chưa bắt được cách nhắc theo nhóm ("strong CYP3A4 inhibitors").
 - **Độ trễ GĐ2** (300 đơn ngẫu nhiên, k = 3/5/10): tải chỉ mục 0,7 giây; truy vấn p50 15 ms, p95 228 ms, tối đa 687 ms. Đạt mục tiêu p95 tra cứu dưới 1 giây.

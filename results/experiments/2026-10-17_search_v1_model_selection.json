@@ -1,0 +1,262 @@
+{
+  "content_hash": "aa338443bdac67a53549c4ea655e99775f77f00340f0cd43e19a9230a7d20f0e",
+  "payload": {
+    "checks": {
+      "all_seeds_macro_ap_delta_gt_0": false,
+      "mean_macro_ap_delta_ge_0.005": false,
+      "mean_ndcg10_ge_alpha0_minus_0.005": false,
+      "seed391_ci95_macro_ap_lower_gt_0": false,
+      "three_seeds_completed": true
+    },
+    "chosen_config": {
+      "dim": 128,
+      "lr": 0.01
+    },
+    "comparisons": {
+      "vs_macro_ref": "/Users/nguyenchidung/Documents/Project/DSP391m/results/val/comparisons/20261017T065109Z-a08ef0.json",
+      "vs_ndcg_ref": "/Users/nguyenchidung/Documents/Project/DSP391m/results/val/comparisons/20261017T065516Z-2fa27c.json"
+    },
+    "created_at": "2026-10-17T06:55:16+00:00",
+    "demo_backend": "b0_alpha0-db2b9c960215",
+    "experiment": "distmult_search_v1",
+    "git_commit": "6c87c1d5a0f417e678d051aef64c0a7f618ea300",
+    "grid_seed391": [
+      {
+        "best_epoch": 10,
+        "dim": 64,
+        "epochs_run": 16,
+        "lr": 0.01,
+        "model_release_id": "distmult_d64-5f8f829ce880",
+        "run_dir": "results/runs/2026-10-17_search_v1_d64_lr0.01_s391",
+        "runtime": {
+          "data_load_s": 1.2,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 1901.0,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 408.0
+        },
+        "seed": 391,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.2638031913676678,
+          "micro_ap": 0.3672272337712072,
+          "ndcg@10": 0.41017841245002595,
+          "pair_ap": 0.28958987355784094,
+          "precision@5": 0.41966283283441,
+          "recall@10": 0.07336174766352645
+        },
+        "wall_s": 410.8
+      },
+      {
+        "best_epoch": 13,
+        "dim": 64,
+        "epochs_run": 19,
+        "lr": 0.03,
+        "model_release_id": "distmult_d64-56446f8ff89d",
+        "run_dir": "results/runs/2026-10-17_search_v1_d64_lr0.03_s391",
+        "runtime": {
+          "data_load_s": 1.2,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 1841.7,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 521.1
+        },
+        "seed": 391,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.23659544219952028,
+          "micro_ap": 0.33585120726548445,
+          "ndcg@10": 0.3730665290569294,
+          "pair_ap": 0.26838526816661185,
+          "precision@5": 0.37649283125886246,
+          "recall@10": 0.06586657234030424
+        },
+        "wall_s": 524.3
+      },
+      {
+        "best_epoch": 20,
+        "dim": 128,
+        "epochs_run": 26,
+        "lr": 0.01,
+        "model_release_id": "distmult_d128-dbd218398318",
+        "run_dir": "results/runs/2026-10-17_search_v1_d128_lr0.01_s391",
+        "runtime": {
+          "data_load_s": 1.21,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 2116.3,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 894.9
+        },
+        "seed": 391,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.2862895267903,
+          "micro_ap": 0.3759434229195787,
+          "ndcg@10": 0.4127727803184401,
+          "pair_ap": 0.29834389224218016,
+          "precision@5": 0.4179927524814873,
+          "recall@10": 0.0727143913577437
+        },
+        "wall_s": 898.1
+      },
+      {
+        "best_epoch": 13,
+        "dim": 128,
+        "epochs_run": 19,
+        "lr": 0.03,
+        "model_release_id": "distmult_d128-48ebb0762217",
+        "run_dir": "results/runs/2026-10-17_search_v1_d128_lr0.03_s391",
+        "runtime": {
+          "data_load_s": 1.22,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 2120.3,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 670.1
+        },
+        "seed": 391,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.24463834323485412,
+          "micro_ap": 0.3322015404330242,
+          "ndcg@10": 0.3706231485655429,
+          "pair_ap": 0.2677259762590976,
+          "precision@5": 0.3777532692610683,
+          "recall@10": 0.06441212917822255
+        },
+        "wall_s": 673.4
+      }
+    ],
+    "macro_ap_delta_per_seed": [
+      -0.002663623211937971,
+      -0.0037441802809841107,
+      -0.0009894928632323552
+    ],
+    "mean_ndcg10": 0.41218745075564867,
+    "noninferiority_ndcg_claim_allowed": false,
+    "note": "Thăm dò trước đó đã nhìn val; xem registration.status_of_prior_work. Không chấm test.",
+    "promoted": false,
+    "references": {
+      "macro_ap": {
+        "id": "b0_alpha100-60eb89cd5f55",
+        "value": 0.288953150002238
+      },
+      "ndcg10": {
+        "id": "b0_alpha0-db2b9c960215",
+        "value": 0.5258083154253459
+      }
+    },
+    "registration": "results/experiments/2026-10-17_distmult_search_v1_registration.json",
+    "registration_hash": "008a30564a4a96cedd3034bb76d96334710f3fc3329a5d8d07e515eec4c6b0a1",
+    "seed391_ci95": {
+      "macro_ap_delta": [
+        -0.007392490772448421,
+        0.0012790823487803039
+      ],
+      "ndcg10_delta_vs_alpha0": [
+        -0.1191175918719924,
+        -0.10674357134268772
+      ]
+    },
+    "seeds": [
+      {
+        "best_epoch": 20,
+        "dim": 128,
+        "epochs_run": 26,
+        "lr": 0.01,
+        "model_release_id": "distmult_d128-dbd218398318",
+        "run_dir": "results/runs/2026-10-17_search_v1_d128_lr0.01_s391",
+        "runtime": {
+          "data_load_s": 1.21,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 2116.3,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 894.9
+        },
+        "seed": 391,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.2862895267903,
+          "micro_ap": 0.3759434229195787,
+          "ndcg@10": 0.4127727803184401,
+          "pair_ap": 0.29834389224218016,
+          "precision@5": 0.4179927524814873,
+          "recall@10": 0.0727143913577437
+        },
+        "wall_s": 898.1
+      },
+      {
+        "best_epoch": 16,
+        "dim": 128,
+        "epochs_run": 22,
+        "lr": 0.01,
+        "model_release_id": "distmult_d128-b53b6970f80a",
+        "run_dir": "results/runs/2026-10-17_search_v1_d128_lr0.01_s392",
+        "runtime": {
+          "data_load_s": 1.2,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 2147.9,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 790.4
+        },
+        "seed": 392,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.28520896972125387,
+          "micro_ap": 0.3753158875821665,
+          "ndcg@10": 0.4115117201623358,
+          "pair_ap": 0.2972820159841972,
+          "precision@5": 0.4202930518355129,
+          "recall@10": 0.07195171422968022
+        },
+        "wall_s": 793.6
+      },
+      {
+        "best_epoch": 21,
+        "dim": 128,
+        "epochs_run": 27,
+        "lr": 0.01,
+        "model_release_id": "distmult_d128-78acee09798d",
+        "run_dir": "results/runs/2026-10-17_search_v1_d128_lr0.01_s393",
+        "runtime": {
+          "data_load_s": 1.22,
+          "device": "cpu",
+          "numpy": "2.5.3",
+          "peak_rss_mb": 2011.4,
+          "threads": 4,
+          "torch": "2.5.1",
+          "total_s": 833.5
+        },
+        "seed": 393,
+        "status": "done",
+        "stopped": "early_stopping",
+        "val": {
+          "macro_ap": 0.2879636571390056,
+          "micro_ap": 0.37850910248055986,
+          "ndcg@10": 0.41227785178617016,
+          "pair_ap": 0.29875867222061914,
+          "precision@5": 0.41704742397983297,
+          "recall@10": 0.0726177360961993
+        },
+        "wall_s": 836.5
+      }
+    ]
+  }
+}

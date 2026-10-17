@@ -52,3 +52,4 @@ Mục tiêu: phát hiện nhãn bệnh nền, thuốc mơ hồ, dự đoán gầ
 
 Bàn giao: experiment registry (run ID, config/hash, trạng thái, thời gian), bảng so sánh, 20 ca và model_selection.json. Có thể review một lần cả lô thay vì duyệt từng bước.
 
+Kết quả search v1 (2026-10-17): chọn d128 lr 0,01; promotion **không đạt** (macro AP ba seed đều dưới alpha100, CI seed391 [−0,0074; +0,0013]; mean NDCG@10 0,412 < 0,5208). Backend demo: B0 alpha0. Chi tiết: [chẩn đoán mục 6](../../analysis/2026-10-17/distmult_diagnostics.md). Lô 20 ca chưa làm.

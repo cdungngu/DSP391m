@@ -1,0 +1,158 @@
+{
+  "content_hash": "45703ba99dadd641d4054e0857aeca5ad6a937f14c7870b31d158945d479b101",
+  "payload": {
+    "config": {
+      "batch_size": 2048,
+      "device": "cpu",
+      "dim": 128,
+      "loss_version": "pos_plus_half_label_half_pair_v1",
+      "lr": 0.01,
+      "max_epochs": 50,
+      "min_delta": 0.0001,
+      "model": "distmult",
+      "n_neg": 5,
+      "n_pair_neg": 5,
+      "negatives": "mixed",
+      "patience": 5,
+      "seed": 391,
+      "weight_decay": 0.0
+    },
+    "config_id": "distmult_d128-cbf02d8e",
+    "created_at": "2026-10-17T06:08:11+00:00",
+    "git_commit": "6c87c1d5a0f417e678d051aef64c0a7f618ea300",
+    "groups": {
+      "label_freq_common": {
+        "macro_ap": 0.4249023989677783,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_mid": {
+        "macro_ap": 0.26272777704060546,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_rare": {
+        "macro_ap": 0.17123840436251633,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "pair_min_train_degree_high": {
+        "macro_ap": 0.3423585154807869,
+        "n_pairs": 2117,
+        "ndcg@10": 0.5653444478894706,
+        "pair_ap": 0.3897348669191652,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_low": {
+        "macro_ap": 0.24016938703947666,
+        "n_pairs": 2194,
+        "ndcg@10": 0.2899469371428757,
+        "pair_ap": 0.23018105246048556,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_mid": {
+        "macro_ap": 0.2626245783051831,
+        "n_pairs": 2036,
+        "ndcg@10": 0.38648873300965664,
+        "pair_ap": 0.2767695194965321,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_n_labels_high": {
+        "macro_ap": 0.3665751496013807,
+        "n_pairs": 2134,
+        "ndcg@10": 0.6674621535303036,
+        "pair_ap": 0.4585972246113197,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_low": {
+        "macro_ap": 0.10580215582670338,
+        "n_pairs": 2097,
+        "ndcg@10": 0.17503298955812613,
+        "pair_ap": 0.15003624243134434,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_mid": {
+        "macro_ap": 0.20016642002730148,
+        "n_pairs": 2116,
+        "ndcg@10": 0.3915219385369003,
+        "pair_ap": 0.28370331113517594,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pairs_both_have_targets": {
+        "macro_ap": 0.3128743935243857,
+        "n_pairs": 1391,
+        "ndcg@10": 0.4477161071551975
+      },
+      "pairs_no_targets": {
+        "macro_ap": 0.27746019712455305,
+        "n_pairs": 1782,
+        "ndcg@10": 0.3831023927252465
+      },
+      "pairs_one_has_targets": {
+        "macro_ap": 0.28794677029086374,
+        "n_pairs": 3174,
+        "ndcg@10": 0.4141169715790392
+      }
+    },
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "metrics": {
+      "labels_scored": 963,
+      "macro_ap": 0.2862895267903,
+      "macro_auroc": 0.8409084664164468,
+      "micro_ap": 0.3759434229195787,
+      "ndcg@10": 0.4127727803184401,
+      "pair_ap": 0.29834389224218016,
+      "pairs_with_positive": 6347,
+      "precision@10": 0.4041121789821963,
+      "precision@5": 0.4179927524814873,
+      "recall@10": 0.0727143913577437,
+      "recall@5": 0.0378156963981399,
+      "undefined_reason": null
+    },
+    "model": "distmult_d128",
+    "model_release_id": "distmult_d128-dbd218398318",
+    "n_labels": 963,
+    "n_pairs": 6347,
+    "pairs_hash": "3922d2521f4fa6d8",
+    "positive_rate": 0.0749078762814003,
+    "purpose": "selection",
+    "run_id": "20261017T060826Z-b5e031",
+    "schema_version": 2,
+    "score_kind": "bilinear_logit",
+    "seconds": 894.9,
+    "shortcut": {
+      "k": 10,
+      "mean_overlap_popularity_topk": 0.044320151252560266,
+      "mean_overlap_single_drug_topk_union": 0.19330392311328187,
+      "share_pairs_topk_inside_single_drug_union": 0.0
+    },
+    "split": "val",
+    "training_run": "results/runs/2026-10-17_search_v1_d128_lr0.01_s391"
+  }
+}
