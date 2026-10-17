@@ -51,12 +51,13 @@ Checkpoint: weights, optimizer, epoch, RNG states, config, drug/CUI maps, source
 
 ## Nghiệm thu
 
-- [ ] Tính tay score và đối xứng; gradients hữu hạn.
-- [ ] Overfit fixture nhỏ chỉ để kiểm trainer, không tuyên bố chất lượng.
-- [ ] Sampler không positive collision, không truy cập val/test labels.
-- [ ] Dừng đúng patience; chọn best không phải epoch cuối.
-- [ ] Load checkpoint cho cùng scores; mismatch bị chặn.
-- [ ] Báo runtime, peak memory, số epoch thực và checkpoint mỗi seed.
+- [x] Tính tay score và đối xứng; gradients hữu hạn.
+- [x] Overfit fixture nhỏ chỉ để kiểm trainer, không tuyên bố chất lượng.
+- [x] Sampler không positive collision, không truy cập val/test labels.
+- [x] Dừng đúng patience; chọn best không phải epoch cuối.
+- [x] Load checkpoint cho cùng scores; mismatch bị chặn.
+- [x] Báo runtime, peak memory, số epoch thực và checkpoint mỗi seed.
 
 Rủi ro chính: học lại tần suất, nhãn thiếu tạo false negatives, rank thấp không đủ biểu diễn, tuning overfit val. Giải quyết bằng baseline mạnh và protocol file06 trước khi thêm kiến trúc.
 
+Kết quả 2026-10-17: code trainer/sampler/checkpoint và test đã có; runtime khoảng 11 giây/epoch (dim 64) trên M4 CPU. Cấu hình thiết kế (lr 0,001/0,003, chỉ âm thay nhãn) không học trên dữ liệu thật; xem [chẩn đoán](../../analysis/2026-10-17/distmult_diagnostics.md). Cần sửa lưới lr và sampler trước khi đăng ký search plan 06.

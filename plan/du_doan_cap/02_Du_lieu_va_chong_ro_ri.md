@@ -43,13 +43,13 @@ Dense train boolean khoảng 42,8 triệu ô; có thể dùng CSR để tiết k
 
 ## Kiểm tra trước huấn luyện
 
-- [ ] Không trùng canonical pair giữa train/val/test; không self-pair.
-- [ ] Hash split/vocab đúng; schema và ID order đúng.
-- [ ] Thống kê train_degree=0, nhãn train_positive=0 và phân bố số nhãn mỗi cặp.
-- [ ] Hoán đổi nhãn held-out không đổi B0 fit hoặc train batches.
-- [ ] Train sampler không import lookup hay đọc raw combo để lọc nhãn toàn snapshot.
-- [ ] Khi source/hash sai, fail closed; không fallback sang snapshot khác.
-- [ ] Ghi báo cáo data_readiness với counts, phạm vi và các ngoại lệ.
+- [x] Không trùng canonical pair giữa train/val/test; không self-pair.
+- [x] Hash split/vocab đúng; schema và ID order đúng.
+- [x] Thống kê train_degree=0, nhãn train_positive=0 và phân bố số nhãn mỗi cặp.
+- [x] Hoán đổi nhãn held-out không đổi B0 fit hoặc train batches.
+- [x] Train sampler không import lookup hay đọc raw combo để lọc nhãn toàn snapshot.
+- [x] Khi source/hash sai, fail closed; không fallback sang snapshot khác.
+- [x] Ghi báo cáo data_readiness với counts, phạm vi và các ngoại lệ.
 
 Đo sơ bộ 2026-10-17 (chưa phải báo cáo readiness): 645/645 thuốc có cặp train, 0 cặp val/test chứa thuốc chưa học, 963/963 nhãn có dương trong train. Nếu kết quả này giữ nguyên trong data_readiness.json thì nhánh fallback B0 của file01 không phát sinh.
 

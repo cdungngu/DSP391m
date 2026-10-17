@@ -1,0 +1,144 @@
+{
+  "content_hash": "ea7ddb702544866afa14e68270de29a1fab124e2992fd40622a9045ce50e1c53",
+  "payload": {
+    "config": {
+      "model": "b0",
+      "variant": "popularity"
+    },
+    "config_id": "b0_popularity-b6e07902",
+    "created_at": "2026-10-17T04:35:46+00:00",
+    "git_commit": "a02a5beb364072d90fbccddf47ecb3b287dd916b",
+    "groups": {
+      "label_freq_common": {
+        "macro_ap": 0.1611613306652099,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_mid": {
+        "macro_ap": 0.048077267598153915,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_rare": {
+        "macro_ap": 0.01548503058083712,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "pair_min_train_degree_high": {
+        "macro_ap": 0.12750512466209604,
+        "n_pairs": 2117,
+        "ndcg@10": 0.5297812454469938,
+        "pair_ap": 0.34978460922504606,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_low": {
+        "macro_ap": 0.03731626025524157,
+        "n_pairs": 2194,
+        "ndcg@10": 0.29757015617663507,
+        "pair_ap": 0.20275690135818744,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_mid": {
+        "macro_ap": 0.060852219753675794,
+        "n_pairs": 2036,
+        "ndcg@10": 0.3920578140288543,
+        "pair_ap": 0.2607198092807147,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_n_labels_high": {
+        "macro_ap": 0.15012588550501646,
+        "n_pairs": 2134,
+        "ndcg@10": 0.5826751671155896,
+        "pair_ap": 0.3856983095600549,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_low": {
+        "macro_ap": 0.01953469099694089,
+        "n_pairs": 2097,
+        "ndcg@10": 0.22610062174964174,
+        "pair_ap": 0.15982833103588268,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_mid": {
+        "macro_ap": 0.054787010363569914,
+        "n_pairs": 2116,
+        "ndcg@10": 0.4041038365746235,
+        "pair_ap": 0.2636710719382881,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pairs_both_have_targets": {
+        "macro_ap": 0.08898772930566101,
+        "n_pairs": 1391,
+        "ndcg@10": 0.43173281630902494
+      },
+      "pairs_no_targets": {
+        "macro_ap": 0.06706560237193675,
+        "n_pairs": 1782,
+        "ndcg@10": 0.3864662223303375
+      },
+      "pairs_one_has_targets": {
+        "macro_ap": 0.07314034526373095,
+        "n_pairs": 3174,
+        "ndcg@10": 0.40435487490455435
+      }
+    },
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "metrics": {
+      "labels_scored": 963,
+      "macro_ap": 0.0749078762814003,
+      "macro_auroc": 0.5,
+      "micro_ap": 0.22634912859924974,
+      "ndcg@10": 0.4053325238105515,
+      "pair_ap": 0.2703904507649001,
+      "pairs_with_positive": 6347,
+      "precision@10": 0.3927682369623444,
+      "precision@5": 0.41241531432172684,
+      "recall@10": 0.07921512493930889,
+      "recall@5": 0.043654579726120496,
+      "undefined_reason": null
+    },
+    "model": "b0_popularity",
+    "model_release_id": "b0_popularity-c9cb1df52e07",
+    "n_labels": 963,
+    "n_pairs": 6347,
+    "pairs_hash": "3922d2521f4fa6d8",
+    "positive_rate": 0.0749078762814003,
+    "run_id": "20261017T043555Z-5593cb",
+    "schema_version": 2,
+    "score_kind": "frequency_sum",
+    "seconds": 12.3,
+    "shortcut": {
+      "k": 10,
+      "mean_overlap_popularity_topk": 1.0,
+      "mean_overlap_single_drug_topk_union": 0.683504017646132,
+      "share_pairs_topk_inside_single_drug_union": 0.03340160705845281
+    },
+    "split": "val"
+  }
+}

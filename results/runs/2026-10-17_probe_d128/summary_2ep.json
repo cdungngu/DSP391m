@@ -1,0 +1,86 @@
+{
+  "content_hash": "7ceb528dbd61d9a1403b3b8d55971327c9e73b7b74fe9223aca2a7883d799a71",
+  "payload": {
+    "code": "943b2088982273beae4381084b35c543764659f6",
+    "config": {
+      "batch_size": 2048,
+      "device": "cpu",
+      "dim": 128,
+      "loss_version": "pos_plus_mean_neg_v1",
+      "lr": 0.001,
+      "max_epochs": 50,
+      "min_delta": 0.0001,
+      "model": "distmult",
+      "n_neg": 5,
+      "patience": 5,
+      "seed": 391,
+      "weight_decay": 1e-05
+    },
+    "created_at": "2026-10-17T05:13:12+00:00",
+    "evaluation_run": "/Users/nguyenchidung/Documents/Project/DSP391m/results/val/distmult_d128-5449a82c8b23/20261017T051312Z-b4b2e2.json",
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "model_release_id": "distmult_d128-5449a82c8b23",
+    "purpose": "runtime_probe",
+    "runtime": {
+      "data_load_s": 1.21,
+      "device": "cpu",
+      "numpy": "2.5.3",
+      "peak_rss_mb": 1932.9,
+      "threads": 4,
+      "torch": "2.5.1",
+      "total_s": 43.1
+    },
+    "schema_version": 1,
+    "state": {
+      "best_epoch": 0,
+      "best_metric": 0.0749078762814003,
+      "history": [
+        {
+          "epoch": 0,
+          "loss": 1.3862944459719677,
+          "positives": 3198361,
+          "positives_with_fewer_negatives": 0,
+          "sampler_s": 5.81,
+          "train_s": 10.07,
+          "val_macro_ap": 0.0749078762814003,
+          "val_s": 0.54
+        },
+        {
+          "epoch": 1,
+          "loss": 1.3862944841384888,
+          "positives": 3198361,
+          "positives_with_fewer_negatives": 0,
+          "sampler_s": 5.74,
+          "train_s": 9.34,
+          "val_macro_ap": 0.0749078762814003,
+          "val_s": 0.6
+        }
+      ],
+      "next_epoch": 2,
+      "patience_counter": 1,
+      "stopped": null
+    },
+    "val_metrics": {
+      "labels_scored": 963,
+      "macro_ap": 0.0749078762814003,
+      "macro_auroc": 0.499999884078857,
+      "micro_ap": 0.07490787628140029,
+      "ndcg@10": 0.13407355031212664,
+      "pair_ap": 0.0749078762814003,
+      "pairs_with_positive": 6347,
+      "precision@10": 0.10979990546714985,
+      "precision@5": 0.14075941389632898,
+      "recall@10": 0.01646792548736048,
+      "recall@5": 0.010840341402997795,
+      "undefined_reason": null
+    }
+  }
+}

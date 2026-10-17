@@ -34,11 +34,12 @@ Thí nghiệm phụ rẻ: hoán vị partner trong một tập truy vấn val c�
 
 ## Nghiệm thu
 
-- [ ] Alpha0 tái tạo số cũ trong tolerance ghi rõ.
-- [ ] Popularity và B0 đối xứng, fit train-only, fallback đúng.
-- [ ] Bảng val mới có macro/micro AP, per-pair AP, top-k, CI delta.
-- [ ] Artifact không ghi đè E08 cũ; metadata đủ nguồn/split/alpha.
-- [ ] Không dùng CI đã lưu cho B0 gốc như CI của alpha100.
+- [x] Alpha0 tái tạo số cũ trong tolerance ghi rõ.
+- [x] Popularity và B0 đối xứng, fit train-only, fallback đúng.
+- [x] Bảng val mới có macro/micro AP, per-pair AP, top-k, CI delta.
+- [x] Artifact không ghi đè E08 cũ; metadata đủ nguồn/split/alpha.
+- [x] Không dùng CI đã lưu cho B0 gốc như CI của alpha100.
 
 Bàn giao: baseline comparison và model release làm đối chứng mạnh nhất. B0 alpha100 là baseline tham chiếu mặc định cho quyết định DistMult.
 
+Kết quả 2026-10-17: bảng val và CI delta đã có ([chẩn đoán](../../analysis/2026-10-17/distmult_diagnostics.md)). alpha100 thua alpha0 ở NDCG@10 (−0,039, CI không chứa 0): guardrail NDCG của file06 so với alpha100 là mốc thấp hơn alpha0; cần xác nhận trước plan 06. Lô 20 ca chưa làm (cần DistMult).

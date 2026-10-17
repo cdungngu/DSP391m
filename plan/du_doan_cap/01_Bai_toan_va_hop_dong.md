@@ -35,9 +35,9 @@ ID ngoài snapshot, A=B, thiếu một ID hoặc top_k không hợp lệ → l�
 
 ## Tiêu chí nghiệm thu
 
-- [ ] Fixture đảo thứ tự A/B cho cùng kết quả.
-- [ ] ID và CUI gắn với artifact hash, không phụ thuộc vị trí DataFrame tình cờ.
-- [ ] 963 điểm hữu hạn, thứ tự ổn định, save/load không đổi kết quả trong tolerance công bố.
+- [x] Fixture đảo thứ tự A/B cho cùng kết quả.
+- [x] ID và CUI gắn với artifact hash, không phụ thuộc vị trí DataFrame tình cờ.
+- [x] 963 điểm hữu hạn, thứ tự ổn định, save/load không đổi kết quả trong tolerance công bố.
 - [ ] Output không có phần trăm nguy cơ hay nhãn “không tương tác”.
 - [ ] Ví dụ scored và mọi lỗi biên được lưu như fixture, không nhầm với dữ liệu y khoa.
 

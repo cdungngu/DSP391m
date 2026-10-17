@@ -1,0 +1,145 @@
+{
+  "content_hash": "47d409bf2ea4b71483370e138e5c39bc86de223e3d1cd600d51077f6e297edd6",
+  "payload": {
+    "config": {
+      "alpha": 100.0,
+      "model": "b0",
+      "variant": "per_drug"
+    },
+    "config_id": "b0_alpha100-d374d598",
+    "created_at": "2026-10-17T04:36:21+00:00",
+    "git_commit": "a02a5beb364072d90fbccddf47ecb3b287dd916b",
+    "groups": {
+      "label_freq_common": {
+        "macro_ap": 0.39716353080386096,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_mid": {
+        "macro_ap": 0.2596100056672947,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "label_freq_rare": {
+        "macro_ap": 0.21008591353555833,
+        "n_labels": 321,
+        "n_undefined": 0
+      },
+      "pair_min_train_degree_high": {
+        "macro_ap": 0.3612306928957878,
+        "n_pairs": 2117,
+        "ndcg@10": 0.6133319849035296,
+        "pair_ap": 0.4030741851057108,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_low": {
+        "macro_ap": 0.23186040321593765,
+        "n_pairs": 2194,
+        "ndcg@10": 0.37288469829807114,
+        "pair_ap": 0.2550592744218696,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_min_train_degree_mid": {
+        "macro_ap": 0.2456333967847355,
+        "n_pairs": 2036,
+        "ndcg@10": 0.47835861565049553,
+        "pair_ap": 0.3151259856763005,
+        "train_edges": [
+          110.0,
+          178.0
+        ]
+      },
+      "pair_n_labels_high": {
+        "macro_ap": 0.3820118746339966,
+        "n_pairs": 2134,
+        "ndcg@10": 0.6871963549431767,
+        "pair_ap": 0.44955563381969427,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_low": {
+        "macro_ap": 0.11914896891739436,
+        "n_pairs": 2097,
+        "ndcg@10": 0.2800081663929377,
+        "pair_ap": 0.19993126921761514,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pair_n_labels_mid": {
+        "macro_ap": 0.20239163829485618,
+        "n_pairs": 2116,
+        "ndcg@10": 0.489989052550293,
+        "pair_ap": 0.31942202772530853,
+        "train_edges": [
+          33.0,
+          79.0
+        ]
+      },
+      "pairs_both_have_targets": {
+        "macro_ap": 0.32234501477374045,
+        "n_pairs": 1391,
+        "ndcg@10": 0.5139648378004649
+      },
+      "pairs_no_targets": {
+        "macro_ap": 0.28056172634579957,
+        "n_pairs": 1782,
+        "ndcg@10": 0.4699254270064683
+      },
+      "pairs_one_has_targets": {
+        "macro_ap": 0.2903178161931455,
+        "n_pairs": 3174,
+        "ndcg@10": 0.4846057911988582
+      }
+    },
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "metrics": {
+      "labels_scored": 963,
+      "macro_ap": 0.288953150002238,
+      "macro_auroc": 0.8226898573602546,
+      "micro_ap": 0.31310777630037256,
+      "ndcg@10": 0.4869183837358042,
+      "pair_ap": 0.3236969599475846,
+      "pairs_with_positive": 6347,
+      "precision@10": 0.46365211911139126,
+      "precision@5": 0.5026941862297148,
+      "recall@10": 0.09593471078819182,
+      "recall@5": 0.05409292050307448,
+      "undefined_reason": null
+    },
+    "model": "b0_alpha100",
+    "model_release_id": "b0_alpha100-60eb89cd5f55",
+    "n_labels": 963,
+    "n_pairs": 6347,
+    "pairs_hash": "3922d2521f4fa6d8",
+    "positive_rate": 0.0749078762814003,
+    "run_id": "20261017T043635Z-77037e",
+    "schema_version": 2,
+    "score_kind": "frequency_sum",
+    "seconds": 19.2,
+    "shortcut": {
+      "k": 10,
+      "mean_overlap_popularity_topk": 0.7186544824326454,
+      "mean_overlap_single_drug_topk_union": 0.8784149992122263,
+      "share_pairs_topk_inside_single_drug_union": 0.29053095950842917
+    },
+    "split": "val"
+  }
+}

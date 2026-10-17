@@ -34,12 +34,12 @@ Tạo evaluation_lock.json bất biến bằng releases sau khi xem val, trướ
 
 ## Kiểm thử và bàn giao
 
-- [ ] Ma trận nhỏ tính tay AP/top-k/NDCG; ties và thứ tự CUI.
-- [ ] Không dương, một lớp, tập rỗng, score không hữu hạn.
-- [ ] Score giống nhau → paired delta và CI bằng 0.
-- [ ] Đổi thứ tự cặp/nhãn được phát hiện; resample tái lập.
-- [ ] Lock mismatch, ghi đè run và test không lock đều bị từ chối.
-- [ ] Kết quả cũ vẫn đọc được, run mới có schema version.
+- [x] Ma trận nhỏ tính tay AP/top-k/NDCG; ties và thứ tự CUI.
+- [x] Không dương, một lớp, tập rỗng, score không hữu hạn.
+- [x] Score giống nhau → paired delta và CI bằng 0.
+- [x] Đổi thứ tự cặp/nhãn được phát hiện; resample tái lập.
+- [x] Lock mismatch, ghi đè run và test không lock đều bị từ chối.
+- [x] Kết quả cũ vẫn đọc được, run mới có schema version.
 
 Output: evaluation protocol, metrics module dùng chung, validation comparison và final runner. Chưa mở test trong lúc phát triển các phần này; tests sử dụng fixture.
 

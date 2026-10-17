@@ -1,0 +1,174 @@
+{
+  "content_hash": "54a51aaa0153d1fc63b805a784631779b9f046684cb3c50886ffb5eda53dc7c4",
+  "payload": {
+    "created_at": "2026-10-17T05:13:27+00:00",
+    "git_commit": "943b2088982273beae4381084b35c543764659f6",
+    "models": {
+      "b0_alpha0-db2b9c960215": {
+        "config": {
+          "alpha": 0.0,
+          "model": "b0",
+          "variant": "per_drug"
+        },
+        "shortcut": {
+          "k": 10,
+          "mean_overlap_popularity_topk": 0.5425397825744446,
+          "mean_overlap_single_drug_topk_union": 0.9231763037655586,
+          "share_pairs_topk_inside_single_drug_union": 0.47187647707578384
+        },
+        "val_metrics": {
+          "macro_ap": 0.27143083363863374,
+          "macro_auroc": 0.8360128442341743,
+          "micro_ap": 0.3507798162849932,
+          "ndcg@10": 0.5258083154253459,
+          "pair_ap": 0.3545943670856112,
+          "precision@10": 0.5009295730266268,
+          "precision@5": 0.5427761146998582,
+          "recall@10": 0.10766084961156389,
+          "recall@5": 0.06082956416575319
+        },
+        "val_run": "results/val/b0_alpha0-db2b9c960215/20261017T043614Z-0d8cad.json",
+        "weights_sha256": "4a0be3f4e4986814a17efca88b67d9e9e271fcc3c092e4e224609566dc897dd2"
+      },
+      "b0_alpha100-60eb89cd5f55": {
+        "config": {
+          "alpha": 100.0,
+          "model": "b0",
+          "variant": "per_drug"
+        },
+        "shortcut": {
+          "k": 10,
+          "mean_overlap_popularity_topk": 0.7186544824326454,
+          "mean_overlap_single_drug_topk_union": 0.8784149992122263,
+          "share_pairs_topk_inside_single_drug_union": 0.29053095950842917
+        },
+        "val_metrics": {
+          "macro_ap": 0.288953150002238,
+          "macro_auroc": 0.8226898573602546,
+          "micro_ap": 0.31310777630037256,
+          "ndcg@10": 0.4869183837358042,
+          "pair_ap": 0.3236969599475846,
+          "precision@10": 0.46365211911139126,
+          "precision@5": 0.5026941862297148,
+          "recall@10": 0.09593471078819182,
+          "recall@5": 0.05409292050307448
+        },
+        "val_run": "results/val/b0_alpha100-60eb89cd5f55/20261017T043635Z-77037e.json",
+        "weights_sha256": "a4ce8d0265cb448218adc126c74a3eaeaecab58e555afe8d913ea96f6624dd53"
+      },
+      "b0_popularity-c9cb1df52e07": {
+        "config": {
+          "model": "b0",
+          "variant": "popularity"
+        },
+        "shortcut": {
+          "k": 10,
+          "mean_overlap_popularity_topk": 1.0,
+          "mean_overlap_single_drug_topk_union": 0.683504017646132,
+          "share_pairs_topk_inside_single_drug_union": 0.03340160705845281
+        },
+        "val_metrics": {
+          "macro_ap": 0.0749078762814003,
+          "macro_auroc": 0.5,
+          "micro_ap": 0.22634912859924974,
+          "ndcg@10": 0.4053325238105515,
+          "pair_ap": 0.2703904507649001,
+          "precision@10": 0.3927682369623444,
+          "precision@5": 0.41241531432172684,
+          "recall@10": 0.07921512493930889,
+          "recall@5": 0.043654579726120496
+        },
+        "val_run": "results/val/b0_popularity-c9cb1df52e07/20261017T043555Z-5593cb.json",
+        "weights_sha256": "4a0be3f4e4986814a17efca88b67d9e9e271fcc3c092e4e224609566dc897dd2"
+      }
+    },
+    "note": "alpha100 thắng alpha0 về macro AP nhưng thua ở micro AP và mọi metric theo cặp (CI95 không chứa 0).",
+    "paired_comparisons_1000": {
+      "results/val/comparisons/20261017T050226Z-7e7377.json": {
+        "base": "b0_alpha0-db2b9c960215",
+        "cand": "b0_alpha100-60eb89cd5f55",
+        "macro_ap": {
+          "base": 0.27143083363863374,
+          "cand": 0.288953150002238,
+          "ci95_base": [
+            0.2693602248967859,
+            0.28151482358308577
+          ],
+          "ci95_cand": [
+            0.2860165332426054,
+            0.2991496081635735
+          ],
+          "ci95_delta": [
+            0.015208594165607178,
+            0.01917029393655991
+          ],
+          "delta": 0.01752231636360424,
+          "n_valid": 1000
+        },
+        "ndcg@10": {
+          "base": 0.5258083154253459,
+          "cand": 0.4869183837358042,
+          "ci95_base": [
+            0.5184499738456232,
+            0.5325585191299087
+          ],
+          "ci95_cand": [
+            0.47971803447742084,
+            0.4936179973947004
+          ],
+          "ci95_delta": [
+            -0.04116877018076975,
+            -0.03649670202120964
+          ],
+          "delta": -0.03888993168954169,
+          "n_valid": 1000
+        },
+        "workers": 1
+      },
+      "results/val/comparisons/20261017T050259Z-5894e8.json": {
+        "base": "b0_popularity-c9cb1df52e07",
+        "cand": "b0_alpha100-60eb89cd5f55",
+        "macro_ap": {
+          "base": 0.0749078762814003,
+          "cand": 0.288953150002238,
+          "ci95_base": [
+            0.07339953905010028,
+            0.07655260962530272
+          ],
+          "ci95_cand": [
+            0.2860165332426054,
+            0.2991496081635735
+          ],
+          "ci95_delta": [
+            0.21212447099844964,
+            0.2231167301996423
+          ],
+          "delta": 0.21404527372083768,
+          "n_valid": 1000
+        },
+        "ndcg@10": {
+          "base": 0.4053325238105515,
+          "cand": 0.4869183837358042,
+          "ci95_base": [
+            0.39903133168658683,
+            0.41116415196791795
+          ],
+          "ci95_cand": [
+            0.47971803447742084,
+            0.4936179973947004
+          ],
+          "ci95_delta": [
+            0.07849916082841923,
+            0.08483150416842468
+          ],
+          "delta": 0.08158585992525269,
+          "n_valid": 1000
+        },
+        "workers": 6
+      }
+    },
+    "reference_for_distmult": "b0_alpha100-60eb89cd5f55",
+    "schema_version": 1,
+    "split": "val"
+  }
+}
