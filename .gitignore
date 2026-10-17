@@ -27,7 +27,10 @@ data/cache/
 !data/processed/*/dailymed_sections.parquet
 !data/processed/*/chembl_map.parquet
 !data/processed/*/chembl_mechanisms.parquet
-# Artifact model đã fit và score cache: sinh lại được bằng `python -m dsp391m.evaluate`/trainer
-results/models/
+# Bảng ETL của snapshot decagon_v1 (khoảng 9 MB): commit để máy khác dùng đúng byte mà split/manifest đã hash,
+# không phải chạy lại ETL (parquet sinh trên nền tảng khác có thể lệch hash và làm split fail closed)
+!data/processed/decagon_v1/*.parquet
+# Score cache: dựng lại từ artifact bằng `python -m dsp391m.evaluate --rescore ID ...`.
+# results/models/ (artifact đã fit, khoảng 27 MB) được commit: train lại trên máy khác cho model_release_id khác.
 results/scores/
 results/runs/**/*.pt

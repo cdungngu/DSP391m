@@ -1,0 +1,25 @@
+{
+  "content_hash": "47baa016965cb5b45cce5a4acf75884ef8551f315e062cfe953313cf0f7ee037",
+  "payload": {
+    "config": {
+      "model": "b0",
+      "variant": "popularity"
+    },
+    "config_id": "b0_popularity-b6e07902",
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "model_release_id": "b0_popularity-c9cb1df52e07",
+    "name": "b0_popularity",
+    "schema_version": 1,
+    "score_kind": "frequency_sum",
+    "weights_file": "weights.npz",
+    "weights_sha256": "4a0be3f4e4986814a17efca88b67d9e9e271fcc3c092e4e224609566dc897dd2"
+  }
+}

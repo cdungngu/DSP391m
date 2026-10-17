@@ -1,6 +1,7 @@
 """Bộ chấm điểm dùng chung trên val (plan du_doan_cap/03–04).
 
 Chạy: python -m dsp391m.evaluate --model b0_alpha100 [--bootstrap 0]
+      python -m dsp391m.evaluate --rescore ID [ID ...]   # dựng lại score cache val từ results/models/ (máy mới)
 
 - Mô hình fit trên prediction view (chỉ nhãn train), rồi chấm toàn ma trận cặp × 963 nhãn của val.
   Nhãn vắng mặt là "âm giả định"; không lấy mẫu âm khi chấm.
@@ -257,6 +258,21 @@ def run(model_name: str, split: str = "val", n_boot: int = 0, split_id: str = SP
     return run_fitted(model, view, start, split_id, snap, results_dir, n_boot)
 
 
+def rescore(release_id: str, split_id: str = SPLIT_ID, snap: Path | None = None,
+            results_dir: Path = RESULTS_DIR) -> Path:
+    """Dựng lại score cache val từ artifact đã commit, không ghi run mới. Dùng khi results/scores/ chưa có."""
+    from .final import _loader  # final import evaluate, nên nạp muộn
+    view = prediction_view(split_id, snap)
+    d = results_dir / "models" / release_id
+    meta = predictor.read_artifact(d, view)
+    model = _loader(meta["config"]["model"])(d, view)
+    if model.model_release_id != release_id:
+        raise IntegrityError(f"Model nạp từ {d} có model_release_id {model.model_release_id}")
+    pairs, _, vocab = load_eval_targets("val", split_id, snap)
+    check_label_order(view, vocab)
+    return save_scores(results_dir, "val", release_id, model.identity, pairs, model.score_pairs(pairs))
+
+
 def val_macro_ap_callback(split_id: str = SPLIT_ID, snap: Path | None = None):
     """Callback cho trainer: nhận hàm score(pairs) và chỉ trả val macro AP. Nhãn val nằm trong closure của
     evaluator, trainer không nhận được nhãn."""
@@ -273,10 +289,16 @@ def val_macro_ap_callback(split_id: str = SPLIT_ID, snap: Path | None = None):
 
 def main(argv: list[str] | None = None) -> int:
     parser = argparse.ArgumentParser(description=__doc__.splitlines()[0])
-    parser.add_argument("--model", choices=sorted(MODELS), required=True)
+    what = parser.add_mutually_exclusive_group(required=True)
+    what.add_argument("--model", choices=sorted(MODELS))
+    what.add_argument("--rescore", nargs="+", metavar="ID", help="model_release_id trong results/models/")
     parser.add_argument("--split", choices=["val", "test"], default="val")
     parser.add_argument("--bootstrap", type=int, default=0, help="CI riêng một model (so sánh: dùng dsp391m.compare)")
     args = parser.parse_args(argv)
+    if args.rescore:
+        for rid in args.rescore:
+            print(f"{rid} -> {rescore(rid)}")
+        return 0
     try:
         r = run(args.model, args.split, args.bootstrap)
     except PermissionError as e:

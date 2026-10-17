@@ -10,7 +10,9 @@ DSP391m · Group 8 (Le Van Hung, Nguyen Vu Huy, Nguyen Chi Dung, Do Quoc An). Đ
 
 ## Trạng thái hiện tại
 
-_Cập nhật lần cuối: 2026-10-17 (phiên triển khai v3)_
+_Cập nhật lần cuối: 2026-10-17 (chuyển sang PC)_
+
+> **Đang chuyển máy:** trên máy mới, đọc [plan/Huong_dan_tiep_tuc_tren_PC.md](plan/Huong_dan_tiep_tuc_tren_PC.md) trước tiên (cài đặt, xác minh, rồi phần 2: E1 residual).
 
 - **Phạm vi hiện hành v3:** người dùng xác nhận mục tiêu dự đoán cặp và ít thời gian/nhân lực duyệt. [Kế hoạch tổng](plan/Ke_hoach_trien_khai.md) và [10 plan dự đoán cặp](plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md) thay hướng consumer A+D+B0/cổng M. Hai ID → xếp hạng 963 nhãn, không chuyển thành nhị phân có/không tương tác.
 - **Đã có:** ETL, split/DataView, B0, smoothing alpha100, ChEMBL/DailyMed collectors và foundation contracts/releases/catalog/review/workbench. Kết quả trước phiên thiết kế: 61 test nhanh + 2 test thật đạt; xem [báo cáo thực thi](plan/Bao_cao_trien_khai_2026_10_17.md).
@@ -18,7 +20,7 @@ _Cập nhật lần cuối: 2026-10-17 (phiên triển khai v3)_
 - **Protocol DistMult đã sửa và đăng ký (2026-10-17):** wd 0 (wd 1e-5 của Adam làm embedding sụp về 0), sampler trộn 5 âm thay nhãn + 5 âm thay cặp train cân 0,5/0,5, lr {0,01; 0,03} × dim {64,128}. Mốc macro AP là B0 alpha100, mốc NDCG@10 là B0 alpha0; demo tạm dùng alpha0. Thăm dò trước đã nhìn val, phải công bố. Đăng ký: `results/experiments/2026-10-17_distmult_search_v1_registration.json`; chẩn đoán: [distmult_diagnostics.md](analysis/2026-10-17/distmult_diagnostics.md).
 - **Search v1 xong (2026-10-17):** chọn d128 lr 0,01; ba seed macro AP 0,2852–0,2880, dưới alpha100 0,2890 (CI seed391 [−0,0074; +0,0013]); NDCG@10 0,412 so 0,526 của alpha0; micro AP 0,376 cao hơn mọi B0. **Không promote**; demo giữ B0 alpha0. Kết quả: `results/experiments/2026-10-17_search_v1_model_selection.json`.
 - **Lô 20 ca val xong (2026-10-17):** B0 alpha0 vs DistMult; [tóm tắt](analysis/2026-10-17/cases20_review_notes.md), bảng từng ca `analysis/2026-10-17/cases20_v1.md`. Chờ người xem đợt 1.
-- **Tiếp theo:** quyết định có thử một mở rộng plan 08 (ví dụ residual trên B0) hay không → lock/final → demo CLI với alpha0.
+- **Tiếp theo (người dùng chọn):** phần 2 = E1 residual DistMult trên B0 (plan 08, đăng ký trước, chạy trên PC) → lock/final → demo CLI. Chi tiết: [hướng dẫn chuyển máy](plan/Huong_dan_tiep_tuc_tren_PC.md).
 - **Duyệt theo đợt:** một gói baseline/pilot và một gói bàn giao. Không chờ catalog 50 thuốc hoặc gold dược sĩ để huấn luyện bằng ID. Consumer safeguards giữ nguyên; không tự đổi pending thành approved.
 - **Mở rộng:** ChEMBL features/residual chỉ có đối chứng sau lõi; DailyMed/RAG/LLM, đơn nhiều thuốc và consumer hoãn. Không tự khởi động lại khung sáu tuần trước; plan mới ước lượng 8–14 ngày công, cần đo runtime.
 - **Tài liệu cũ:** plan/chi_tiet và bản tổng v2.1 lưu trữ hết hiệu lực hướng dẫn; docs/submission vẫn phản ánh thiết kế cũ, chỉ sửa khi tái sử dụng.
@@ -31,6 +33,7 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 
 | Ngày | Quyết định / thay đổi | Lý do | Trạng thái |
 |---|---|---|---|
+| 2026-10-17 | Chuyển sang PC: commit bảng ETL `decagon_v1/*.parquet` và `results/models/`; `.gitattributes` `* -text`; `evaluate --rescore` dựng lại score cache; trainer chạy được trên Windows; phần 2 là E1 residual | Train lại hoặc ETL trên nền tảng khác có thể lệch byte/hash và đổi model_release_id; CRLF làm lệch hash | Đã commit; E1 chưa đăng ký |
 | 2026-10-17 | Thêm `dsp391m.cases` và xuất lô 20 ca val theo quy tắc plan 06 (B0 alpha0 vs DistMult seed391) | Gói duyệt đợt 1 | Đã xuất; chưa có ghi chú người xem |
 | 2026-10-17 | Search DistMult v1 theo đăng ký: chọn d128 lr 0,01; không đạt promotion (0/4 điều kiện metric); backend demo B0 alpha0 | Quy tắc plan 06 đã khóa trước khi chạy | Đã chạy; chưa chấm test |
 | 2026-10-17 | Sửa protocol DistMult trước search (thay dòng "Chờ quyết" cùng ngày): wd 0, sampler trộn cân loss, lr {0,01; 0,03}; guardrail NDCG so alpha0 (≥ 0,5208), macro AP so alpha100; demo tạm alpha0; numpy 2.5.3 được pin sau khi venv sạch tái lập giống hệt | Chẩn đoán wd (norm embedding → 0), đối chứng sampler cân loss (+0,054 macro AP, −0,074 NDCG); review người dùng | Đã đăng ký và chạy |
@@ -71,14 +74,14 @@ Thêm dòng mới ở **đầu bảng**. Không xóa dòng cũ; nếu đảo ng�
 - `plan/du_doan_cap/`: 10 plan hiện hành v3; điều phối 00, evaluator 03, DistMult 05, bàn giao 09.
 - `plan/chi_tiet/`: 15 plan v2.1 lịch sử, đã có banner hết hiệu lực; bản tổng cũ ở `plan/Ke_hoach_trien_khai_v2_1_lich_su.md`.
 - `src/dsp391m/`: package triển khai (xem `src/README.md`). `paths.py` giữ mọi đường dẫn chuẩn và tên snapshot (`decagon_v1`).
-- `data/processed/decagon_v1/`: đầu ra ETL. File `*.parquet` bị gitignore (sinh lại được); `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
+- `data/processed/decagon_v1/`: đầu ra ETL. Parquet của `decagon_v1` được commit (khoảng 9 MB, đúng byte manifest đã hash; không chạy lại ETL trên máy khác); snapshot mới vẫn bị gitignore. `manifest.json`, `qa_report.json`, `structure_coverage.json` được commit.
 - `data/processed/decagon_v1/splits/pair_70-10-20_s391/`: split **đã đóng băng** (vocab, phân chia cặp, manifest có hash), được commit. Muốn đổi thì tạo `split_id` mới, không ghi đè.
 - `data/cache/`: cache theo chế độ (gitignore).
 - `data/processed/decagon_v1/drug_names.parquet`, `gene_names.parquet`: bảng tên lấy từ API ngoài, được commit.
 - `data/external/ncbi/`: cache symbol gene (đã cắt gọn), được commit.
 - `data/external/pubchem/`: cache nguyên văn phản hồi PubChem, được commit để chạy lại ở chế độ `--offline`.
 - `tests/`: pytest; test đánh dấu `slow` chạy trên dữ liệu thật; `test_distmult.py` tự bỏ qua khi chưa cài torch.
-- `results/`: `readiness/`, `val/<model_release_id>/`, `val/comparisons/`, `releases/baselines/`, `runs/<run_id>/` được commit; `models/`, `scores/`, `*.pt` bị gitignore (sinh lại được); `final/` chỉ ghi qua `dsp391m.final`.
+- `results/`: `readiness/`, `val/<model_release_id>/`, `val/comparisons/`, `releases/baselines/`, `runs/<run_id>/` được commit; `models/` cũng được commit (artifact đã fit; train lại ra ID khác); `scores/` (dựng lại bằng `--rescore`) và `*.pt` bị gitignore; `final/` chỉ ghi qua `dsp391m.final`.
 - `analysis/2026-10-17/`: chẩn đoán DistMult và baseline v3.
 
 ## Lệnh
@@ -108,6 +111,9 @@ python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/
 .venv/bin/python -m dsp391m.compare --base b0_alpha0-db2b9c960215 --cand b0_alpha100-60eb89cd5f55 --bootstrap 1000
 # DistMult (cần .venv/bin/pip install -r requirements-train.txt); thư mục --out phải mới, hoặc --resume
 .venv/bin/python -m dsp391m.training.trainer --dim 64 --lr 0.01 --seed 391 --negatives mixed --weight-decay 0 --out results/runs/NEW_RUN_ID
+# Máy mới: dựng lại score cache val từ artifact đã commit, rồi so metric với run đã commit
+.venv/bin/python -m dsp391m.evaluate --rescore b0_alpha0-db2b9c960215 distmult_d128-dbd218398318 ...
+.venv/bin/python analysis/2026-10-17/verify_transfer.py
 # Lô ca val để xem thủ công (không ghi đè)
 .venv/bin/python -m dsp391m.cases --base b0_alpha0-db2b9c960215 --cand distmult_d128-dbd218398318 --out results/val/error_analysis/NEW.json --markdown analysis/NGAY/NEW.md
 # Search đã đăng ký (4 cấu hình + 2 seed + compare), không chấm test

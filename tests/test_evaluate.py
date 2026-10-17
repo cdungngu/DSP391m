@@ -86,3 +86,16 @@ def test_shortcut_and_train_derived_strata(snap, tmp_path):
     _, y, _ = dataview.load_eval_targets("val", snap=snap)
     assert sum(g[f"pair_min_train_degree_{b}"]["n_pairs"] for b in ("low", "mid", "high")) == len(y)
     assert g["pair_n_labels_low"]["train_edges"] == g["pair_n_labels_mid"]["train_edges"]
+
+
+def test_rescore_rebuilds_score_cache_from_artifact(snap, tmp_path):
+    r = evaluate.run("b0_alpha100", snap=snap, results_dir=tmp_path)
+    rid, phash = r["model_release_id"], r["pairs_hash"]
+    before = evaluate.load_scores(tmp_path, "val", rid, phash)
+    for f in (tmp_path / "scores").rglob("*"):
+        if f.is_file():
+            f.unlink()
+    evaluate.rescore(rid, snap=snap, results_dir=tmp_path)
+    assert np.array_equal(evaluate.load_scores(tmp_path, "val", rid, phash), before)
+    with pytest.raises(FileNotFoundError):
+        evaluate.rescore("b0_alpha0-000000000000", snap=snap, results_dir=tmp_path)

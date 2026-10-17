@@ -1,0 +1,35 @@
+{
+  "content_hash": "2f95be1da31e8d348f3e0f7b91c62105a023af0ab3411b407b9f2f23613aa2bd",
+  "payload": {
+    "config": {
+      "batch_size": 2048,
+      "device": "cpu",
+      "dim": 128,
+      "loss_version": "pos_plus_mean_neg_v1",
+      "lr": 0.001,
+      "max_epochs": 50,
+      "min_delta": 0.0001,
+      "model": "distmult",
+      "n_neg": 5,
+      "patience": 5,
+      "seed": 391,
+      "weight_decay": 1e-05
+    },
+    "config_id": "distmult_d128-199b1516",
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "model_release_id": "distmult_d128-5449a82c8b23",
+    "name": "distmult_d128",
+    "schema_version": 1,
+    "score_kind": "bilinear_logit",
+    "weights_file": "weights.npz",
+    "weights_sha256": "55e2f574c53d458cbcc086031a6a951042c57be5e47210caa22b709a2b5875a6"
+  }
+}

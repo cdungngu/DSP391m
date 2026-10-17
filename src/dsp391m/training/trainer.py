@@ -19,7 +19,6 @@ Chạy: python -m dsp391m.training.trainer --dim 64 --lr 0.001 --seed 391 --out 
 import argparse
 import dataclasses
 import json
-import resource
 import sys
 import time
 from dataclasses import dataclass
@@ -67,7 +66,11 @@ class TrainConfig:
                 "loss_version": LOSS_VERSIONS[self.negatives]}
 
 
-def peak_rss_mb() -> float:
+def peak_rss_mb() -> float | None:
+    try:
+        import resource
+    except ImportError:  # Windows: không có module resource
+        return None
     rss = resource.getrusage(resource.RUSAGE_SELF).ru_maxrss
     return round(rss / (1e6 if sys.platform == "darwin" else 1e3), 1)  # macOS: byte, Linux: KiB
 

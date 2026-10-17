@@ -1,6 +1,6 @@
 # Mã triển khai
 
-Phạm vi hiện hành là v3 ([kế hoạch tổng](../plan/Ke_hoach_trien_khai.md), [10 plan](../plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md)): dự đoán 963 nhãn cho một cặp ID. Đường lõi v3: `predictor` (hợp đồng chung) → `readiness` → `evaluate`/`metrics`/`compare` (chỉ val) → `final` (lock + test) → `models.b0`, `models.distmult` + `training/`. Đã có trainer và đo runtime; chưa chạy search 4 cấu hình/3 seed (plan 06), chưa có demo predictor (plan 07). Các nhãn GĐ trong bảng dưới là tên giai đoạn của plan cũ, giữ để truy vết.
+Phạm vi hiện hành là v3 ([kế hoạch tổng](../plan/Ke_hoach_trien_khai.md), [10 plan](../plan/du_doan_cap/00_Dieu_phoi_va_ra_soat.md)): dự đoán 963 nhãn cho một cặp ID. Đường lõi v3: `predictor` (hợp đồng chung) → `readiness` → `evaluate`/`metrics`/`compare` (chỉ val) → `final` (lock + test) → `models.b0`, `models.distmult` + `training/`. Đã chạy search DistMult v1 (không promote) và lô 20 ca; tiếp theo là E1 residual (plan 08), lock/test, rồi demo predictor (plan 07). Các nhãn GĐ trong bảng dưới là tên giai đoạn của plan cũ, giữ để truy vết.
 
 ## Luồng consumer và gói duyệt (2026-10-17, nhánh riêng, hoãn trong v3)
 
@@ -28,7 +28,7 @@ Package `dsp391m` (cài bằng `pip install -e .` từ thư mục gốc). Hiện
 | `dsp391m.http` | Gọi API ngoài: cache, backoff, ngắt sớm khi host chặn (mọi module lấy dữ liệu ngoài phải dùng) | — |
 | `dsp391m.chembl` | GĐ3: khớp thuốc → ChEMBL, cơ chế có `action_type`, bổ sung tên | `chembl_map.parquet`, `chembl_mechanisms.parquet`, `chembl_report.json` |
 | `dsp391m.dailymed` | GĐ3: đoạn nhãn SPL theo mục LOINC cho danh mục thuốc nhỏ | `dailymed_sections.parquet`, `dailymed_report.json` |
-| `dsp391m.evaluate`, `dsp391m.models.b0` | Chấm val (test bị từ chối), score cache, phân tầng, shortcut; B0 popularity/alpha0/alpha100 | `results/val/<model_release_id>/<run_id>.json`, `results/scores/` |
+| `dsp391m.evaluate`, `dsp391m.models.b0` | Chấm val (test bị từ chối), score cache (`--rescore` dựng lại từ artifact), phân tầng, shortcut; B0 popularity/alpha0/alpha100 | `results/val/<model_release_id>/<run_id>.json`, `results/scores/` |
 | `dsp391m.predictor` | Hợp đồng chung: `canonical_pairs`, `identity` (hash snapshot/split/thứ tự ID/CUI), `config_id` vs `model_release_id`, artifact `model.json` + checksum trọng số | `results/models/<model_release_id>/` |
 | `dsp391m.readiness` | Kiểm tra dữ liệu trước huấn luyện (train support, overlap, phân bố nhãn), fail closed | `results/readiness/<id>.json` |
 | `dsp391m.metrics` | Metric thuần: macro/micro AP, AP theo cặp, P/R@5/10, NDCG@10, paired bootstrap có trọng số | — |

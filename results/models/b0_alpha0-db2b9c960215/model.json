@@ -1,0 +1,26 @@
+{
+  "content_hash": "1f0c6d06c69114d263377452bf0e2489844610af3abf36f4759ab79facdb0ea9",
+  "payload": {
+    "config": {
+      "alpha": 0.0,
+      "model": "b0",
+      "variant": "per_drug"
+    },
+    "config_id": "b0_alpha0-a8b5e255",
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "model_release_id": "b0_alpha0-db2b9c960215",
+    "name": "b0_alpha0",
+    "schema_version": 1,
+    "score_kind": "frequency_sum",
+    "weights_file": "weights.npz",
+    "weights_sha256": "4a0be3f4e4986814a17efca88b67d9e9e271fcc3c092e4e224609566dc897dd2"
+  }
+}
