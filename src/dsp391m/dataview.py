@@ -86,6 +86,18 @@ def prediction_view(split_id: str = SPLIT_ID, snap: Path | None = None) -> DataV
                     label_vocab=vocab[["label_idx", "effect_idx", "effect_cui", "effect_name"]], **common)
 
 
+def train_label_matrix(view: DataView) -> tuple[np.ndarray, np.ndarray]:
+    """Cặp train (int64 [n,2], sắp tăng) và ma trận nhãn bool [n, n_nhãn] theo label_idx. Chỉ từ prediction view."""
+    if view.mode != PREDICTION or view.label_vocab is None:
+        raise ValueError("train_label_matrix chỉ dùng prediction view")
+    labels = view.pair_labels.merge(view.label_vocab[["effect_idx", "label_idx"]], on="effect_idx")
+    pairs = labels[["drug_a", "drug_b"]].drop_duplicates().sort_values(["drug_a", "drug_b"]).reset_index(drop=True)
+    rows = labels.merge(pairs.reset_index(names="row"), on=["drug_a", "drug_b"])
+    y = np.zeros((len(pairs), len(view.label_vocab)), dtype=bool)
+    y[rows["row"].to_numpy(), rows["label_idx"].to_numpy()] = True
+    return pairs.to_numpy().astype(np.int64), y
+
+
 def load_eval_targets(split: str, split_id: str = SPLIT_ID, snap: Path | None = None
                       ) -> tuple[pd.DataFrame, np.ndarray, pd.DataFrame]:
     """Trả về (cặp, ma trận nhãn cặp x vocab dạng 0/1, vocab) cho split "val" hoặc "test". Chỉ bộ chấm điểm dùng."""

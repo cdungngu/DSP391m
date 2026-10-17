@@ -1,0 +1,68 @@
+{
+  "content_hash": "242c9dc430a9e629dcc110dfe7deb4906755d0714c95bf88e2a999a02e54d9df",
+  "payload": {
+    "assumed_negatives": "Ô cặp × nhãn không quan sát được coi là âm giả định khi chấm, không phải an toàn.",
+    "checks": {
+      "every_train_pair_has_label": true,
+      "no_duplicate_pairs": true,
+      "no_pair_in_two_splits": true,
+      "no_self_pairs": true,
+      "pairs_canonical": true,
+      "train_matrix_matches_view": true
+    },
+    "created_at": "2026-10-17T04:28:01+00:00",
+    "drugs": {
+      "n": 645,
+      "train_degree": {
+        "max": 410.0,
+        "median": 117.0,
+        "min": 1.0,
+        "p25": 47.0,
+        "p75": 209.0
+      },
+      "train_degree_lt10": 31,
+      "train_degree_zero": 0
+    },
+    "heldout_pairs_with_untrained_drug": {
+      "test": 0,
+      "val": 0
+    },
+    "identity": {
+      "drug_order_hash": "4f71eb41e7de0228",
+      "label_order_hash": "ca7a38418f0b3192",
+      "n_drugs": 645,
+      "n_labels": 963,
+      "snapshot_hash": "ef4ef8a0cb8515d2",
+      "split_hash": "3362fa700fa27f78",
+      "split_id": "pair_70-10-20_s391"
+    },
+    "labels": {
+      "n": 963,
+      "train_positive_pairs": {
+        "max": 20019.0,
+        "median": 2065.0,
+        "min": 329.0,
+        "p25": 864.5,
+        "p75": 4602.5
+      },
+      "train_positive_zero": 0
+    },
+    "labels_per_train_pair": {
+      "max": 505.0,
+      "median": 52.0,
+      "min": 1.0,
+      "p25": 25.0,
+      "p75": 98.0
+    },
+    "pairs_per_split": {
+      "test": 12695,
+      "train": 44430,
+      "val": 6347
+    },
+    "passed": true,
+    "preprocessing_version": "readiness_v1",
+    "schema_version": 1,
+    "train_positive_cells": 3198361,
+    "vocabulary_note": "963 nhãn chọn bằng ngưỡng >=500 dòng trên toàn snapshot (quy ước lịch sử); fit mô hình chỉ dùng train. Sensitivity ngưỡng chỉ tính trên train: 959 nhãn."
+  }
+}
