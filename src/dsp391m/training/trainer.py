@@ -4,7 +4,12 @@ Chạy: python -m dsp391m.training.trainer --dim 64 --lr 0.001 --seed 391 --out 
       [--max-epochs 50] [--purpose selection|runtime_probe] [--resume]
 
 - Chỉ fit trên prediction view; mỗi epoch evaluator trả val macro AP qua callback (trainer không thấy nhãn val).
-- Loss mỗi positive: softplus(-s_pos) + mean_j softplus(s_neg_j) (âm có mask), rồi mean theo batch.
+- Loss mỗi positive, rồi mean theo batch (âm có mask):
+    negatives="label": softplus(-s_pos) + mean softplus(s_neg_nhãn)
+    negatives="mixed": softplus(-s_pos) + 0,5·mean softplus(s_neg_nhãn) + 0,5·mean softplus(s_neg_cặp)
+  Tổng trọng số âm luôn bằng 1 để hai chế độ so sánh công bằng.
+- weight_decay mặc định 0: với Adam (L2 cộng vào gradient), wd 1e-5 kéo embedding về 0 và model không học
+  (analysis/2026-10-17/distmult_diagnostics.md).
 - Early stopping: cải thiện > min_delta mới tính; hòa giữ epoch sớm hơn; dừng sau `patience` epoch không cải thiện.
 - Checkpoint: last.pt để resume (trọng số, optimizer, RNG torch, best_metric, best_epoch, patience_counter,
   next_epoch, history) và best.pt để suy luận. Resume chỉ khi config, identity và code commit khớp.
@@ -32,7 +37,7 @@ from ..releases import IntegrityError, publish
 from ..splits import SPLIT_ID
 from .sampler import NegativeSampler
 
-LOSS_VERSION = "pos_plus_mean_neg_v1"
+LOSS_VERSIONS = {"label": "pos_plus_mean_neg_v1", "mixed": "pos_plus_half_label_half_pair_v1"}
 
 
 @dataclass(frozen=True)
@@ -42,15 +47,24 @@ class TrainConfig:
     seed: int = 391
     batch_size: int = 2048
     n_neg: int = 5
-    weight_decay: float = 1e-5
+    weight_decay: float = 0.0
     max_epochs: int = 50
     patience: int = 5
     min_delta: float = 1e-4
-    loss_version: str = LOSS_VERSION
+    negatives: str = "mixed"
     device: str = "cpu"
 
+    def __post_init__(self):
+        if self.negatives not in LOSS_VERSIONS:
+            raise ValueError(f"negatives phải thuộc {sorted(LOSS_VERSIONS)}")
+
+    @property
+    def n_pair_neg(self) -> int:
+        return self.n_neg if self.negatives == "mixed" else 0
+
     def to_dict(self) -> dict:
-        return {"model": "distmult", **dataclasses.asdict(self)}
+        return {"model": "distmult", **dataclasses.asdict(self), "n_pair_neg": self.n_pair_neg,
+                "loss_version": LOSS_VERSIONS[self.negatives]}
 
 
 def peak_rss_mb() -> float:
@@ -63,7 +77,7 @@ class Trainer:
         self.cfg, self.out, self.val_callback = cfg, out_dir, val_callback
         self.identity = predictor.identity(view)
         self.train_pairs, y = train_label_matrix(view)
-        self.sampler = NegativeSampler(y, cfg.n_neg, cfg.batch_size, cfg.seed)
+        self.sampler = NegativeSampler(y, cfg.n_neg, cfg.batch_size, cfg.seed, cfg.n_pair_neg)
         torch.manual_seed(cfg.seed)
         np.random.seed(cfg.seed)
         torch.use_deterministic_algorithms(True)
@@ -102,14 +116,21 @@ class Trainer:
         return t
 
     # --- huấn luyện ------------------------------------------------------------------------------------------
-    def loss(self, rows, labels, neg, mask) -> torch.Tensor:
+    def loss(self, rows, labels, neg, mask, pair_neg=None, pair_mask=None) -> torch.Tensor:
+        def masked_mean(scores, m):
+            m = torch.from_numpy(m).to(self.device).float()
+            return (F.softplus(scores) * m).sum(1) / m.sum(1).clamp(min=1)
         pairs = torch.from_numpy(self.train_pairs[rows]).to(self.device)
         a, b = pairs[:, 0], pairs[:, 1]
-        pos = self.model(a, b, torch.from_numpy(labels).to(self.device))
-        s_neg = self.model(a, b, torch.from_numpy(neg).to(self.device))
-        m = torch.from_numpy(mask).to(self.device).float()
-        neg_term = (F.softplus(s_neg) * m).sum(1) / m.sum(1).clamp(min=1)
-        return (F.softplus(-pos) + neg_term).mean()
+        e = torch.from_numpy(labels).to(self.device)
+        pos_term = F.softplus(-self.model(a, b, e))
+        label_term = masked_mean(self.model(a, b, torch.from_numpy(neg).to(self.device)), mask)
+        if pair_neg is None:
+            return (pos_term + label_term).mean()
+        p = torch.from_numpy(self.train_pairs[pair_neg]).to(self.device)  # [B, K, 2]
+        s_pair = self.model(p[..., 0].reshape(-1), p[..., 1].reshape(-1),
+                            e.repeat_interleave(pair_neg.shape[1])).reshape(pair_neg.shape)
+        return (pos_term + 0.5 * label_term + 0.5 * masked_mean(s_pair, pair_mask)).mean()
 
     def train_epoch(self, epoch: int) -> dict:
         self.model.train()
@@ -121,7 +142,7 @@ class Trainer:
             sampler_s += time.perf_counter() - t0
             if batch is None:
                 break
-            short += int((~batch[3]).any(1).sum())
+            short += int((~batch[3]).any(1).sum()) + (int((~batch[5]).any(1).sum()) if batch[5] is not None else 0)
             t0 = time.perf_counter()
             loss = self.loss(*batch)
             if not torch.isfinite(loss):
@@ -182,6 +203,8 @@ def main(argv: list[str] | None = None) -> int:
     parser.add_argument("--dim", type=int, default=64)
     parser.add_argument("--lr", type=float, default=0.001)
     parser.add_argument("--seed", type=int, default=391)
+    parser.add_argument("--negatives", choices=sorted(LOSS_VERSIONS), default="mixed")
+    parser.add_argument("--weight-decay", type=float, default=0.0)
     parser.add_argument("--max-epochs", type=int, default=50, help="trần cấu hình (early stopping vẫn áp dụng)")
     parser.add_argument("--stop-after", type=int, default=None, help="dừng sớm sau N epoch (runtime probe)")
     parser.add_argument("--purpose", choices=["selection", "runtime_probe"], default="selection")
@@ -194,7 +217,8 @@ def main(argv: list[str] | None = None) -> int:
     if args.out.exists() and not args.resume:
         print(f"{args.out} đã tồn tại; dùng thư mục mới hoặc --resume", file=sys.stderr)
         return 2
-    cfg = TrainConfig(dim=args.dim, lr=args.lr, seed=args.seed, max_epochs=args.max_epochs)
+    cfg = TrainConfig(dim=args.dim, lr=args.lr, seed=args.seed, max_epochs=args.max_epochs,
+                      negatives=args.negatives, weight_decay=args.weight_decay)
     start = time.time()
     t0 = time.perf_counter()
     view = prediction_view(SPLIT_ID)

@@ -33,7 +33,8 @@ def test_sampler_negatives_are_unobserved_unique_and_reproducible():
     y[1, 0] = True
     s = NegativeSampler(y, n_neg=5, batch_size=7, seed=3)
     seen = []
-    for rows, labels, neg, mask in s.epoch(0):
+    for rows, labels, neg, mask, pneg, pmask in s.epoch(0):
+        assert pneg is None and pmask is None
         assert y[rows, labels].all()
         for r, n, mk in zip(rows, neg, mask):
             chosen = n[mk]
@@ -41,9 +42,42 @@ def test_sampler_negatives_are_unobserved_unique_and_reproducible():
             assert mk.sum() == min(5, (~y[r]).sum())
         seen += list(zip(rows, labels))
     assert sorted(seen) == sorted(zip(*np.nonzero(y)))       # mỗi positive đúng một lần
-    a = [n.tolist() for *_, n, _ in s.epoch(1)]
-    b = [n.tolist() for *_, n, _ in NegativeSampler(y, 5, 7, 3).epoch(1)]
-    assert a == b and a != [n.tolist() for *_, n, _ in s.epoch(2)]
+    a = [b[2].tolist() for b in s.epoch(1)]
+    assert a == [b[2].tolist() for b in NegativeSampler(y, 5, 7, 3).epoch(1)]
+    assert a != [b[2].tolist() for b in s.epoch(2)]
+
+
+def test_pair_negatives_are_train_pairs_without_the_label():
+    rng = np.random.default_rng(1)
+    y = rng.random((40, 6)) < 0.3
+    y[:, 0] = True
+    y[:3, 0] = False            # nhãn 0 chỉ có 3 cặp âm: phải dùng mask
+    y[5, :] = False
+    y[5, 1] = True
+    s = NegativeSampler(y, n_neg=2, batch_size=9, seed=4, n_pair_neg=5)
+    for rows, labels, neg, mask, pneg, pmask in s.epoch(0):
+        for e, n, mk in zip(labels, pneg, pmask):
+            chosen = n[mk]
+            assert not y[chosen, e].any() and len(set(chosen)) == len(chosen)
+            assert mk.sum() == min(5, (~y[:, e]).sum())
+    again = NegativeSampler(y, n_neg=2, batch_size=9, seed=4, n_pair_neg=5)
+    assert [b[4].tolist() for b in s.epoch(1)] == [b[4].tolist() for b in again.epoch(1)]
+
+
+def test_mixed_loss_weights_sum_to_one(snap, tmp_path):
+    view = dataview.prediction_view(snap=snap)
+    t = Trainer(view, TrainConfig(dim=4, batch_size=64), tmp_path / "r", lambda f: 0.0)
+    rows, labels, neg, mask, pneg, pmask = next(t.sampler.epoch(0))
+    torch.nn.init.zeros_(t.model.drug.weight)  # mọi score = 0 -> mỗi softplus = ln 2
+    # Hàng không có âm hợp lệ thì term âm bằng 0 (theo thiết kế, có đếm); còn lại mỗi loại âm đóng góp 0,5·ln 2.
+    has_l, has_p = mask.any(1), pmask.any(1)
+    assert (~has_l).any()  # fixture 3 nhãn: có cặp mang đủ cả 3 nhãn
+    expected = np.log(2) * np.mean(1 + 0.5 * has_l + 0.5 * has_p)
+    assert float(t.loss(rows, labels, neg, mask, pneg, pmask)) == pytest.approx(expected)
+    assert float(t.loss(rows, labels, neg, mask)) == pytest.approx(np.log(2) * np.mean(1 + has_l))
+    with pytest.raises(ValueError):
+        TrainConfig(negatives="other")
+    assert TrainConfig(negatives="label").to_dict()["n_pair_neg"] == 0
 
 
 def _trainer(snap, out, callback, **kw):
