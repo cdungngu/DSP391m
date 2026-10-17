@@ -26,15 +26,16 @@ Sau đó mean theo batch. Đây là cân bằng positive/negative terms, khác p
 | Tham số | Giá trị thiết kế |
 |---|---|
 | Embedding dimension | 64 hoặc 128 |
-| Learning rate | 0,001 hoặc 0,003 |
-| Optimizer | Adam, weight_decay=1e-5 |
-| Batch | 2.048 positive + tối đa 5 negative/positive |
+| Learning rate | 0,01 hoặc 0,03 (sửa 2026-10-17; thiết kế cũ 0,001/0,003) |
+| Optimizer | Adam, weight_decay=0 (sửa 2026-10-17; 1e-5 làm embedding sụp về 0) |
+| Batch | 2.048 positive; mỗi positive 5 âm thay nhãn + 5 âm thay cặp train (sửa 2026-10-17) |
+| Loss | softplus(-s_pos) + 0,5·mean âm thay nhãn + 0,5·mean âm thay cặp; loss_version pos_plus_half_label_half_pair_v1 |
 | Epoch | Tối đa 50; patience 5 theo val macro AP |
 | Early stop | Cải thiện >1e-4; hòa giữ checkpoint sớm hơn |
 | Khởi tạo | Xavier uniform; seed ghi riêng |
 | Search | 4 cấu hình seed391; cấu hình thắng thêm392,393 |
 
-Đây là giá trị đề xuất, không phải hyperparameter đã chứng minh tối ưu. Dùng PyTorch trong nhóm dependency training riêng; chọn/pin phiên bản tương thích Python và máy khi triển khai, không tự nâng môi trường ETL. Chạy CPU smoke test trước; đo epoch/validation để quyết định thiết bị. Giới hạn 5 ngày công cho phần huấn luyện/tuning; nếu chưa hoàn tất, báo thiếu bằng chứng ổn định và dùng B0 cho demo.
+Đây là giá trị đề xuất, không phải hyperparameter đã chứng minh tối ưu. **Sửa protocol 2026-10-17 trước search:** lr, weight decay và sampler đổi sau thăm dò trên val ([chẩn đoán](../../analysis/2026-10-17/distmult_diagnostics.md)); đây là thăm dò phát triển phương pháp, phải công bố như vậy. Đăng ký vòng search: `results/experiments/2026-10-17_distmult_search_v1_registration.json`. Dùng PyTorch trong nhóm dependency training riêng; chọn/pin phiên bản tương thích Python và máy khi triển khai, không tự nâng môi trường ETL. Chạy CPU smoke test trước; đo epoch/validation để quyết định thiết bị. Giới hạn 5 ngày công cho phần huấn luyện/tuning; nếu chưa hoàn tất, báo thiếu bằng chứng ổn định và dùng B0 cho demo.
 
 ## Pipeline và checkpoint
 

@@ -7,9 +7,9 @@ Phụ thuộc: [03](03_Danh_gia_va_khoa_test.md), [04](04_Baseline_va_shortcut.m
 | Run | Mục đích | Dữ liệu chọn |
 |---|---|---|
 | Popularity | Mốc tần suất toàn cục | Không tune |
-| B0 alpha0 | Nối kết quả cũ | Không tune |
-| B0 alpha100 | Baseline mạnh đã chọn | Val E08 |
-| DistMult 4 configs seed391 | Chọn dimension/lr | Val |
+| B0 alpha0 | Nối kết quả cũ; mốc NDCG@10 (top-10 từng cặp) và backend demo tạm thời | Không tune |
+| B0 alpha100 | Mốc macro AP (xếp cặp theo nhãn) | Val E08 |
+| DistMult 4 configs seed391 (dim {64,128} × lr {0,01; 0,03}, sampler trộn, wd 0) | Chọn dimension/lr | Val |
 | DistMult config chọn, seeds392/393 | Kiểm ổn định | Val |
 | Final danh sách khóa | Báo cáo cuối | Test chỉ sau lock |
 
@@ -23,10 +23,10 @@ Quy tắc promotion đề xuất v3, thay ngưỡng cũ +0,02 và cổng chuyên
 - Cả ba seed đều có delta macro AP >0 so B0 alpha100.
 - Mean delta macro AP ≥0,005 (0,5 điểm phần trăm tuyệt đối).
 - Seed391 có paired CI95 delta macro AP với cận dưới >0.
-- Mean NDCG@10 không giảm quá 0,005 tuyệt đối so B0.
+- Mean NDCG@10 của ba seed ≥ NDCG@10 của **B0 alpha0** − 0,005 (= 0,5208; sửa 2026-10-17, trước là so alpha100). Báo paired CI95 delta NDCG của seed391 so alpha0; chỉ được viết “không kém hơn” khi cận dưới CI > −0,005.
 - Không có lỗi leakage/artifact và runtime demo đạt ngân sách đã đo.
 
-Các ngưỡng này là quy ước kỹ thuật để tránh thêm độ phức tạp vì cải thiện quá nhỏ, không là ngưỡng ý nghĩa y khoa. Khóa trước chạy search; báo đủ giá trị liên tục kể cả không đạt. Không được sửa ngưỡng để vừa kết quả. Chọn checkpoint seed391 cho demo nếu promotion đạt; không chọn seed tốt nhất sau khi xem ba seed. B0 vẫn fallback chính nếu không đạt.
+Các ngưỡng này là quy ước kỹ thuật để tránh thêm độ phức tạp vì cải thiện quá nhỏ, không là ngưỡng ý nghĩa y khoa. Khóa trước chạy search; báo đủ giá trị liên tục kể cả không đạt. Không được sửa ngưỡng để vừa kết quả. Chọn checkpoint seed391 cho demo nếu promotion đạt; không chọn seed tốt nhất sau khi xem ba seed. Backend demo tạm thời là **B0 alpha0** (sửa 2026-10-17: alpha100 thua alpha0 ở NDCG@10 −0,039, CI không chứa 0). Nếu DistMult tăng macro AP nhưng không đạt guardrail NDCG, ghi nhận như kết quả nghiên cứu và không thay backend demo.
 
 Không ensemble ở lõi để tránh thêm quy tắc chọn. Có thể nghiên cứu sau theo file08. Final báo ba seed riêng và mean/std; mỗi checkpoint giữ nguyên train-only, không retrain trên train+val trong v3.
 

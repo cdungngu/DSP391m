@@ -1,0 +1,65 @@
+{
+  "content_hash": "008a30564a4a96cedd3034bb76d96334710f3fc3329a5d8d07e515eec4c6b0a1",
+  "payload": {
+    "code_commit_at_registration": "179b1f62ff4e7bb944efcdc49897e499f2409cb9",
+    "config_selection": "max val macro AP seed391; trong 0,001 so tốt nhất thì dim nhỏ hơn, rồi lr nhỏ hơn",
+    "demo_checkpoint_if_promoted": "seed391 của cấu hình chọn (không chọn seed tốt nhất)",
+    "experiment": "distmult_search_v1",
+    "fixed": {
+      "batch_size": 2048,
+      "device": "cpu",
+      "init": "xavier_uniform",
+      "loss_version": "pos_plus_half_label_half_pair_v1",
+      "max_epochs": 50,
+      "min_delta": 0.0001,
+      "n_neg": 5,
+      "n_pair_neg": 5,
+      "negatives": "mixed",
+      "optimizer": "Adam",
+      "patience": 5,
+      "weight_decay": 0.0
+    },
+    "grid_seed391": [
+      {
+        "dim": 64,
+        "lr": 0.01
+      },
+      {
+        "dim": 64,
+        "lr": 0.03
+      },
+      {
+        "dim": 128,
+        "lr": 0.01
+      },
+      {
+        "dim": 128,
+        "lr": 0.03
+      }
+    ],
+    "no_test": "không chấm test trong vòng này",
+    "promotion_rule": {
+      "all_three_seeds_macro_ap_delta_gt": 0.0,
+      "bootstrap": {
+        "n": 1000,
+        "seed": 391,
+        "unit": "pair"
+      },
+      "demo_backend_if_not_promoted": "b0_alpha0-db2b9c960215",
+      "if_macro_ap_up_but_ndcg_fails": "ghi nhận kết quả nghiên cứu, không thay backend demo",
+      "macro_ap_reference": "b0_alpha100-60eb89cd5f55",
+      "mean_macro_ap_delta_ge": 0.005,
+      "mean_ndcg10_ge": "NDCG@10(alpha0) - 0.005 = 0.5208",
+      "ndcg_reference": "b0_alpha0-db2b9c960215",
+      "noninferiority_claim": "chỉ khi cận dưới CI95 delta NDCG@10 seed391 so alpha0 > -0.005",
+      "seed391_paired_ci95_macro_ap_lower_gt": 0.0
+    },
+    "registered_at": "2026-10-17T05:37:03+00:00",
+    "split": "val",
+    "stability_seeds": [
+      392,
+      393
+    ],
+    "status_of_prior_work": "lr, weight decay và sampler được sửa sau thăm dò trên val (analysis/2026-10-17/distmult_diagnostics.md); vòng này đăng ký trước khi chạy nhưng không phải thí nghiệm chưa từng nhìn val"
+  }
+}

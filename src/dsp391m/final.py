@@ -36,7 +36,8 @@ METRIC_DEFINITIONS = {
     "negatives": "unobserved cells are assumed negatives, not safety evidence",
     "bootstrap": "pairs resampled with replacement; same indices for compared models; percentile CI95",
 }
-FALLBACK_POLICY = "B0 alpha100 is the demo backend unless the v3 promotion rule (plan 06) passed on val"
+FALLBACK_POLICY = ("B0 alpha0 is the demo backend unless the v3 promotion rule (plan 06: macro AP vs B0 alpha100, "
+                   "NDCG@10 guardrail vs B0 alpha0) passed on val")
 REQUIREMENTS = ("requirements.txt", "requirements-train.txt")
 IGNORED_DIRTY_PREFIXES = ("results/",)
 

@@ -22,11 +22,26 @@ Runtime probe (`results/runs/2026-10-17_probe_d64`, `_d128`): một epoch mất 
 |---|---|
 | Khởi tạo lớn hơn (`diag_init.py`) | Score lớn hơn, loss không xuống dưới 1,386 sau 400 bước |
 | Bias theo nhãn (`diag_bias.py`) | Loss giảm, macro AP vẫn 0,0749: bias không giúp xếp hạng cặp trong nhãn |
-| lr 0,01 / 0,03, 8 epoch (`diag_lr.py`) | Thoát saddle; chững ở macro AP khoảng 0,11 / 0,177 |
-| lr 0,03 + âm thay cặp train (`diag_pairneg.py`) | Macro AP 0,241 sau 3 epoch (chỉ thay nhãn: 0,176); NDCG@10 0,429 so 0,453 |
+| lr 0,01 / 0,03, 8 epoch, wd 1e-5 (`diag_lr.py`) | Thoát saddle; chững ở macro AP khoảng 0,11 / 0,177 |
+| lr 0,03, wd 1e-5 + âm thay cặp, không cân loss (`diag_pairneg.py`) | Macro AP 0,241 sau 3 epoch (chỉ thay nhãn: 0,176); NDCG@10 0,429 so 0,453 |
 
-Giải thích: (a) khởi tạo gần 0 của tích bậc ba cho gradient gần 0; lr 0,001/0,003 quá nhỏ để thoát. (b) Sampler chỉ thay nhãn trên cùng cặp nên chỉ dạy xếp hạng nhãn trong cặp; macro AP cần so sánh **các cặp** với nhau trong cùng nhãn. Âm thay cặp lấy từ cặp **train** không có nhãn e nên vẫn train-only.
+Giải thích ban đầu (lr quá nhỏ) đã được **thay** bởi mục 4: nguyên nhân chính là weight decay của Adam. Về sampler: chỉ thay nhãn có thể chưa phù hợp với mục tiêu xếp hạng theo nhãn; tham số dùng chung vẫn có thể học khác biệt giữa các cặp, nên kết quả chưa chứng minh nguyên nhân tuyệt đối. Bản thử ở `diag_pairneg.py` cộng thêm nguyên một term âm (tổng trọng số âm 2), nên đã gây nhiễu; xem đối chứng cân loss ở mục 5.
 
-## 3. Cần quyết định trước plan 06
+## 3. (Lịch sử) Câu hỏi trước plan 06
 
 Lưới lr và sampler của plan 05 phải đổi trước khi đăng ký search 4 cấu hình; các thăm dò này đã nhìn val nên phải công bố như thăm dò thiết kế. Chưa thử: số epoch dài với âm thay cặp, tỷ lệ hai loại âm, weight decay.
+
+## 4. Weight decay là nguyên nhân sụp về 0 (`diag_weight_decay.py`)
+
+lr 0,001, dim 64, 1 epoch, cùng seed. Với Adam, `wd·θ` (1,1e-4) cùng bậc gradient dữ liệu (3,2e-4) ngay bước 0; Adam chuẩn hóa tổng nên embedding bị kéo về 0 (norm thuốc 10,8 → 0,05 ở bước 500 → 0), gradient dữ liệu tiêu biến, model không học. wd = 0: norm tăng lên 64, loss 1,050, val macro AP 0,169 sau một epoch. Không đổi sang AdamW trong thí nghiệm này. Kết luận: khóa wd = 0.
+
+## 5. Đối chứng sampler có cân loss (`diag_sampler_control.py 0.01`)
+
+Cùng seed 391, lr 0,01, dim 64, wd 0, 5 epoch; tổng trọng số âm bằng 1 ở cả hai.
+
+| Sampler | Macro AP | Pair AP | NDCG@10 | Giây/epoch |
+|---|---:|---:|---:|---:|
+| Chỉ thay nhãn | 0,2087 | 0,3282 | 0,4858 | 15 |
+| Trộn 0,5/0,5 | 0,2624 | 0,2895 | 0,4119 | 28 |
+
+Âm thay cặp tăng macro AP +0,054 nhưng giảm NDCG@10 −0,074: đánh đổi thật giữa hai mục tiêu. Theo quyết định người dùng, khóa sampler trộn cho search (macro AP là metric chọn). Cả hai còn dưới mốc B0 sau 5 epoch.
