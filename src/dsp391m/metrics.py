@@ -8,7 +8,12 @@
   IDCG đặt min(k, số dương) nhãn đầu bằng 1. Cặp không có dương: AP/recall/precision/NDCG là NaN (null trong
   JSON) và bị loại khỏi trung bình; số đơn vị hợp lệ được báo kèm.
 - Paired bootstrap: cùng chỉ số resample cho hai model, delta tính trong từng resample, CI95 percentile.
+  Chỉ số resample luôn sinh tuần tự ở tiến trình cha từ một seed, rồi mới chia lô cho các worker; vì vậy kết quả
+  giống hệt nhau với mọi số worker (mỗi worker cần khoảng 0,6 GB RAM trên val).
 """
+import os
+from concurrent.futures import ProcessPoolExecutor
+from multiprocessing import get_context
 from dataclasses import dataclass
 
 import numpy as np
@@ -28,13 +33,13 @@ class SortedColumns:
 
 
 def sort_columns(y: np.ndarray, s: np.ndarray) -> SortedColumns:
-    order = np.argsort(-s, axis=0, kind="stable")
+    order = np.argsort(-s, axis=0, kind="stable").astype(np.int32)
     ss = np.take_along_axis(s, order, 0)
     n = len(s)
     is_end = np.ones(ss.shape, dtype=bool)
     is_end[:-1] = ss[:-1] != ss[1:]
     idx = np.where(is_end, np.arange(n)[:, None], n)
-    gend = np.minimum.accumulate(idx[::-1], axis=0)[::-1]
+    gend = np.minimum.accumulate(idx[::-1], axis=0)[::-1].astype(np.int32)
     return SortedColumns(order, np.take_along_axis(y, order, 0).astype(np.int8), gend)
 
 
@@ -141,16 +146,46 @@ def _ci(values: list) -> list | None:
     return [float(np.percentile(values, 2.5)), float(np.percentile(values, 97.5))] if values else None
 
 
+_WORKER: dict = {}
+
+
+def _init_worker(y, s_base, s_cand, cui_rank) -> None:
+    _WORKER["states"] = (ModelState(y, s_base, cui_rank), ModelState(y, s_cand, cui_rank))
+
+
+def _eval_chunk(index_rows: np.ndarray, states=None) -> list:
+    base, cand = states or _WORKER["states"]
+    out = []
+    for idx in index_rows:
+        w = np.bincount(idx, minlength=base.n).astype(float)
+        out.append((base.values(w), cand.values(w)))
+    return out
+
+
+def default_workers() -> int:
+    return max(1, min(6, (os.cpu_count() or 2) - 2))
+
+
 def paired_bootstrap(y: np.ndarray, s_base: np.ndarray, s_cand: np.ndarray, cui_rank: np.ndarray,
-                     n: int = 1000, seed: int = 391, metrics: tuple = MAIN_METRICS) -> dict:
-    """So sánh hai model trên cùng cặp: cùng chỉ số resample, delta = cand - base tính trong từng resample."""
-    base, cand = ModelState(y, s_base, cui_rank), ModelState(y, s_cand, cui_rank)
-    point_b, point_c = base.values(), cand.values()
-    draws = {k: {"base": [], "cand": [], "delta": []} for k in metrics}
+                     n: int = 1000, seed: int = 391, metrics: tuple = MAIN_METRICS, workers: int = 1) -> dict:
+    """So sánh hai model trên cùng cặp: cùng chỉ số resample, delta = cand - base tính trong từng resample.
+    workers > 1 chạy song song bằng tiến trình con; kết quả không phụ thuộc workers."""
+    states = (ModelState(y, s_base, cui_rank), ModelState(y, s_cand, cui_rank))
+    point_b, point_c = states[0].values(), states[1].values()
     rng = np.random.default_rng(seed)
-    for _ in range(n):
-        w = np.bincount(rng.integers(0, base.n, base.n), minlength=base.n).astype(float)
-        vb, vc = base.values(w), cand.values(w)
+    index = np.empty((n, len(y)), dtype=np.int32)
+    for i in range(n):
+        index[i] = rng.integers(0, len(y), len(y))
+    if workers <= 1 or n < 2:
+        values = _eval_chunk(index, states)
+    else:
+        del states  # giải phóng RAM của tiến trình cha trước khi worker dựng state riêng
+        chunks = [c for c in np.array_split(index, min(n, workers * 4)) if len(c)]
+        with ProcessPoolExecutor(workers, mp_context=get_context("spawn"), initializer=_init_worker,
+                                 initargs=(y, s_base, s_cand, cui_rank)) as pool:
+            values = [v for part in pool.map(_eval_chunk, chunks) for v in part]
+    draws = {k: {"base": [], "cand": [], "delta": []} for k in metrics}
+    for vb, vc in values:
         for k in metrics:
             if vb[k] is not None and vc[k] is not None:
                 draws[k]["base"].append(vb[k])

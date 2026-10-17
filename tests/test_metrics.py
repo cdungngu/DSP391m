@@ -81,3 +81,11 @@ def test_paired_bootstrap_identical_scores_zero_delta_and_reproducible():
     assert a == b
     json.dumps(a, allow_nan=False)
     assert a["metrics"]["macro_ap"]["n_valid"] == 20
+
+
+def test_parallel_bootstrap_identical_to_sequential():
+    y, s = _random(5, n=80, m=6)
+    s2 = s + np.random.default_rng(6).normal(0, 0.1, s.shape)
+    seq = metrics.paired_bootstrap(y, s, s2, np.arange(6), n=13, seed=9, workers=1)
+    par = metrics.paired_bootstrap(y, s, s2, np.arange(6), n=13, seed=9, workers=3)
+    assert seq == par

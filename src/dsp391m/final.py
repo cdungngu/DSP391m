@@ -117,7 +117,8 @@ def verify_lock(lock: dict, view, results_dir: Path, allow_dirty: bool = False) 
 
 
 def run_final(lock_path: Path, run_id: str, retry_of: str | None = None, reason: str | None = None,
-              snap: Path | None = None, results_dir: Path = RESULTS_DIR, allow_dirty: bool = False) -> dict:
+              snap: Path | None = None, results_dir: Path = RESULTS_DIR, allow_dirty: bool = False,
+              workers: int = 1) -> dict:
     if retry_of and not reason:
         raise ValueError("Chạy lại phải ghi --reason")
     lock, lock_hash = read_release(lock_path)
@@ -132,7 +133,8 @@ def run_final(lock_path: Path, run_id: str, retry_of: str | None = None, reason:
                for m in models}
     ref = lock["reference"]
     b = lock["bootstrap"]
-    comparisons = {mid: metrics.paired_bootstrap(y, scores[ref], s, cui_rank(vocab), b["n"], b["seed"])
+    comparisons = {mid: metrics.paired_bootstrap(y, scores[ref], s, cui_rank(vocab), b["n"], b["seed"],
+                                                   workers=workers)
                    for mid, s in scores.items() if mid != ref}
     result = {"run_id": run_id, "lock_path": str(lock_path), "lock_content_hash": lock_hash, "retry_of": retry_of,
               "reason": reason, "created_at": utc_now(), "reference": ref, "models": records,
@@ -155,13 +157,14 @@ def main(argv: list[str] | None = None) -> int:
     rn.add_argument("--run-id", required=True)
     rn.add_argument("--retry-of")
     rn.add_argument("--reason")
+    rn.add_argument("--workers", type=int, default=metrics.default_workers(), help="không đổi kết quả")
     args = parser.parse_args(argv)
     try:
         if args.cmd == "lock":
             create_lock(args.out, args.models, args.reference, args.selection, args.bootstrap)
             print(f"Đã khóa {len(args.models)} model -> {args.out}")
         else:
-            r = run_final(args.lock, args.run_id, args.retry_of, args.reason)
+            r = run_final(args.lock, args.run_id, args.retry_of, args.reason, workers=args.workers)
             print(f"Final {r['run_id']}: {len(r['models'])} model -> results/final/{r['run_id']}/results.json")
     except (RuntimeError, IntegrityError, ValueError, FileExistsError) as e:
         print(e, file=sys.stderr)
