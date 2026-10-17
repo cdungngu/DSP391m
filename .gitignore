@@ -27,3 +27,7 @@ data/cache/
 !data/processed/*/dailymed_sections.parquet
 !data/processed/*/chembl_map.parquet
 !data/processed/*/chembl_mechanisms.parquet
+# Artifact model đã fit và score cache: sinh lại được bằng `python -m dsp391m.evaluate`/trainer
+results/models/
+results/scores/
+results/runs/**/*.pt

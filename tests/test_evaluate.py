@@ -32,21 +32,36 @@ def test_smoothing_and_pair_symmetry(snap):
         B0(alpha=float("nan"))
 
 
-def test_test_split_requires_final(snap, tmp_path):
+def test_test_split_never_scored_by_evaluate(snap, tmp_path):
     with pytest.raises(PermissionError):
-        evaluate.run("b0_per_drug", "test", n_boot=0, snap=snap, results_dir=tmp_path)
-    assert evaluate.run("b0_per_drug", "test", n_boot=0, final=True, snap=snap, results_dir=tmp_path)["split"] == "test"
+        evaluate.run("b0_alpha0", "test", snap=snap, results_dir=tmp_path)
+    assert evaluate.main(["--model", "b0_alpha0", "--split", "test"]) == 2
 
 
 def test_popularity_macro_ap_equals_mean_prevalence(snap, tmp_path):
-    r = evaluate.run("b0_popularity", "val", n_boot=5, snap=snap, results_dir=tmp_path)
+    r = evaluate.run("popularity", "val", n_boot=5, snap=snap, results_dir=tmp_path)
     _, y, _ = dataview.load_eval_targets("val", snap=snap)
     prev = y.mean(0)[y.sum(0) > 0]
     assert r["metrics"]["macro_ap"] == pytest.approx(prev.mean())
     assert r["metrics"]["macro_auroc"] == pytest.approx(0.5)
     lo, hi = r["ci95"]["macro_ap"]
     assert lo <= hi
-    assert (tmp_path / "val" / "b0_popularity.json").exists()
+    assert (tmp_path / "val" / r["model_release_id"] / f"{r['run_id']}.json").exists()
+
+
+def test_runs_do_not_overwrite_and_reuse_verified_cache(snap, tmp_path):
+    import json
+    a = evaluate.run("b0_alpha100", snap=snap, results_dir=tmp_path)
+    b = evaluate.run("b0_alpha100", snap=snap, results_dir=tmp_path)
+    assert a["run_id"] != b["run_id"] and a["model_release_id"] == b["model_release_id"]
+    assert a["metrics"] == b["metrics"]
+    json.dumps(a, allow_nan=False)
+    legacy = evaluate.run("b0_per_drug", snap=snap, results_dir=tmp_path)
+    assert legacy["model_release_id"] == evaluate.run("b0_alpha0", snap=snap, results_dir=tmp_path)["model_release_id"]
+    npy = next((tmp_path / "scores" / "val").glob(f"{a['model_release_id']}__*.npy"))
+    np.save(npy, np.zeros((2, 2), dtype=np.float32))
+    with pytest.raises(evaluate.IntegrityError):
+        evaluate.run("b0_alpha100", snap=snap, results_dir=tmp_path)
 
 
 def test_b0_uses_only_train_labels(snap):
