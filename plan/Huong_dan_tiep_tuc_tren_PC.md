@@ -118,6 +118,8 @@ Nguồn: [plan 08 mục E1](du_doan_cap/08_Mo_rong_va_thi_nghiem.md). Câu hỏi
 
 ### 4.1 Hỏi người dùng một câu trước khi đăng ký
 
+**Cập nhật sau khi so với repo Pancasel/dsp:** [so_sanh_pancasel_dsp.md](../analysis/2026-10-17/so_sanh_pancasel_dsp.md) cho thấy B0 alpha0 × (bậc A + bậc B) đạt macro AP 0,316 trên val, cao hơn mọi model. Trước khi làm E1, phải hỏi người dùng: (a) đăng ký baseline nhân bậc thay cho E1, (b) dùng nó làm base offset cho E1, hay (c) giữ E1 như mô tả dưới đây và thêm baseline nhân bậc vào lock như một baseline mới. Các câu hỏi bên dưới chỉ áp dụng khi người dùng đã chọn.
+
 Base của offset là **B0 alpha0** (khuyến nghị: là backend demo và mạnh top-10) hay alpha100? Không có câu trả lời thì dùng alpha0 và ghi rõ trong registration.
 
 ### 4.2 Công thức (cố định, không mở grid)
