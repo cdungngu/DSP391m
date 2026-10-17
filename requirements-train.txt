@@ -1,0 +1,5 @@
+# Thêm cho huấn luyện DistMult (plan du_doan_cap/05). Cài: .venv/bin/pip install -r requirements-train.txt
+# Wheel đã kiểm: torch-2.5.1-cp312-none-macosx_11_0_arm64 (Apple Silicon, CPU/MPS).
+-r requirements.txt
+torch==2.5.1
+sympy==1.13.1

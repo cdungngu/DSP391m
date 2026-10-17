@@ -26,7 +26,7 @@ import pandas as pd
 from sklearn.metrics import average_precision_score, roc_auc_score
 
 from . import metrics, predictor
-from .dataview import load_eval_targets, prediction_view
+from .dataview import load_eval_targets, prediction_view, train_label_matrix
 from .manifest import git_commit, sha256, utc_now
 from .models.b0 import B0
 from .paths import ROOT
@@ -171,7 +171,39 @@ def grouped(y: np.ndarray, s: np.ndarray, pairs: pd.DataFrame, view, state: metr
             sub = metrics.ModelState(y[m], s[m], state.cui_rank)
             v = sub.values()
             out[f"pairs_{name}"] = {"n_pairs": int(m.sum()), "macro_ap": v["macro_ap"], "ndcg@10": v["ndcg@10"]}
+    # Nhóm theo cặp: bậc train nhỏ hơn của hai thuốc, và số nhãn quan sát của cặp. Ngưỡng tertile tính trên train.
+    train_pairs, train_y = train_label_matrix(view)
+    deg = np.bincount(train_pairs.ravel(), minlength=len(view.drugs))
+    pair_deg = np.minimum(deg[pairs["drug_a"].to_numpy()], deg[pairs["drug_b"].to_numpy()])
+    deg_edges = np.quantile(np.minimum(deg[train_pairs[:, 0]], deg[train_pairs[:, 1]]), [1 / 3, 2 / 3])
+    n_lab_edges = np.quantile(train_y.sum(1), [1 / 3, 2 / 3])
+    for key, values, edges in (("pair_min_train_degree", pair_deg, deg_edges),
+                               ("pair_n_labels", y.sum(1), n_lab_edges)):
+        b = np.digitize(values, edges)
+        for k, name in enumerate(["low", "mid", "high"]):
+            m = b == k
+            entry = {"n_pairs": int(m.sum()), "train_edges": [float(e) for e in edges]}
+            if m.sum():
+                v = metrics.ModelState(y[m], s[m], state.cui_rank).values()
+                entry.update({"macro_ap": v["macro_ap"], "pair_ap": v["pair_ap"], "ndcg@10": v["ndcg@10"]})
+            out[f"{key}_{name}"] = entry
     return out
+
+
+def shortcut(view, pairs: pd.DataFrame, s: np.ndarray, rank: np.ndarray, k: int = 10) -> dict:
+    """Overlap top-k của cặp với top-k popularity và với hợp top-k tần suất từng thuốc (B0 alpha0, train).
+    Overlap cao gợi ý model chủ yếu học tần suất; không tự chứng minh điều ngược lại."""
+    prior = B0(alpha=0).fit(view)
+    k = min(k, s.shape[1])
+    top = metrics.topk_order(s, rank)[:, :k]
+    drug_top = metrics.topk_order(prior.freq, rank)[:, :k]
+    pop_top = set(metrics.topk_order(prior.popularity[None, :], rank)[0, :k])
+    a, b = pairs["drug_a"].to_numpy(), pairs["drug_b"].to_numpy()
+    pop = np.array([len(pop_top & set(t)) / k for t in top])
+    single = np.array([len((set(drug_top[x]) | set(drug_top[y])) & set(t)) / k for t, x, y in zip(top, a, b)])
+    return {"k": k, "mean_overlap_popularity_topk": float(pop.mean()),
+            "mean_overlap_single_drug_topk_union": float(single.mean()),
+            "share_pairs_topk_inside_single_drug_union": float((single == 1).mean())}
 
 
 def evaluation_record(model, split: str, view, pairs: pd.DataFrame, y: np.ndarray, s: np.ndarray,
@@ -186,6 +218,7 @@ def evaluation_record(model, split: str, view, pairs: pd.DataFrame, y: np.ndarra
         "n_pairs": len(pairs), "n_labels": int(y.shape[1]), "positive_rate": float(y.mean()),
         "metrics": metrics.summarize(y, s, rank, state),
         "groups": grouped(y, s, pairs, view, state),
+        "shortcut": shortcut(view, pairs, s, rank),
     }
     if n_boot:
         rng = np.random.default_rng(391)
@@ -196,6 +229,24 @@ def evaluation_record(model, split: str, view, pairs: pd.DataFrame, y: np.ndarra
     return record
 
 
+def run_fitted(model, view, start: float | None = None, split_id: str = SPLIT_ID, snap: Path | None = None,
+               results_dir: Path = RESULTS_DIR, n_boot: int = 0, extra: dict | None = None) -> dict:
+    """Chấm một model đã fit trên val: lưu artifact, score cache và run bất biến."""
+    start = start or time.time()
+    pairs, y, vocab = load_eval_targets("val", split_id, snap)
+    check_label_order(view, vocab)
+    s = model.score_pairs(pairs)
+    store_model(model, results_dir)
+    save_scores(results_dir, "val", model.model_release_id, model.identity, pairs, s)
+    result = evaluation_record(model, "val", view, pairs, y, s, vocab, n_boot) | (extra or {})
+    result["run_id"] = new_run_id()
+    result["seconds"] = round(time.time() - start, 1)
+    out = results_dir / "val" / model.model_release_id / f"{result['run_id']}.json"
+    publish(out, result)
+    result["path"] = str(out)
+    return result
+
+
 def run(model_name: str, split: str = "val", n_boot: int = 0, split_id: str = SPLIT_ID,
         snap: Path | None = None, results_dir: Path = RESULTS_DIR) -> dict:
     if split != "val":
@@ -203,18 +254,21 @@ def run(model_name: str, split: str = "val", n_boot: int = 0, split_id: str = SP
     start = time.time()
     view = prediction_view(split_id, snap)
     model = MODELS[model_name]().fit(view)
-    pairs, y, vocab = load_eval_targets("val", split_id, snap)
-    check_label_order(view, vocab)
-    s = model.score_pairs(pairs)
-    store_model(model, results_dir)
-    save_scores(results_dir, "val", model.model_release_id, model.identity, pairs, s)
-    result = evaluation_record(model, "val", view, pairs, y, s, vocab, n_boot)
-    result["run_id"] = new_run_id()
-    result["seconds"] = round(time.time() - start, 1)
-    out = results_dir / "val" / model.model_release_id / f"{result['run_id']}.json"
-    publish(out, result)
-    result["path"] = str(out)
-    return result
+    return run_fitted(model, view, start, split_id, snap, results_dir, n_boot)
+
+
+def val_macro_ap_callback(split_id: str = SPLIT_ID, snap: Path | None = None):
+    """Callback cho trainer: nhận hàm score(pairs) và chỉ trả val macro AP. Nhãn val nằm trong closure của
+    evaluator, trainer không nhận được nhãn."""
+    pairs, y, _ = load_eval_targets("val", split_id, snap)
+    ones = np.ones(len(y))
+
+    def callback(score_fn) -> float:
+        s = score_fn(pairs)
+        if s.shape != y.shape or not np.isfinite(s).all():
+            raise ValueError("Score val sai shape hoặc không hữu hạn")
+        return metrics.finite_mean(metrics.weighted_ap(metrics.sort_columns(y, s), ones))
+    return callback
 
 
 def main(argv: list[str] | None = None) -> int:

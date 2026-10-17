@@ -26,7 +26,7 @@ class B0:
         if not np.isfinite(alpha) or alpha < 0:
             raise ValueError("Smoothing alpha must be finite and non-negative")
         self.alpha = float(alpha)
-        self.name = f"b0_{variant}"
+        self.name = f"b0_alpha{self.alpha:g}" if variant == "per_drug" else "b0_popularity"
         self.config = {"model": "b0", "variant": variant} | ({"alpha": self.alpha} if variant == "per_drug" else {})
         self.config_id = predictor.config_id(self.name, self.config)
 

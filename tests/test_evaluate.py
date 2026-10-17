@@ -77,3 +77,12 @@ def test_b0_uses_only_train_labels(snap):
     assert np.allclose(model.freq[d], expected)
     with pytest.raises(ValueError):
         B0().fit(dataview.evidence_view(snap))
+
+
+def test_shortcut_and_train_derived_strata(snap, tmp_path):
+    r = evaluate.run("popularity", snap=snap, results_dir=tmp_path)
+    assert r["shortcut"]["mean_overlap_popularity_topk"] == 1.0
+    g = r["groups"]
+    _, y, _ = dataview.load_eval_targets("val", snap=snap)
+    assert sum(g[f"pair_min_train_degree_{b}"]["n_pairs"] for b in ("low", "mid", "high")) == len(y)
+    assert g["pair_n_labels_low"]["train_edges"] == g["pair_n_labels_mid"]["train_edges"]
