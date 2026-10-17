@@ -1,8 +1,11 @@
 # Python 3.12. Cài: python3 -m venv .venv && .venv/bin/pip install -r requirements.txt && .venv/bin/pip install -e .
 pandas==2.2.2
-numpy==1.26.4
+numpy==2.5.3
 pyarrow==17.0.0
 requests==2.32.3
 rdkit==2024.3.5
 scikit-learn==1.5.1
 pytest==8.3.3
+# Phụ thuộc gián tiếp, pin theo môi trường đã sinh kết quả v3 (xác minh 2026-10-17)
+pillow==12.3.0
+pluggy==1.6.0
